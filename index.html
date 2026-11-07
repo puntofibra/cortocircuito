@@ -352,7 +352,7 @@ body.duo #bPauseM{display:none!important}
 /* =========================================================
    CONFIG
    ========================================================= */
-const VERSION = '2026-11-08.1';
+const VERSION = '2026-11-08.2';
 const API = 'https://script.google.com/macros/s/AKfycbxaKM4kZpLJys6zRmCewH29m6kCD9oci_Lp_EXMtOYMUE3Fi97FAtpLaoUo2rMHEzaJ9g/exec';
 const APP_URL = 'https://puntofibra.github.io/cortocircuito/';
 const SHARE_URL = APP_URL + '?v=2'; // cambiar el número si se cambia la imagen de compartir (WhatsApp guarda la tarjeta antigua)
@@ -425,7 +425,17 @@ const SFX = {
   level(){ [0,4,7,12,16].forEach((s, i) => tone(523 * Math.pow(2, s / 12), .14, 'square', .08, 0, i * .07)); },
   over(){ tone(400, 1.2, 'sawtooth', .14, 40); noise(1, .15, 300, 'lowpass'); },
   click(){ tone(700, .04, 'square', .05); },
-  beat(){ tone(70, .12, 'sine', .25, 40); }
+  beat(){ tone(70, .12, 'sine', .25, 40); },
+  spark(pan){
+    if (!AC) return;
+    // chisporroteo: varios chasquidos cortos de ruido + un "tic" metálico agudo
+    const n = 3 + (Math.random() * 4 | 0);
+    for (let i = 0; i < n; i++){
+      const t0 = i * (.015 + Math.random() * .035);
+      noise(.02 + Math.random() * .04, .05 + Math.random() * .07, 2500 + Math.random() * 4000, 'highpass', t0);
+    }
+    if (Math.random() < .7) tone(2400 + Math.random() * 2400, .03, 'square', .02, 900, Math.random() * .05);
+  }
 };
 /* Música: secuenciador sencillo */
 let musicTimer = null, mStep = 0, mNext = 0;
@@ -709,6 +719,37 @@ function update(dt){
   floaters = floaters.filter(f => { f.life -= dt; f.y -= 40 * dt; return f.life > 0; });
   shake *= Math.pow(.02, dt); if (shake < .3) shake = 0;
   flash = Math.max(0, flash - dt * 1.4);
+  wallSparks(dt);
+}
+
+/* chispas aleatorias en las baterías de los laterales */
+let sparkT = 3 + Math.random() * 4, sparkQ = [], wallFx = [];
+function wallSparks(dt){
+  if (!grid || phase === 'pause' || phase === 'menu') { sparkQ = []; return; }
+  sparkT -= dt;
+  if (sparkT <= 0){
+    sparkT = 5 + Math.random() * 5;                       // cada 5–10 s, sin patrón fijo
+    const side = Math.random(), n = 1 + (Math.random() * 4 | 0), rows = [];
+    while (rows.length < n){ const r = Math.random() * ROWS | 0; if (!rows.includes(r)) rows.push(r); }
+    rows.forEach(r => {
+      const sd = side < .4 ? 0 : side < .8 ? 1 : (Math.random() < .5 ? 0 : 1); // izquierda, derecha o ambos
+      sparkQ.push({ r, sd, d: Math.random() * 1.2 });       // escalonadas
+    });
+  }
+  sparkQ = sparkQ.filter(q => {
+    q.d -= dt; if (q.d > 0) return true;
+    const x = q.sd === 0 ? wall - 2 : bw - wall + 2, y = q.r * cell + cell / 2 + (Math.random() - .5) * cell * .3;
+    const cols = q.sd === 0 ? ['#ffffff', '#38f9ff', '#ffe14d'] : ['#ffffff', '#ff2bd6', '#ffe14d'];
+    const dir = q.sd === 0 ? 1 : -1, k = 6 + (Math.random() * 10 | 0);
+    for (let i = 0; i < k; i++){
+      const a = (Math.random() - .5) * 2.2, sp = 80 + Math.random() * 220;
+      particles.push({ x, y, vx: Math.cos(a) * sp * dir, vy: Math.sin(a) * sp - 40, life: .25 + Math.random() * .35, max: .6, col: cols[Math.random() * 3 | 0], s: 1.2 + Math.random() * 2, g: 700 });
+    }
+    wallFx.push({ x, y, dir, t: .12 + Math.random() * .1, col: cols[1] });
+    SFX.spark();
+    return false;
+  });
+  wallFx = wallFx.filter(f => (f.t -= dt) > 0);
 }
 
 /* =========================================================
@@ -854,6 +895,17 @@ function render(){
   }
   ctx.restore(); // clip
   // partículas
+  // destellos de las chispas de las baterías
+  wallFx.forEach(f => {
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    const g = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, cell * .7);
+    g.addColorStop(0, 'rgba(255,255,255,.9)'); g.addColorStop(.3, f.col); g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.globalAlpha = .55; ctx.fillStyle = g; ctx.beginPath(); ctx.arc(f.x, f.y, cell * .7, 0, 7); ctx.fill();
+    ctx.globalAlpha = 1; ctx.strokeStyle = '#fff'; ctx.shadowColor = f.col; ctx.shadowBlur = 12; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(f.x, f.y);
+    let x = f.x, y = f.y; for (let i = 0; i < 3; i++){ x += f.dir * (4 + Math.random() * 8); y += (Math.random() - .5) * 12; ctx.lineTo(x, y); }
+    ctx.stroke(); ctx.restore();
+  });
   particles.forEach(p => { ctx.globalAlpha = Math.max(0, p.life / p.max); ctx.fillStyle = p.col; ctx.fillRect(p.x - p.s / 2, p.y - p.s / 2, p.s, p.s); });
   ctx.globalAlpha = 1;
   // textos flotantes
