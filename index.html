@@ -248,7 +248,7 @@ ol.rank li.me{background:rgba(56,249,255,.08);border-radius:8px}
 /* =========================================================
    CONFIG
    ========================================================= */
-const VERSION = '2026-11-07.5';
+const VERSION = '2026-11-07.6';
 const API = 'https://script.google.com/macros/s/AKfycbxaKM4kZpLJys6zRmCewH29m6kCD9oci_Lp_EXMtOYMUE3Fi97FAtpLaoUo2rMHEzaJ9g/exec';
 const APP_URL = 'https://puntofibra.github.io/cortocircuito/';
 const GOOGLE_ID = '454055120059-nuhaop4r62urc3u036cc3grpqo71ulg7.apps.googleusercontent.com';
@@ -774,6 +774,40 @@ function drawMini(){ drawPieceMini($('nextCv'), nextP); drawPieceMini($('holdCv'
 const lcv = $('lucasCv'), lctx = lcv.getContext('2d');
 const lmv = $('lucasMini'), lmctx = lmv.getContext('2d');
 let lt = 0;
+// boquillas de los 3 propulsores en lucas.png (x, y de la punta y ancho, en proporción a la imagen)
+const LUCAS_NOZ = [[.28, .98, .055], [.385, .999, .084], [.49, .984, .057]];
+function thrust(ctx, x, y, w, mood, i){
+  ctx.save();
+  if (mood === 'dead'){
+    // averiado: humo en vez de fuego
+    for (let k = 0; k < 3; k++){
+      const t = (lt * .8 + k / 3 + i * .17) % 1;
+      ctx.fillStyle = `rgba(150,150,170,${.35 * (1 - t)})`;
+      ctx.beginPath(); ctx.arc(x + Math.sin(t * 6 + i) * w * .4, y + t * w * 2.2, w * (.35 + t * .6), 0, 7); ctx.fill();
+    }
+    ctx.restore(); return;
+  }
+  const boost = mood === 'happy' ? 1.6 : mood === 'scared' ? 1.25 : 1;
+  const len = w * (2.1 + Math.random() * .8) * boost;
+  ctx.globalCompositeOperation = 'lighter';
+  const layers = [[1, 'rgba(255,90,20,.55)'], [.72, 'rgba(255,170,40,.75)'], [.42, 'rgba(255,240,170,.95)']];
+  layers.forEach(([k, col]) => {
+    const hw = w * .5 * k, L = len * (0.55 + k * .45);
+    const g = ctx.createLinearGradient(x, y, x, y + L);
+    g.addColorStop(0, col); g.addColorStop(1, 'rgba(255,60,0,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.moveTo(x - hw, y);
+    ctx.quadraticCurveTo(x - hw * 1.05, y + L * .45, x + (Math.random() - .5) * hw * .5, y + L);
+    ctx.quadraticCurveTo(x + hw * 1.05, y + L * .45, x + hw, y);
+    ctx.closePath(); ctx.fill();
+  });
+  // chispas
+  for (let k = 0; k < 2; k++){
+    ctx.fillStyle = Math.random() < .5 ? '#ffd27a' : '#ff8a3d';
+    ctx.fillRect(x + (Math.random() - .5) * w, y + len * (.5 + Math.random() * .7), 1.6, 1.6);
+  }
+  ctx.restore();
+}
 function paintLucas(ctx, cx0, cy0, sc, mood){
   const bob = Math.sin(lt * 3) * 4 + (mood === 'happy' ? Math.abs(Math.sin(lt * 14)) * -8 : 0);
   const jit = mood === 'scared' ? (Math.random() - .5) * 3 : 0;
@@ -781,11 +815,14 @@ function paintLucas(ctx, cx0, cy0, sc, mood){
   const im = IMG[key] || IMG.lucas;
   ctx.save(); ctx.translate(cx0 + jit, cy0 + bob * sc); ctx.scale(sc, sc);
   // propulsor (efecto por código)
-  for (let i = 0; i < 3; i++){ ctx.fillStyle = `rgba(56,249,255,${.15 + Math.random() * .2})`; ctx.beginPath(); ctx.ellipse(0, 58 + i * 6, 14 - i * 3, 6 + Math.random() * 6, 0, 0, 7); ctx.fill(); }
+  if (!im) for (let i = 0; i < 3; i++){ ctx.fillStyle = `rgba(56,249,255,${.15 + Math.random() * .2})`; ctx.beginPath(); ctx.ellipse(0, 58 + i * 6, 14 - i * 3, 6 + Math.random() * 6, 0, 0, 7); ctx.fill(); }
   if (im){
-    const r = Math.min(130 / im.width, 130 / im.height);
+    const r = Math.min(145 / im.width, 145 / im.height);
+    const iw = im.width * r, ih = im.height * r, ix = -iw / 2, iy = -ih / 2 - 6;
+    // fuego de los 3 propulsores (efecto por código)
+    LUCAS_NOZ.forEach(([nx, ny, nw], i) => thrust(ctx, ix + nx * iw, iy + ny * ih - nw * iw * .25, nw * iw, mood, i));
     ctx.shadowColor = '#38f9ff'; ctx.shadowBlur = mood === 'happy' ? 25 : 10;
-    ctx.drawImage(im, -im.width * r / 2, -im.height * r / 2 - 6, im.width * r, im.height * r);
+    ctx.drawImage(im, ix, iy, iw, ih);
   } else {
     // cuerpo
     ctx.shadowColor = '#38f9ff'; ctx.shadowBlur = 14;
