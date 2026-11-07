@@ -1,0 +1,15 @@
+{
+  "name": "CORTOCIRCUITO ⚡ Lucas",
+  "short_name": "Cortocircuito",
+  "description": "Conecta los cables de lado a lado y haz saltar el circuito.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#05070f",
+  "theme_color": "#05070f",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
