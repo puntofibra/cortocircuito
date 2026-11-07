@@ -148,6 +148,31 @@ ol.rank li.me{background:rgba(56,249,255,.08);border-radius:8px}
 .userBar b{color:var(--txt)}
 .userBar button{background:none;color:var(--mute);text-decoration:underline;font-family:Rajdhani;font-size:14px}
 .warnBox{border:1px dashed rgba(255,159,67,.5);border-radius:12px;padding:10px;color:var(--copper);margin:6px 0 10px;font-size:15px}
+/* ---------- dobles ---------- */
+#boardWrap{flex-direction:column;gap:6px}
+#duoBar{display:none;width:100%;max-width:520px;align-items:stretch;gap:6px}
+body.duo #duoBar{display:flex}
+.dp{flex:1;min-width:0;position:relative;overflow:hidden;background:rgba(10,16,36,.9);border:1px solid var(--line);border-radius:12px;padding:5px 10px 7px;opacity:.55;transition:.25s}
+.dp.on{opacity:1;box-shadow:0 0 16px var(--pc)}
+.dp b{display:block;font-family:Orbitron;font-size:10px;letter-spacing:1.5px;color:var(--pc);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dp span{font-family:Orbitron;font-weight:900;font-size:20px;color:#fff;text-shadow:0 0 10px var(--pc)}
+.dp i{position:absolute;left:0;bottom:0;height:3px;background:var(--pc);box-shadow:0 0 8px var(--pc);width:0}
+#dp0{--pc:#38f9ff;border-color:rgba(56,249,255,.5)}#dp1{--pc:#ff2bd6;border-color:rgba(255,43,214,.5);text-align:right}#dp1 i{left:auto;right:0}
+.dvs{display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Orbitron;font-weight:900;font-size:11px;color:var(--mute);min-width:44px}
+.dvs b{font-size:15px;color:#fff}
+.dvs button{background:none;color:var(--mute);font-family:Rajdhani;font-size:12px;padding:2px 4px}
+body.duo #bPauseM{display:none!important}
+#qrBox{background:#fff;border-radius:16px;padding:12px;width:min(230px,70vw);margin:6px auto 10px;box-shadow:0 0 30px rgba(56,249,255,.35)}
+#qrBox img,#qrBox canvas{width:100%!important;height:auto!important;display:block}
+.codeBig{font-family:Orbitron;font-weight:900;font-size:40px;letter-spacing:10px;color:var(--yellow);text-shadow:0 0 18px rgba(255,225,77,.6);margin:2px 0 6px}
+.dots::after{content:'';animation:dots 1.2s steps(4) infinite}
+@keyframes dots{0%{content:''}25%{content:'.'}50%{content:'..'}75%{content:'...'}}
+.duoRes{display:flex;gap:10px;margin:10px 0 14px}
+.duoRes div{flex:1;border-radius:14px;padding:10px;background:#0a1124;border:1px solid var(--line)}
+.duoRes div b{display:block;font-family:Orbitron;font-size:11px;letter-spacing:1px;margin-bottom:4px}
+.duoRes div span{font-family:Orbitron;font-weight:900;font-size:26px;color:#fff}
+.duoRes .win{border-color:var(--yellow);box-shadow:0 0 18px rgba(255,225,77,.35)}
+.codeIn{text-transform:uppercase;letter-spacing:8px;font-family:Orbitron!important;font-weight:900}
 /* ---------- avisos (toasts) ---------- */
 #toasts{position:fixed;top:calc(12px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:60;display:flex;flex-direction:column;gap:10px;width:min(420px,calc(100% - 24px));pointer-events:none}
 .tst{--c:#38f9ff;--g:rgba(56,249,255,.35);position:relative;overflow:hidden;pointer-events:auto;cursor:pointer;display:flex;gap:12px;align-items:center;padding:12px 16px 15px 12px;border-radius:18px;
@@ -187,9 +212,9 @@ ol.rank li.me{background:rgba(56,249,255,.08);border-radius:8px}
       <div class="keys"><b>← →</b> mover &nbsp;<b>↑</b> girar &nbsp;<b>Z</b> girar ↺<br><b>↓</b> bajar &nbsp;<b>ESPACIO</b> soltar<br><b>C</b> guardar &nbsp;<b>P</b> pausa</div>
     </aside>
     <canvas id="lucasMini" width="128" height="128"></canvas>
-    <div id="boardWrap"><canvas id="board"></canvas><button id="bPauseM" title="Pausa">❚❚</button></div>
+    <div id="boardWrap"><div id="duoBar"><div class="dp" id="dp0"><b id="dn0">—</b><span id="ds0">0</span><i id="dt0"></i></div><div class="dvs"><b id="duoClock">3:00</b><button id="bDuoExit" title="Salir del duelo">✕ salir</button></div><div class="dp" id="dp1"><b id="dn1">—</b><span id="ds1">0</span><i id="dt1"></i></div></div><canvas id="board"></canvas><button id="bPauseM" title="Pausa">❚❚</button></div>
     <aside id="right">
-      <div class="box"><div class="lbl">Siguiente</div><canvas id="nextCv" class="mini" width="80" height="80"></canvas></div>
+      <div class="box"><div class="lbl" id="nextLbl">Siguiente</div><canvas id="nextCv" class="mini" width="80" height="80"></canvas></div>
       <div class="box"><div class="lbl">Nivel</div><div class="val sm" id="sLevel">1</div><div class="lbl" style="margin-top:6px">Circuitos</div><div class="val sm" id="sCirc">0</div></div>
       <div class="box" id="bestBox"><div class="lbl">Récord</div><div class="val sm" id="sBest">0</div></div>
       <div class="row2"><button class="ibtn" id="bPause" title="Pausa">❚❚</button><button class="ibtn" id="bMusic" title="Música">♫</button><button class="ibtn" id="bSfx" title="Sonido">🔊</button></div>
@@ -209,6 +234,7 @@ ol.rank li.me{background:rgba(56,249,255,.08);border-radius:8px}
   <div id="userBar" class="userBar"></div>
   <div id="streak"></div>
   <button class="big" id="bPlay">⚡ JUGAR</button>
+  <button class="big pink" id="bDuo">👥 JUGAR A DOBLES</button>
   <div class="grid2">
     <button class="big alt" id="bRank">🏆 RANKING</button>
     <button class="big alt" id="bHelp">❓ CÓMO SE JUEGA</button>
@@ -260,6 +286,53 @@ ol.rank li.me{background:rgba(56,249,255,.08);border-radius:8px}
   <p style="color:var(--mute);font-size:14px">Móvil: arrastra para mover, toca para girar, desliza hacia abajo rápido para soltar. También tienes los botones de abajo.</p>
 </div><button class="big" id="bHelpClose">¡ENTENDIDO!</button></div></div>
 
+<!-- DOBLES: elegir -->
+<div class="ov" id="ovDuoMenu"><div class="card">
+  <div class="title" style="font-size:30px">DOBLES</div>
+  <div class="sub">Por turnos en el mismo tablero. Quien cierra el circuito se lleva los puntos.</div>
+  <button class="big pink" id="bDuoCrear">⚡ CREAR PARTIDA (QR)</button>
+  <div class="lgBox"><h3>¿TE HAN DADO UN CÓDIGO?</h3>
+    <input class="name codeIn" id="duoCodeIn" maxlength="4" placeholder="ABCD" autocomplete="off">
+    <button class="big alt" id="bDuoUnirCod">UNIRME</button></div>
+  <button class="lnk" id="bDuoMenuBack">← Volver</button>
+</div></div>
+
+<!-- DOBLES: sala de espera -->
+<div class="ov" id="ovDuo"><div class="card">
+  <div class="title" style="font-size:28px">¡RETA A ALGUIEN!</div>
+  <div class="sub" style="margin-bottom:4px">Que tu rival escanee este QR con su móvil. No necesita cuenta.</div>
+  <div id="qrBox"></div>
+  <div class="codeBig" id="duoCode">····</div>
+  <div class="sub"><span class="dots">Esperando rival</span></div>
+  <div class="grid2"><button class="big alt" id="bDuoShare">📲 ENVIAR ENLACE</button><button class="big alt" id="bDuoCancel">✕ CANCELAR</button></div>
+</div></div>
+
+<!-- DOBLES: unirse -->
+<div class="ov" id="ovJoin"><div class="card">
+  <div class="title" style="font-size:26px">¡TE HAN RETADO!</div>
+  <div class="sub" id="joinTxt">Duelo de CORTOCIRCUITO</div>
+  <div class="lgBox"><div class="fl">Tu nombre</div><input class="name" id="joinName" maxlength="14" placeholder="¿Cómo te llamas?"></div>
+  <button class="big pink" id="bJoin">⚡ ¡ACEPTO EL DUELO!</button>
+  <button class="lnk" id="bJoinCancel">No, gracias</button>
+</div></div>
+
+<!-- DOBLES: abandonar -->
+<div class="ov" id="ovQuit"><div class="card">
+  <div class="title" style="font-size:26px">¿ABANDONAR?</div>
+  <div class="sub">Si sales ahora, pierdes el duelo.</div>
+  <button class="big" id="bQuitNo">▶ SEGUIR JUGANDO</button>
+  <button class="big alt" id="bQuitYes">SALIR DEL DUELO</button>
+</div></div>
+
+<!-- DOBLES: final -->
+<div class="ov" id="ovDuoOver"><div class="card">
+  <div class="title" style="font-size:28px" id="doTitle">¡FIN!</div>
+  <div class="sub" id="doSub"></div>
+  <div class="duoRes"><div id="doP0"><b style="color:var(--cyan)" id="doN0"></b><span id="doS0">0</span></div><div id="doP1"><b style="color:var(--pink)" id="doN1"></b><span id="doS1">0</span></div></div>
+  <button class="big pink" id="bRevancha">⚡ REVANCHA</button>
+  <button class="big alt" id="bDuoMenu">☰ MENÚ</button>
+</div></div>
+
 <!-- LOGIN -->
 <div class="ov" id="ovLogin"><div class="card" id="lgCard"></div></div>
 
@@ -279,7 +352,7 @@ ol.rank li.me{background:rgba(56,249,255,.08);border-radius:8px}
 /* =========================================================
    CONFIG
    ========================================================= */
-const VERSION = '2026-11-07.14';
+const VERSION = '2026-11-08.1';
 const API = 'https://script.google.com/macros/s/AKfycbxaKM4kZpLJys6zRmCewH29m6kCD9oci_Lp_EXMtOYMUE3Fi97FAtpLaoUo2rMHEzaJ9g/exec';
 const APP_URL = 'https://puntofibra.github.io/cortocircuito/';
 const SHARE_URL = APP_URL + '?v=2'; // cambiar el número si se cambia la imagen de compartir (WhatsApp guarda la tarjeta antigua)
@@ -450,6 +523,7 @@ function hardDrop(){
 }
 function holdPiece(){
   if (phase !== 'play' || !canHold) return;
+  if (mode === 'duo'){ duoHold(); return; }
   SFX.hold();
   const cur = piece; cur.o = 0;
   if (holdP){ piece = holdP; nextP = nextP; } else { piece = nextP; nextP = newPiece(); }
@@ -461,9 +535,10 @@ function holdPiece(){
 
 function lock(){
   let over = false;
+  if (mode === 'duo' && DUO && DUO.myTurn) duoRecord(true);
   cellsOf(piece).forEach(([r, c, t]) => { if (r < 0) over = true; else grid[r][c] = t; });
   piece = null;
-  if (over){ gameOver(); return; }
+  if (over){ if (mode === 'duo'){ duoAfterResolve(true); return; } gameOver(); return; }
   SFX.land(); chain = 0; phase = 'resolve'; settle(); dirty = true;
 }
 
@@ -544,7 +619,7 @@ function checkCircuits(){
   const pts = (n * 10 + (n > COLS ? (n - COLS) * 15 : 0)) * level * chain + (chain > 1 ? chain * chain * 50 * level : 0);
   score += pts;
   const cyM = zapCells.reduce((a, [r]) => a + r, 0) / n;
-  floaters.push({ x: wall + COLS * cell / 2, y: (cyM + .5) * cell, txt: '+' + pts, col: '#fff', life: 1.3, size: 1 });
+  floaters.push({ x: wall + COLS * cell / 2, y: (cyM + .5) * cell, txt: '+' + pts + (mode === 'duo' && DUO ? ' ' + duoActiveName() : ''), col: mode === 'duo' && DUO ? duoActiveColor() : '#fff', life: 1.5, size: 1 });
   const msg = chain >= 5 ? '¡APAGÓN TOTAL x' + chain + '!' : chain === 4 ? '¡MEGAVOLTIO x4!' : chain === 3 ? '¡SOBRECARGA x3!' : chain === 2 ? '¡COMBO x2!' : (comps.length > 1 ? '¡DOBLE CIRCUITO!' : '¡CORTOCIRCUITO!');
   floaters.push({ x: wall + COLS * cell / 2, y: (cyM - .6) * cell, txt: msg, col: chain > 1 ? '#ffe14d' : '#38f9ff', life: 1.5, size: chain > 1 ? 1.25 : 1 });
   SFX.zap(chain); if (bomb) SFX.bomb();
@@ -591,8 +666,8 @@ function gameOver(){
 let last = performance.now();
 function frame(now){
   const dt = Math.min(.05, (now - last) / 1000); last = now;
-  update(dt); render(); drawLucas(dt);
   requestAnimationFrame(frame);
+  try{ update(dt); render(); drawLucas(dt); }catch(e){ console.error(e); }
 }
 function speed(){ return softDrop ? .035 : Math.max(.09, .85 * Math.pow(.86, level - 1)); }
 function update(dt){
@@ -603,21 +678,26 @@ function update(dt){
     if (t && t.fy < 0){ t.vy += 60 * dt; t.fy = Math.min(0, t.fy + t.vy * dt); falling = true; if (t.fy === 0){ t.vy = 0; } }
   }
   if (phase === 'play'){
-    if (grounded()){
+    if (mode === 'duo' && DUO && DUO.myTurn && performance.now() > DUO.deadline){ hardDrop(); }
+    else if (grounded()){
       lockAcc += dt;
       if (lockAcc > .5 || lockMoves >= 15) lock();
     } else {
       dropAcc += dt;
       if (dropAcc >= speed()){ dropAcc = 0; piece.r++; if (softDrop) score++; dirty = true; lockAcc = 0; }
     }
+    if (mode === 'duo' && piece && phase === 'play') duoRecord(false);
+  } else if (phase === 'replay'){
+    duoReplayStep(dt);
   } else if (phase === 'resolve'){
     if (zapT > 0){
       zapT -= dt; if (zapT <= 0) explodeZap();
     } else if (!falling){
-      if (!checkCircuits()){ phase = 'play'; spawn(); updateHud(); }
+      if (!checkCircuits()){ if (mode === 'duo') duoAfterResolve(false); else { phase = 'play'; spawn(); updateHud(); } }
     }
   }
   if (dirty && grid) refreshPower();
+  if (mode === 'duo' && DUO) duoTick();
   // peligro
   if (grid && phase === 'play'){
     let top = ROWS; for (let r = 0; r < ROWS; r++) if (grid[r].some(Boolean)){ top = r; break; }
@@ -636,7 +716,7 @@ function update(dt){
    ========================================================= */
 function resize(){
   dpr = Math.min(window.devicePixelRatio || 1, 2);
-  const wrap = $('boardWrap'), aw = wrap.clientWidth, ah = wrap.clientHeight;
+  const wrap = $('boardWrap'), db = $('duoBar'), aw = wrap.clientWidth, ah = wrap.clientHeight - (db.offsetParent ? db.offsetHeight + 6 : 0);
   cell = Math.max(16, Math.floor(Math.min(aw / (COLS + 1.2), ah / ROWS)));
   wall = Math.round(cell * .6);
   bw = COLS * cell + wall * 2; bh = ROWS * cell;
@@ -753,8 +833,8 @@ function render(){
       ctx.restore();
     }
     // fantasma + pieza
-    if (piece && phase === 'play'){
-      const gr = ghostRow();
+    if (piece && (phase === 'play' || phase === 'replay')){
+      const gr = phase === 'play' ? ghostRow() : piece.r;
       if (gr !== piece.r) cellsOf(piece, gr).forEach(([r, c, t]) => {
         if (r < 0) return;
         ctx.save(); rr(ctx, wall + c * cell + 3, r * cell + 3, cell - 6, cell - 6, cell * .16);
@@ -765,7 +845,7 @@ function render(){
       });
       cellsOf(piece).forEach(([r, c, t]) => {
         if (r < 0) return;
-        const off = grounded() ? 0 : Math.min(1, dropAcc / speed()) * .0;
+        const off = 0;
         drawCable(ctx, wall + c * cell, (r + off) * cell, cell, t, 0);
         ctx.save(); rr(ctx, wall + c * cell + 1.5, r * cell + 1.5, cell - 3, cell - 3, cell * .18);
         ctx.strokeStyle = 'rgba(255,255,255,.55)'; ctx.lineWidth = 1.5; ctx.stroke(); ctx.restore();
@@ -800,7 +880,10 @@ function drawPieceMini(cvs, p){
   drawCable(ctx, W2 / 2 - s / 2, H2 / 2 - 1, s, p.a, 0);
   drawCable(ctx, W2 / 2 - s / 2, H2 / 2 - s - 1, s, p.b, 0);
 }
-function drawMini(){ drawPieceMini($('nextCv'), nextP); drawPieceMini($('holdCv'), holdP); $('holdBox').style.opacity = canHold ? 1 : .45; }
+function drawMini(){
+  drawPieceMini($('nextCv'), nextP); drawPieceMini($('holdCv'), holdP); $('holdBox').style.opacity = canHold ? 1 : .45;
+  $('nextLbl').textContent = mode === 'duo' && DUO ? (DUO.st.turn === DUO.me ? 'Siguiente · rival' : 'Tu siguiente') : 'Siguiente';
+}
 
 /* Lucas (dibujo provisional hasta tener los PNG) */
 const lcv = $('lucasCv'), lctx = lcv.getContext('2d');
@@ -931,6 +1014,12 @@ function drawLucas(dt){
    ========================================================= */
 function fmt(n){ return n.toLocaleString('es-ES'); }
 function updateHud(){
+  if (mode === 'duo' && DUO){
+    const st = DUO.st, me = DUO.me;
+    [0, 1].forEach(i => { const p = st.players[i] || { n: '—', s: 0 }; $('dn' + i).textContent = (i === me ? 'TÚ · ' : '') + p.n; $('ds' + i).textContent = fmt(p.s + (DUO.myTurn && i === me ? score : 0)); $('dp' + i).classList.toggle('on', st.turn === i && st.status === 'playing'); });
+    $('sScore').textContent = fmt((st.players[me] ? st.players[me].s : 0) + (DUO.myTurn ? score : 0)); $('sLevel').textContent = level; $('sCirc').textContent = circuits;
+    return;
+  }
   $('sScore').textContent = fmt(score || 0); $('sLevel').textContent = level || 1; $('sCirc').textContent = circuits || 0; $('sBest').textContent = fmt(Math.max(best, score || 0));
 }
 function hideAll(){ document.querySelectorAll('.ov').forEach(o => o.classList.remove('on')); }
@@ -960,7 +1049,7 @@ function toast(text, type, o){
   try{ if (type === 'err' && navigator.vibrate) navigator.vibrate([40, 40, 40]); }catch(e){}
   return el;
 }
-function pause(){ if (phase !== 'play' && phase !== 'resolve') return; pause.prev = phase; phase = 'pause'; musicStop(); show('ovPause'); }
+function pause(){ if (mode === 'duo'){ if (DUO && DUO.st.status === 'playing') show('ovQuit'); return; } if (phase !== 'play' && phase !== 'resolve') return; pause.prev = phase; phase = 'pause'; musicStop(); show('ovPause'); }
 function resume(){ if (phase !== 'pause') return; phase = pause.prev || 'play'; hideAll(); last = performance.now(); if (musicOn) musicStart(); }
 function toMenu(){ phase = 'menu'; musicStop(); grid = null; piece = null; renderStreak(); show('ovMenu'); }
 
@@ -1026,6 +1115,7 @@ function openLogin(next, vista){
         <div class="sep">o con tu correo</div>
         <button class="big" id="lgMail">✉ CORREO Y CONTRASEÑA</button>
       </div>
+      ${loginNext === 'duo' ? `<p style="margin:8px 0 0;color:var(--mute);font-size:14px;text-align:center">Para crear un duelo necesitas cuenta. Tu rival no.</p>` : ''}
       ${loginNext === 'jugar' ? `<div class="lgBox guest"><h3>🎮 SIN CUENTA</h3><p>Puedes jugar igual, pero <b style="color:var(--copper)">tu puntuación no se guardará en el ranking</b>.</p>
         <button class="big alt" id="lgGuest">SEGUIR SIN INICIAR SESIÓN</button></div>` : ''}
       <button class="lnk" id="lgBack">← Volver</button>`;
@@ -1096,6 +1186,7 @@ function loginOk(r){
   const n = loginNext; loginNext = null;
   if (n === 'guardar'){ show('ovOver'); saveScore(); }
   else if (n === 'jugar') startGame();
+  else if (n === 'duo') duoCrear();
   else show('ovMenu');
 }
 function onPlay(){ initAudio(); SFX.click(); if (USER) startGame(); else openLogin('jugar'); }
@@ -1317,7 +1408,7 @@ document.querySelectorAll('#pad button').forEach(b => {
   b.addEventListener('pointerup', stop); b.addEventListener('pointerleave', stop); b.addEventListener('pointercancel', stop);
 });
 
-function startGame(){ SFX.click && initAudio(); touchStreak(); savedId = ''; newGame(); resize(); }
+function startGame(){ if (mode === 'duo') duoLeave(true); mode = 'solo'; document.body.classList.remove('duo'); SFX.click && initAudio(); touchStreak(); savedId = ''; newGame(); resize(); }
 function setAudioBtns(){ $('bMusic').classList.toggle('off', !musicOn); $('bSfx').classList.toggle('off', !sfxOn); }
 $('bPlay').onclick = onPlay;
 $('bAgain').onclick = startGame;
@@ -1337,15 +1428,268 @@ $('bToMenu').onclick = $('bToMenu2').onclick = toMenu;
 $('bSave').onclick = () => openLogin('guardar');
 $('bMusic').onclick = () => { musicOn = !musicOn; LS.set('music', musicOn); initAudio(); if (musicBus) musicBus.gain.value = musicOn ? .22 : 0; if (musicOn && phase === 'play') musicStart(); setAudioBtns(); };
 $('bSfx').onclick = () => { sfxOn = !sfxOn; LS.set('sfx', sfxOn); initAudio(); if (sfxBus) sfxBus.gain.value = sfxOn ? 1 : 0; setAudioBtns(); };
-document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); });
+document.addEventListener('visibilitychange', () => { if (document.hidden && mode !== 'duo') pause(); });
 window.addEventListener('resize', resize);
+
+/* =========================================================
+   MODO DOBLES (por turnos, mismo tablero, pieza doble)
+   ========================================================= */
+let mode = 'solo', DUO = null, duoPollT = null;
+const DUO_TURN_MS = 10000, DUO_MAX_MS = 180000;
+function mulberry(a){ return function(){ a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const DUO_MASKS = [5, 10, 5, 10, 3, 6, 12, 9, 3, 6, 12, 9, 7, 14, 13, 11, 15];
+function duoTile(r, k){ const m = DUO_MASKS[r() * DUO_MASKS.length | 0]; const bomb = r() < (k >= 6 && k < 100000 ? .06 : 0); return { m, m0: m, bomb, id: ++uid, fy: 0, vy: 0 }; }
+function duoPiece(idx){ const r = mulberry((DUO.st.seed + idx * 7919) | 0); return { a: duoTile(r, idx), b: duoTile(r, idx), r: 1, c: 3, o: 0, idx }; }
+function encGrid(){ let s = ''; for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++){ const t = grid[r][c]; s += t ? (t.m + (t.bomb ? 16 : 0)).toString(32) : '.'; } return s; }
+function decGrid(s){
+  grid = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
+  if (s) for (let i = 0; i < ROWS * COLS && i < s.length; i++){ const ch = s[i]; if (ch === '.') continue; const v = parseInt(ch, 32); grid[(i / COLS) | 0][i % COLS] = { m: v & 15, bomb: v >= 16, id: ++uid, fy: 0, vy: 0 }; }
+  dirty = true;
+}
+function srvNow(){ return Date.now() + (DUO ? DUO.off : 0); }
+function duoRival(){ return DUO.st.players[1 - DUO.me] || { n: 'Rival', s: 0 }; }
+function duoActiveName(){ return DUO.myTurn ? 'PARA TI' : 'PARA ' + String(duoRival().n).toUpperCase(); }
+function duoActiveColor(){ const i = DUO.myTurn ? DUO.me : 1 - DUO.me; return i === 0 ? '#38f9ff' : '#ff2bd6'; }
+
+// --- crear / unirse ---
+function duoMenu(){ initAudio(); SFX.click(); $('duoCodeIn').value = ''; show('ovDuoMenu'); }
+async function duoCrear(){
+  if (!USER){ openLogin('duo'); return; }
+  const w = toast('Creando el duelo…', 'load', { titulo: 'DOBLES' });
+  const r = await api('duo_crear', { ses: USER.ses });
+  w.close();
+  if (!r.ok){ if (r.error === 'SESION'){ logout(true); openLogin('duo'); } else toast(r.error || 'No se pudo crear la partida', 'err'); return; }
+  duoInit(r);
+  const url = APP_URL + '?duo=' + r.st.code;
+  $('duoCode').textContent = r.st.code; $('qrBox').innerHTML = '';
+  show('ovDuo');
+  loadQR(() => { try{ new QRCode($('qrBox'), { text: url, width: 400, height: 400, colorDark: '#05070f', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M }); }catch(e){} });
+}
+function loadQR(cb){
+  if (window.QRCode) return cb();
+  const sc = document.createElement('script'); sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'; sc.onload = cb; document.head.appendChild(sc);
+}
+async function duoShareLink(){
+  if (!DUO) return;
+  const url = APP_URL + '?duo=' + DUO.code, txt = '⚡ ¡Te reto a un duelo de CORTOCIRCUITO! Entra aquí:';
+  if (navigator.share){ try{ await navigator.share({ title: 'Duelo CORTOCIRCUITO', text: txt, url }); }catch(e){} }
+  else window.open('https://wa.me/?text=' + encodeURIComponent(txt + ' ' + url), '_blank');
+}
+async function duoOpenJoin(code){
+  code = String(code || '').toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4);
+  if (code.length !== 4){ toast('El código tiene 4 letras', 'err'); return; }
+  const saved = LS.get('duo', null);
+  const r = await api('duo_estado', { code }, 12000);
+  if (!r.ok || !r.st){ toast(r.error || 'Esa partida no existe', 'err', { titulo: 'DUELO' }); return; }
+  if (saved && saved.code === code && saved.token){ // ya estaba dentro (recarga)
+    const j = await api('duo_unir', { code, token: saved.token });
+    if (j.ok){ duoInit(j); duoOnState(j.st); return; }
+  }
+  if (r.st.status !== 'waiting'){ toast('Ese duelo ya ha empezado o ha terminado', 'err', { titulo: 'DUELO' }); return; }
+  $('joinTxt').innerHTML = '<b style="color:var(--cyan)">' + esc(r.st.players[0].n) + '</b> te reta a un duelo de CORTOCIRCUITO';
+  $('joinName').value = USER ? USER.user.nombre : LS.get('name', '');
+  $('bJoin').dataset.code = code;
+  show('ovJoin');
+}
+async function duoJoin(){
+  const code = $('bJoin').dataset.code, nombre = $('joinName').value.trim();
+  if (nombre.length < 2){ toast('Escribe tu nombre para el duelo', 'err'); return; }
+  LS.set('name', nombre); initAudio();
+  const w = toast('Entrando en el duelo…', 'load', { titulo: 'DOBLES' });
+  const r = await api('duo_unir', { code, nombre });
+  w.close();
+  if (!r.ok){ toast(r.error || 'No se pudo entrar', 'err'); return; }
+  try{ history.replaceState(null, '', location.pathname); }catch(e){}
+  duoInit(r); duoOnState(r.st);
+}
+function duoInit(r){
+  DUO = { code: r.st.code, token: r.token, me: r.me, st: r.st, v: 0, off: r.st.now - Date.now(), turnN: -1, rev: r.st.rev, myTurn: false, path: [], skipAsk: 0 };
+  LS.set('duo', { code: DUO.code, token: DUO.token });
+  duoPoll();
+}
+function duoPoll(){
+  clearTimeout(duoPollT);
+  if (!DUO) return;
+  const me = DUO;
+  api('duo_estado', { code: DUO.code, v: DUO.v }, 9000).then(r => {
+    if (DUO !== me) return;
+    if (r.ok && r.st) duoOnState(r.st);
+    else if (r.ok && r.now) DUO.off = r.now - Date.now();
+    else if (!r.ok && /caducado|no existe/.test(r.error || '')){ toast('La partida ha caducado', 'err'); duoLeave(true); toMenu(); return; }
+    duoPollT = setTimeout(duoPoll, DUO.st.status === 'waiting' ? 1500 : 700);
+  });
+}
+function duoOnState(st){
+  if (!DUO || st.v < DUO.v) return;
+  DUO.st = st; DUO.v = st.v; DUO.off = st.now - Date.now();
+  if (st.status === 'waiting') return;
+  if (st.rev !== DUO.rev || DUO.turnN < 0){ DUO.rev = st.rev; duoBegin(); return; }
+  duoSync();
+}
+function duoBegin(){
+  const st = DUO.st;
+  mode = 'duo'; document.body.classList.add('duo');
+  decGrid(st.grid); score = 0; level = 1; circuits = 0; chain = 0; maxChain = 0; particles = []; floaters = []; zapCells = [];
+  piece = null; holdP = null; canHold = true; lucasMood = 'idle'; dropAcc = 0; lockAcc = 0; lockMoves = 0; zapT = 0;
+  DUO.turnN = st.turnN; DUO.myTurn = false;
+  hideAll(); resize(); initAudio(); if (musicOn) musicStart();
+  phase = 'wait';
+  SFX.level();
+  floaters.push({ x: wall + COLS * cell / 2, y: ROWS * cell * .4, txt: '¡DUELO!', col: '#ffe14d', life: 1.8, size: 1.5 });
+  duoSync();
+}
+function duoSync(){
+  if (!DUO || mode !== 'duo') return;
+  if (phase === 'play' || phase === 'resolve' || phase === 'replay') return;
+  const st = DUO.st, mv = st.move;
+  if (mv && mv.turnN > DUO.turnN){ decGrid(st.grid); DUO.turnN = st.turnN; } // se perdió algo: resincroniza
+  else if (mv && mv.turnN === DUO.turnN && mv.by !== DUO.me){
+    if (mv.skip){ DUO.turnN++; toast(duoRival().n + ' no ha tirado a tiempo. ¡Te toca!', 'info', { titulo: 'TURNO SALTADO' }); return duoSync(); }
+    return duoReplayStart(mv);
+  }
+  if (st.status === 'over'){ duoShowOver(); return; }
+  if (st.status === 'playing' && st.turn === DUO.me && st.turnN === DUO.turnN) duoMyTurn();
+  else { phase = 'wait'; nextP = DUO.turnN >= 0 ? duoPiece(DUO.turnN + 1) : null; const h = st.players[DUO.me].h; holdP = h != null ? duoPiece(h) : null; drawMini(); }
+  updateHud();
+}
+function duoMyTurn(){
+  const st = DUO.st, h = st.players[DUO.me].h;
+  DUO.myTurn = true; score = 0; DUO.path = []; DUO.tp = performance.now();
+  DUO.hold = h; DUO.pi = DUO.turnN;
+  piece = duoPiece(DUO.turnN); nextP = duoPiece(DUO.turnN + 1); holdP = h != null ? duoPiece(h) : null; canHold = true;
+  dropAcc = 0; lockAcc = 0; lockMoves = 0; softDrop = false;
+  if (!fits(piece, piece.r, piece.c, piece.o)){ duoSend(true); return; }
+  DUO.deadline = performance.now() + DUO_TURN_MS;
+  phase = 'play'; dirty = true; drawMini(); updateHud();
+  tone(660, .08, 'square', .07); tone(990, .12, 'square', .07, 0, .08);
+  floaters.push({ x: wall + COLS * cell / 2, y: ROWS * cell * .45, txt: '¡TU TURNO!', col: DUO.me === 0 ? '#38f9ff' : '#ff2bd6', life: 1.1, size: 1.2 });
+  try{ navigator.vibrate && navigator.vibrate(60); }catch(e){}
+}
+function duoHold(){
+  SFX.hold();
+  const cur = DUO.pi, nIdx = DUO.hold == null ? 100000 + DUO.turnN : DUO.hold;
+  DUO.hold = cur; DUO.pi = nIdx;
+  piece = duoPiece(nIdx); holdP = duoPiece(cur); canHold = false; DUO.path = [];
+  dropAcc = 0; lockAcc = 0; lockMoves = 0;
+  if (!fits(piece, 1, 3, 0)){ duoSend(true); return; }
+  dirty = true; drawMini();
+}
+function duoRecord(final){
+  if (!piece || !DUO) return;
+  const p = DUO.path, l = p[p.length - 1], t = Math.round(performance.now() - DUO.tp);
+  if (!l || l[0] !== piece.r || l[1] !== piece.c || l[2] !== piece.o){ if (p.length < 140 || final) p.push([piece.r, piece.c, piece.o, t]); }
+  else if (final) l[3] = t;
+}
+function duoAfterResolve(over){
+  if (DUO.myTurn){ duoSend(!!over); return; }
+  const mv = DUO.replayMove;
+  if (mv) decGrid(mv.grid);
+  DUO.turnN = (mv ? mv.turnN : DUO.turnN) + 1; DUO.replayMove = null;
+  piece = null; phase = 'wait'; updateHud(); duoSync();
+}
+function duoSend(over){
+  const pts = over ? 0 : score;
+  DUO.myTurn = false; piece = null; phase = 'wait';
+  let nextFits = true;
+  if (!over){ const p = duoPiece(DUO.turnN + 1); nextFits = fits(p, 1, 3, 0); }
+  const payload = { code: DUO.code, token: DUO.token, turnN: DUO.turnN, pi: over ? -1 : DUO.pi, path: over ? [] : DUO.path, grid: encGrid(), pts, hold: DUO.hold, over: over || !nextFits };
+  DUO.st.players[DUO.me].s += pts; DUO.st.players[DUO.me].h = DUO.hold; DUO.st.turn = 1 - DUO.me;
+  DUO.turnN++; score = 0; updateHud(); drawMini();
+  const send = (n) => api('duo_jugada', payload).then(r => {
+    if (r.ok && r.st) duoOnState(r.st);
+    else if (n < 4) setTimeout(() => send(n + 1), 800 * (n + 1));
+    else toast('No se pudo enviar tu jugada. Revisa la conexión.', 'err');
+  });
+  send(0);
+}
+function duoReplayStart(mv){
+  DUO.replayMove = mv; DUO.myTurn = false;
+  if (mv.pi < 0 || !mv.path || !mv.path.length){ duoAfterResolve(false); return; }
+  const fin = mv.path[mv.path.length - 1][3] || 1;
+  DUO.rp = { path: mv.path, t: 0, k: fin > 2200 ? 2200 / fin : 1 };
+  piece = duoPiece(mv.pi); score = 0;
+  duoRpFrame(mv.path[0]);
+  phase = 'replay'; drawMini(); updateHud();
+}
+function duoRpFrame(f){
+  const k = ((f[2] % 4) + 4) % 4;
+  piece.r = f[0]; piece.c = f[1]; piece.o = f[2];
+  let a = piece.a.m0, b = piece.b.m0; for (let i = 0; i < k; i++){ a = rotR(a); b = rotR(b); }
+  piece.a.m = a; piece.b.m = b; dirty = true;
+}
+function duoReplayStep(dt){
+  const rp = DUO.rp; if (!rp || !piece) return;
+  const prev = rp.i || 0;
+  rp.t += dt * 1000;
+  let i = 0; while (i < rp.path.length - 1 && rp.path[i + 1][3] * rp.k <= rp.t) i++;
+  if (i !== prev){ rp.i = i; duoRpFrame(rp.path[i]); SFX.move(); }
+  const endT = rp.path[rp.path.length - 1][3] * rp.k;
+  if (i >= rp.path.length - 1 && rp.t >= endT + 180){ duoRpFrame(rp.path[rp.path.length - 1]); DUO.rp = null; SFX.hard(); lock(); }
+}
+function duoTick(){
+  const st = DUO.st;
+  if (st.status !== 'playing' || !st.t0) return;
+  const left = Math.max(0, DUO_MAX_MS - (srvNow() - st.t0));
+  $('duoClock').textContent = Math.floor(left / 60000) + ':' + String(Math.floor(left / 1000) % 60).padStart(2, '0');
+  let frac = 0, who = st.turn;
+  if (DUO.myTurn && phase === 'play') { frac = Math.max(0, (DUO.deadline - performance.now()) / DUO_TURN_MS); who = DUO.me; }
+  else if (phase === 'wait' && st.turn !== DUO.me) frac = Math.max(0, 1 - (srvNow() - st.turnAt) / DUO_TURN_MS);
+  $('dt0').style.width = (who === 0 ? frac * 100 : 0) + '%'; $('dt1').style.width = (who === 1 ? frac * 100 : 0) + '%';
+  // si el rival no juega, se le salta el turno
+  if (phase === 'wait' && st.turn !== DUO.me && srvNow() - st.turnAt > 26000 && Date.now() - DUO.skipAsk > 5000){
+    DUO.skipAsk = Date.now();
+    api('duo_saltar', { code: DUO.code, token: DUO.token, turnN: st.turnN }).then(r => { if (r.ok && r.st) duoOnState(r.st); });
+  }
+}
+function duoShowOver(){
+  if (phase === 'duoOver') return;
+  phase = 'duoOver'; piece = null; musicStop();
+  const st = DUO.st, me = DUO.me, p = st.players, rival = 1 - me;
+  let win = p[0].s === p[1].s ? -1 : (p[0].s > p[1].s ? 0 : 1);
+  if (st.abandono != null) win = 1 - st.abandono;
+  const iWin = win === me;
+  $('doTitle').textContent = win === -1 ? '¡EMPATE!' : iWin ? '¡HAS GANADO!' : '¡GANA ' + String(p[win].n).toUpperCase() + '!';
+  $('doSub').textContent = st.abandono != null ? (st.abandono === me ? 'Has abandonado el duelo' : p[st.abandono].n + ' ha abandonado el duelo') : (iWin ? '¡Eres el rey de los cortocircuitos!' : win === -1 ? 'Igualados. ¿Desempate?' : '¿Te vas a quedar así? Pide la revancha');
+  [0, 1].forEach(i => { $('doN' + i).textContent = (i === me ? 'TÚ · ' : '') + p[i].n; $('doS' + i).textContent = fmt(p[i].s); $('doP' + i).classList.toggle('win', win === i); });
+  $('bRevancha').style.display = st.abandono != null ? 'none' : '';
+  if (iWin){ SFX.level(); lucasMood = 'happy'; moodT = 3; } else { SFX.over(); lucasMood = 'dead'; }
+  setTimeout(() => { if (phase === 'duoOver') show('ovDuoOver'); }, 900);
+}
+async function duoRevancha(){
+  if (!DUO) return;
+  const r = await api('duo_revancha', { code: DUO.code, token: DUO.token });
+  if (r.ok && r.st) duoOnState(r.st); else toast(r.error || 'No se pudo pedir la revancha', 'err');
+}
+function duoLeave(silent){
+  if (!DUO) return;
+  if (DUO.st.status !== 'over') api('duo_salir', { code: DUO.code, token: DUO.token });
+  clearTimeout(duoPollT); DUO = null; mode = 'solo'; LS.set('duo', null);
+  document.body.classList.remove('duo'); piece = null;
+  resize();
+}
+$('bDuo').onclick = duoMenu;
+$('bDuoCrear').onclick = duoCrear;
+$('bDuoUnirCod').onclick = () => duoOpenJoin($('duoCodeIn').value);
+$('duoCodeIn').onkeydown = e => { if (e.key === 'Enter') duoOpenJoin($('duoCodeIn').value); };
+$('bDuoMenuBack').onclick = () => show('ovMenu');
+$('bDuoShare').onclick = duoShareLink;
+$('bDuoCancel').onclick = () => { duoLeave(true); toMenu(); };
+$('bJoin').onclick = duoJoin;
+$('joinName').onkeydown = e => { if (e.key === 'Enter') duoJoin(); };
+$('bJoinCancel').onclick = () => { try{ history.replaceState(null, '', location.pathname); }catch(e){} toMenu(); };
+$('bQuitNo').onclick = hideAll;
+$('bDuoExit').onclick = () => pause();
+$('bQuitYes').onclick = () => { duoLeave(); toMenu(); };
+$('bRevancha').onclick = duoRevancha;
+$('bDuoMenu').onclick = () => { duoLeave(true); toMenu(); };
+(function(){ const q = new URLSearchParams(location.search).get('duo'); if (q) setTimeout(() => duoOpenJoin(q), 400); })();
 
 setAudioBtns(); renderUser(); renderStreak();
 if (USER) api('yo', { ses: USER.ses }, 15000).then(r => { if (r.ok){ USER.user = r.user; LS.set('user', USER); renderUser(); } else if (r.error === 'SESION') logout(true); }); updateHud(); resize();
 requestAnimationFrame(frame); requestAnimationFrame(drawMenu);
 /* ---------- actualización automática ---------- */
 let updPending = false, swReg = null;
-function safeToReload(){ return phase === 'menu' || phase === 'over' || !grid; }
+function safeToReload(){ return mode !== 'duo' && !$('ovDuo').classList.contains('on') && !$('ovJoin').classList.contains('on') && (phase === 'menu' || phase === 'over' || !grid); }
 function doReload(){ if (doReload.done) return; doReload.done = true; toast('Hay una versión nueva. Actualizando…', 'load', { titulo: 'ACTUALIZACIÓN' }); setTimeout(() => location.reload(), 700); }
 function maybeReload(){ if (updPending && safeToReload() && !$('ovLogin').classList.contains('on')) doReload(); }
 async function checkUpdate(){
