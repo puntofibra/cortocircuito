@@ -248,7 +248,7 @@ ol.rank li.me{background:rgba(56,249,255,.08);border-radius:8px}
 /* =========================================================
    CONFIG
    ========================================================= */
-const VERSION = '2026-11-07.7';
+const VERSION = '2026-11-07.8';
 const API = 'https://script.google.com/macros/s/AKfycbxaKM4kZpLJys6zRmCewH29m6kCD9oci_Lp_EXMtOYMUE3Fi97FAtpLaoUo2rMHEzaJ9g/exec';
 const APP_URL = 'https://puntofibra.github.io/cortocircuito/';
 const GOOGLE_ID = '454055120059-nuhaop4r62urc3u036cc3grpqo71ulg7.apps.googleusercontent.com';
@@ -775,7 +775,13 @@ const lcv = $('lucasCv'), lctx = lcv.getContext('2d');
 const lmv = $('lucasMini'), lmctx = lmv.getContext('2d');
 let lt = 0;
 // boquillas de los 3 propulsores en lucas.png (x, y de la punta y ancho, en proporción a la imagen)
-const LUCAS_NOZ = [[.28, .98, .055], [.385, .999, .084], [.49, .984, .057]];
+const LUCAS_GEO = {
+  lucas:       { W: 1451, H: 1581, noz: [[.2695, .9804, .055], [.3818, .9987, .07], [.5028, .9836, .057]] },
+  lucas_feliz: { W: 1795, H: 1697, noz: [[.2799, .9788, .045], [.3758, .9994, .058], [.4755, .9823, .047]] },
+  lucas_roto:  { W: 1452, H: 1693, noz: [[.2693, .9817, .055], [.3815, .9988, .07], [.5028, .9852, .057]] },
+  lucas_susto: { W: 1616, H: 1809, noz: [[.2599, .9746, .048], [.37, .9989, .062], [.4904, .9773, .05]] }
+};
+const LUCAS_NOZ = LUCAS_GEO.lucas.noz;
 function thrust(ctx, x, y, w, mood, i){
   ctx.save();
   if (mood === 'dead'){
@@ -818,9 +824,15 @@ function paintLucas(ctx, cx0, cy0, sc, mood){
   if (!im) for (let i = 0; i < 3; i++){ ctx.fillStyle = `rgba(56,249,255,${.15 + Math.random() * .2})`; ctx.beginPath(); ctx.ellipse(0, 58 + i * 6, 14 - i * 3, 6 + Math.random() * 6, 0, 0, 7); ctx.fill(); }
   if (im){
     const r = Math.min(145 / im.width, 145 / im.height);
-    const iw = im.width * r, ih = im.height * r, ix = -iw / 2, iy = -ih / 2 - 6;
+    // todas las imágenes se alinean por los 3 cañones para que Lucas no cambie de tamaño ni de sitio
+    const uk = IMG[key] ? key : 'lucas', bg = LUCAS_GEO.lucas, g = LUCAS_GEO[uk] || { W: im.width, H: im.height, noz: LUCAS_NOZ };
+    const r0 = Math.min(145 / bg.W, 145 / bg.H), biw = bg.W * r0, bih = bg.H * r0;
+    const sp = n => (n.noz[2][0] - n.noz[0][0]) * n.W;
+    const rk = r0 * sp(bg) / sp(g);
+    const Px = -biw / 2 + bg.noz[1][0] * biw, Py = -bih / 2 - 6 + bg.noz[1][1] * bih;
+    const iw = g.W * rk, ih = g.H * rk, ix = Px - g.noz[1][0] * iw, iy = Py - g.noz[1][1] * ih;
     // fuego de los 3 propulsores (efecto por código)
-    LUCAS_NOZ.forEach(([nx, ny, nw], i) => thrust(ctx, ix + nx * iw, iy + ny * ih - nw * iw * .25, nw * iw, mood, i));
+    g.noz.forEach(([nx, ny, nw], i) => thrust(ctx, ix + nx * iw, iy + ny * ih - nw * iw * .25, nw * iw, mood, i));
     ctx.shadowColor = '#38f9ff'; ctx.shadowBlur = mood === 'happy' ? 25 : 10;
     // si no hay imagen propia para esta emoción, la expresamos por código sobre lucas.png
     const own = !!IMG[key] && key !== 'lucas';
