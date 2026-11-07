@@ -257,7 +257,7 @@ function duoGet_(code) { const s = CacheService.getScriptCache().get('duo_' + St
 function duoPut_(st) { st.v = (st.v || 0) + 1; CacheService.getScriptCache().put('duo_' + st.code, JSON.stringify(st), 21600); }
 function duoPub_(st) {
   return { code: st.code, v: st.v, seed: st.seed, status: st.status, turn: st.turn, turnN: st.turnN, grid: st.grid,
-    move: st.move, t0: st.t0, turnAt: st.turnAt, rev: st.rev, first: st.first, abandono: st.abandono,
+    move: st.move, t0: st.t0, turnAt: st.turnAt, rev: st.rev, first: st.first, abandono: st.abandono, o: st.o || '', a: st.a || '',
     players: st.players.map(p => ({ n: p.n, s: p.s, h: p.h })), now: Date.now() };
 }
 function duoYo_(st, token) { return st.players.findIndex(p => p.t && p.t === String(token || '')); }
@@ -272,7 +272,7 @@ function duoCrear_(d) {
   }
   const token = Utilities.getUuid();
   const st = { code, seed: Math.floor(Math.random() * 2e9), status: 'waiting', players: [{ n: u.nombre, t: token, s: 0, h: null }],
-    turn: 0, turnN: 0, grid: '', move: null, t0: 0, turnAt: 0, rev: 0, first: 0, created: Date.now() };
+    turn: 0, turnN: 0, grid: '', move: null, t0: 0, turnAt: 0, rev: 0, first: 0, created: Date.now(), o: String(d.o || '').slice(0, 20000), a: '' };
   duoPut_(st);
   return { ok: true, token, me: 0, st: duoPub_(st) };
 }
@@ -285,6 +285,7 @@ function duoUnir_(d) {
   const nombre = limpiaNombre_(d.nombre) || 'Invitado';
   const token = Utilities.getUuid();
   st.players.push({ n: nombre.toLowerCase() === String(st.players[0].n).toLowerCase() ? nombre.slice(0, 12) + ' 2' : nombre, t: token, s: 0, h: null });
+  st.a = String(d.a || '').slice(0, 20000);
   st.status = 'playing'; st.first = Math.random() < .5 ? 0 : 1; st.turn = st.first;
   st.t0 = Date.now(); st.turnAt = st.t0;
   duoPut_(st);

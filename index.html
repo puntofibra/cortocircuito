@@ -352,7 +352,7 @@ body.duo #bPauseM{display:none!important}
 /* =========================================================
    CONFIG
    ========================================================= */
-const VERSION = '2026-11-08.2';
+const VERSION = '2026-11-08.3';
 const API = 'https://script.google.com/macros/s/AKfycbxaKM4kZpLJys6zRmCewH29m6kCD9oci_Lp_EXMtOYMUE3Fi97FAtpLaoUo2rMHEzaJ9g/exec';
 const APP_URL = 'https://puntofibra.github.io/cortocircuito/';
 const SHARE_URL = APP_URL + '?v=2'; // cambiar el número si se cambia la imagen de compartir (WhatsApp guarda la tarjeta antigua)
@@ -778,11 +778,11 @@ function drawCable(ctx, x, y, s, t, state, alpha = 1){
   }
   const segs = [];
   if (m & N) segs.push([cxp, y]); if (m & E) segs.push([x + s, cyp]); if (m & S) segs.push([cxp, y + s]); if (m & W) segs.push([x, cyp]);
-  const col = state === 2 ? '#ffffff' : state === 1 ? '#38f9ff' : state === 3 ? '#38f9ff' : '#ff9f43';
+  const col = state === 2 ? '#ffffff' : state === 1 ? '#38f9ff' : state === 3 ? '#38f9ff' : state === 5 ? '#9aa3b8' : '#ff9f43';
   ctx.lineCap = 'round';
   // funda
   if (state !== 3){
-    ctx.strokeStyle = state === 1 || state === 2 ? 'rgba(56,249,255,.25)' : 'rgba(255,159,67,.18)'; ctx.lineWidth = s * .36;
+    ctx.strokeStyle = state === 1 || state === 2 ? 'rgba(56,249,255,.25)' : state === 5 ? 'rgba(150,160,185,.16)' : 'rgba(255,159,67,.18)'; ctx.lineWidth = s * .36;
     segs.forEach(([ex, ey]) => { ctx.beginPath(); ctx.moveTo(cxp, cyp); ctx.lineTo(ex, ey); ctx.stroke(); });
   }
   ctx.strokeStyle = col; ctx.lineWidth = s * (state === 3 ? .1 : .17);
@@ -790,7 +790,7 @@ function drawCable(ctx, x, y, s, t, state, alpha = 1){
   segs.forEach(([ex, ey]) => { ctx.beginPath(); ctx.moveTo(cxp, cyp); ctx.lineTo(ex, ey); ctx.stroke(); });
   // nodo
   ctx.beginPath(); ctx.arc(cxp, cyp, s * (t.bomb ? .2 : .12), 0, 7);
-  ctx.fillStyle = t.bomb ? '#ffe14d' : col; if (t.bomb){ ctx.shadowColor = '#ffe14d'; ctx.shadowBlur = 16; } ctx.fill();
+  ctx.fillStyle = t.bomb && state !== 5 ? '#ffe14d' : col; if (t.bomb && state !== 5){ ctx.shadowColor = '#ffe14d'; ctx.shadowBlur = 16; } ctx.fill();
   if (t.bomb && state !== 3){
     ctx.shadowBlur = 0; ctx.fillStyle = '#1a1200'; ctx.font = `900 ${s * .26}px Orbitron, sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('⚡', cxp, cyp + 1);
   }
@@ -872,6 +872,16 @@ function render(){
         if (c === COLS - 1 && (t.m & E)) bolt(ctx, wall + (c + .5) * cell, (r + .5) * cell, bw, (r + .5) * cell);
       });
       ctx.restore();
+    }
+    // pieza del rival en directo (en gris: no es tu turno)
+    if (mode === 'duo' && DUO && DUO.live && phase === 'wait' && DUO.live.n === DUO.turnN){
+      const rc = DUO.me === 0 ? '#ff2bd6' : '#38f9ff';
+      cellsOf(DUO.live.p).forEach(([r, c, t]) => {
+        if (r < 0) return;
+        drawCable(ctx, wall + c * cell, r * cell, cell, t, 5, .9);
+        ctx.save(); rr(ctx, wall + c * cell + 1.5, r * cell + 1.5, cell - 3, cell - 3, cell * .18);
+        ctx.strokeStyle = rc; ctx.globalAlpha = .7; ctx.setLineDash([5, 4]); ctx.lineWidth = 1.5; ctx.stroke(); ctx.restore();
+      });
     }
     // fantasma + pieza
     if (piece && (phase === 'play' || phase === 'replay')){
@@ -1487,6 +1497,61 @@ window.addEventListener('resize', resize);
    MODO DOBLES (por turnos, mismo tablero, pieza doble)
    ========================================================= */
 let mode = 'solo', DUO = null, duoPollT = null;
+/* conexión directa entre los dos móviles (WebRTC). Apps Script solo empareja y guarda la partida */
+const ICE = { iceServers: [{ urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302', 'stun:stun.cloudflare.com:3478'] }] };
+const P2P = { pc: null, dc: null };
+function p2pWaitIce(pc){ return new Promise(res => { if (pc.iceGatheringState === 'complete') return res(); const t = setTimeout(res, 3500); pc.addEventListener('icegatheringstatechange', () => { if (pc.iceGatheringState === 'complete'){ clearTimeout(t); res(); } }); }); }
+function p2pClose(){ try{ P2P.dc && P2P.dc.close(); }catch(e){} try{ P2P.pc && P2P.pc.close(); }catch(e){} P2P.pc = P2P.dc = null; }
+function p2pOn(){ return P2P.dc && P2P.dc.readyState === 'open'; }
+function p2pSend(o){ try{ if (p2pOn()) P2P.dc.send(JSON.stringify(o)); }catch(e){} }
+function p2pSetup(ch){
+  P2P.dc = ch;
+  ch.onopen = () => { if (DUO) DUO.live = null; };
+  ch.onmessage = ev => { let m; try{ m = JSON.parse(ev.data); }catch(e){ return; } duoNet(m); };
+}
+async function p2pHostOffer(){
+  try{
+    p2pClose();
+    const pc = P2P.pc = new RTCPeerConnection(ICE);
+    p2pSetup(pc.createDataChannel('corto', { ordered: true }));
+    await pc.setLocalDescription(await pc.createOffer()); await p2pWaitIce(pc);
+    return pc.localDescription.sdp;
+  }catch(e){ p2pClose(); return ''; }
+}
+async function p2pGuestAnswer(offer){
+  try{
+    if (!offer) return '';
+    p2pClose();
+    const pc = P2P.pc = new RTCPeerConnection(ICE);
+    pc.ondatachannel = ev => p2pSetup(ev.channel);
+    await pc.setRemoteDescription({ type: 'offer', sdp: offer });
+    await pc.setLocalDescription(await pc.createAnswer()); await p2pWaitIce(pc);
+    return pc.localDescription.sdp;
+  }catch(e){ p2pClose(); return ''; }
+}
+// mensajes en directo del rival
+function duoNet(m){
+  if (!DUO || mode !== 'duo') return;
+  if (m.t === 'p'){            // posición de la pieza que está moviendo
+    if (m.n !== DUO.turnN || phase !== 'wait') return;
+    let L = DUO.live;
+    if (!L || L.n !== m.n || L.pi !== m.pi){ L = DUO.live = { n: m.n, pi: m.pi, p: duoPiece(m.pi) }; }
+    L.p.r = m.r; L.p.c = m.c; L.p.o = m.o;
+    let a = L.p.a.m0, b = L.p.b.m0; for (let i = 0; i < ((m.o % 4) + 4) % 4; i++){ a = rotR(a); b = rotR(b); }
+    L.p.a.m = a; L.p.b.m = b;
+    if (L.lastR !== undefined && (L.lastR !== m.r || L.lastC !== m.c)) SFX.move();
+    L.lastR = m.r; L.lastC = m.c;
+  } else if (m.t === 'm'){     // jugada terminada: se aplica al instante
+    const mv = m.mv;
+    if (!mv || mv.turnN !== DUO.turnN || mv.by === DUO.me || phase !== 'wait') return;
+    const st = DUO.st;
+    st.players[mv.by].s += mv.pts; st.players[mv.by].h = mv.hold;
+    st.move = mv; st.grid = mv.grid; st.turn = DUO.me; st.turnN = DUO.turnN + 1; st.turnAt = srvNow();
+    if (mv.over) st.status = 'over';
+    DUO.live = null;
+    duoReplayStart(mv);
+  }
+}
 const DUO_TURN_MS = 10000, DUO_MAX_MS = 180000;
 function mulberry(a){ return function(){ a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 const DUO_MASKS = [5, 10, 5, 10, 3, 6, 12, 9, 3, 6, 12, 9, 7, 14, 13, 11, 15];
@@ -1508,7 +1573,8 @@ function duoMenu(){ initAudio(); SFX.click(); $('duoCodeIn').value = ''; show('o
 async function duoCrear(){
   if (!USER){ openLogin('duo'); return; }
   const w = toast('Creando el duelo…', 'load', { titulo: 'DOBLES' });
-  const r = await api('duo_crear', { ses: USER.ses });
+  const offer = await p2pHostOffer();
+  const r = await api('duo_crear', { ses: USER.ses, o: offer });
   w.close();
   if (!r.ok){ if (r.error === 'SESION'){ logout(true); openLogin('duo'); } else toast(r.error || 'No se pudo crear la partida', 'err'); return; }
   duoInit(r);
@@ -1540,15 +1606,16 @@ async function duoOpenJoin(code){
   if (r.st.status !== 'waiting'){ toast('Ese duelo ya ha empezado o ha terminado', 'err', { titulo: 'DUELO' }); return; }
   $('joinTxt').innerHTML = '<b style="color:var(--cyan)">' + esc(r.st.players[0].n) + '</b> te reta a un duelo de CORTOCIRCUITO';
   $('joinName').value = USER ? USER.user.nombre : LS.get('name', '');
-  $('bJoin').dataset.code = code;
+  $('bJoin').dataset.code = code; $('bJoin').dataset.offer = r.st.o || '';
   show('ovJoin');
 }
 async function duoJoin(){
   const code = $('bJoin').dataset.code, nombre = $('joinName').value.trim();
   if (nombre.length < 2){ toast('Escribe tu nombre para el duelo', 'err'); return; }
   LS.set('name', nombre); initAudio();
-  const w = toast('Entrando en el duelo…', 'load', { titulo: 'DOBLES' });
-  const r = await api('duo_unir', { code, nombre });
+  const w = toast('Conectando con tu rival…', 'load', { titulo: 'DOBLES' });
+  const answer = await p2pGuestAnswer($('bJoin').dataset.offer || '');
+  const r = await api('duo_unir', { code, nombre, a: answer });
   w.close();
   if (!r.ok){ toast(r.error || 'No se pudo entrar', 'err'); return; }
   try{ history.replaceState(null, '', location.pathname); }catch(e){}
@@ -1573,6 +1640,9 @@ function duoPoll(){
 }
 function duoOnState(st){
   if (!DUO || st.v < DUO.v) return;
+  if (DUO.me === 0 && st.a && P2P.pc && !P2P.pc.remoteDescription){ P2P.pc.setRemoteDescription({ type: 'answer', sdp: st.a }).catch(() => {}); }
+  // estado del servidor más viejo que lo que ya sabemos por la conexión directa: se ignora
+  if (DUO.turnN >= 0 && st.rev === DUO.rev && st.status === 'playing' && st.turnN < DUO.st.turnN){ DUO.v = st.v; DUO.off = st.now - Date.now(); return; }
   DUO.st = st; DUO.v = st.v; DUO.off = st.now - Date.now();
   if (st.status === 'waiting') return;
   if (st.rev !== DUO.rev || DUO.turnN < 0){ DUO.rev = st.rev; duoBegin(); return; }
@@ -1606,7 +1676,7 @@ function duoSync(){
 }
 function duoMyTurn(){
   const st = DUO.st, h = st.players[DUO.me].h;
-  DUO.myTurn = true; score = 0; DUO.path = []; DUO.tp = performance.now();
+  DUO.myTurn = true; score = 0; DUO.path = []; DUO.tp = performance.now(); DUO.live = null;
   DUO.hold = h; DUO.pi = DUO.turnN;
   piece = duoPiece(DUO.turnN); nextP = duoPiece(DUO.turnN + 1); holdP = h != null ? duoPiece(h) : null; canHold = true;
   dropAcc = 0; lockAcc = 0; lockMoves = 0; softDrop = false;
@@ -1622,6 +1692,7 @@ function duoHold(){
   const cur = DUO.pi, nIdx = DUO.hold == null ? 100000 + DUO.turnN : DUO.hold;
   DUO.hold = cur; DUO.pi = nIdx;
   piece = duoPiece(nIdx); holdP = duoPiece(cur); canHold = false; DUO.path = [];
+  p2pSend({ t: 'p', n: DUO.turnN, pi: nIdx, r: 1, c: 3, o: 0 });
   dropAcc = 0; lockAcc = 0; lockMoves = 0;
   if (!fits(piece, 1, 3, 0)){ duoSend(true); return; }
   dirty = true; drawMini();
@@ -1629,7 +1700,10 @@ function duoHold(){
 function duoRecord(final){
   if (!piece || !DUO) return;
   const p = DUO.path, l = p[p.length - 1], t = Math.round(performance.now() - DUO.tp);
-  if (!l || l[0] !== piece.r || l[1] !== piece.c || l[2] !== piece.o){ if (p.length < 140 || final) p.push([piece.r, piece.c, piece.o, t]); }
+  if (!l || l[0] !== piece.r || l[1] !== piece.c || l[2] !== piece.o){
+    if (p.length < 140 || final) p.push([piece.r, piece.c, piece.o, t]);
+    p2pSend({ t: 'p', n: DUO.turnN, pi: DUO.pi, r: piece.r, c: piece.c, o: piece.o });
+  }
   else if (final) l[3] = t;
 }
 function duoAfterResolve(over){
@@ -1645,20 +1719,24 @@ function duoSend(over){
   let nextFits = true;
   if (!over){ const p = duoPiece(DUO.turnN + 1); nextFits = fits(p, 1, 3, 0); }
   const payload = { code: DUO.code, token: DUO.token, turnN: DUO.turnN, pi: over ? -1 : DUO.pi, path: over ? [] : DUO.path, grid: encGrid(), pts, hold: DUO.hold, over: over || !nextFits };
-  DUO.st.players[DUO.me].s += pts; DUO.st.players[DUO.me].h = DUO.hold; DUO.st.turn = 1 - DUO.me;
-  DUO.turnN++; score = 0; updateHud(); drawMini();
+  p2pSend({ t: 'm', mv: { turnN: DUO.turnN, by: DUO.me, pi: payload.pi, path: payload.path.length ? [payload.path[payload.path.length - 1].slice(0, 3).concat(0)] : [], grid: payload.grid, pts, hold: DUO.hold, over: payload.over } });
+  DUO.st.players[DUO.me].s += pts; DUO.st.players[DUO.me].h = DUO.hold; DUO.st.turn = 1 - DUO.me; DUO.st.turnAt = srvNow();
+  DUO.turnN++; DUO.st.turnN = DUO.turnN; if (payload.over) DUO.st.status = 'over';
+  score = 0; updateHud(); drawMini();
   const send = (n) => api('duo_jugada', payload).then(r => {
-    if (r.ok && r.st) duoOnState(r.st);
-    else if (n < 4) setTimeout(() => send(n + 1), 800 * (n + 1));
+    if (r.ok && r.ignorada && r.st && r.st.turnN < payload.turnN && n < 15) setTimeout(() => send(n + 1), 600);  // el servidor aún no tiene la jugada anterior
+    else if (r.ok && r.st) duoOnState(r.st);
+    else if (n < 6) setTimeout(() => send(n + 1), 800 * (n + 1));
     else toast('No se pudo enviar tu jugada. Revisa la conexión.', 'err');
   });
+  if (payload.over) setTimeout(duoSync, 50);
   send(0);
 }
 function duoReplayStart(mv){
   DUO.replayMove = mv; DUO.myTurn = false;
   if (mv.pi < 0 || !mv.path || !mv.path.length){ duoAfterResolve(false); return; }
   const fin = mv.path[mv.path.length - 1][3] || 1;
-  DUO.rp = { path: mv.path, t: 0, k: fin > 2200 ? 2200 / fin : 1 };
+  DUO.rp = { path: mv.path, t: 0, k: fin > 1500 ? 1500 / fin : 1 };
   piece = duoPiece(mv.pi); score = 0;
   duoRpFrame(mv.path[0]);
   phase = 'replay'; drawMini(); updateHud();
@@ -1676,7 +1754,7 @@ function duoReplayStep(dt){
   let i = 0; while (i < rp.path.length - 1 && rp.path[i + 1][3] * rp.k <= rp.t) i++;
   if (i !== prev){ rp.i = i; duoRpFrame(rp.path[i]); SFX.move(); }
   const endT = rp.path[rp.path.length - 1][3] * rp.k;
-  if (i >= rp.path.length - 1 && rp.t >= endT + 180){ duoRpFrame(rp.path[rp.path.length - 1]); DUO.rp = null; SFX.hard(); lock(); }
+  if (i >= rp.path.length - 1 && rp.t >= endT + (rp.path.length === 1 ? 30 : 180)){ duoRpFrame(rp.path[rp.path.length - 1]); DUO.rp = null; SFX.hard(); lock(); }
 }
 function duoTick(){
   const st = DUO.st;
@@ -1715,7 +1793,7 @@ async function duoRevancha(){
 function duoLeave(silent){
   if (!DUO) return;
   if (DUO.st.status !== 'over') api('duo_salir', { code: DUO.code, token: DUO.token });
-  clearTimeout(duoPollT); DUO = null; mode = 'solo'; LS.set('duo', null);
+  clearTimeout(duoPollT); p2pClose(); DUO = null; mode = 'solo'; LS.set('duo', null);
   document.body.classList.remove('duo'); piece = null;
   resize();
 }
