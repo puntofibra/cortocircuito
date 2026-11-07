@@ -248,7 +248,7 @@ ol.rank li.me{background:rgba(56,249,255,.08);border-radius:8px}
 /* =========================================================
    CONFIG
    ========================================================= */
-const VERSION = '2026-11-07.6';
+const VERSION = '2026-11-07.7';
 const API = 'https://script.google.com/macros/s/AKfycbxaKM4kZpLJys6zRmCewH29m6kCD9oci_Lp_EXMtOYMUE3Fi97FAtpLaoUo2rMHEzaJ9g/exec';
 const APP_URL = 'https://puntofibra.github.io/cortocircuito/';
 const GOOGLE_ID = '454055120059-nuhaop4r62urc3u036cc3grpqo71ulg7.apps.googleusercontent.com';
@@ -822,7 +822,32 @@ function paintLucas(ctx, cx0, cy0, sc, mood){
     // fuego de los 3 propulsores (efecto por código)
     LUCAS_NOZ.forEach(([nx, ny, nw], i) => thrust(ctx, ix + nx * iw, iy + ny * ih - nw * iw * .25, nw * iw, mood, i));
     ctx.shadowColor = '#38f9ff'; ctx.shadowBlur = mood === 'happy' ? 25 : 10;
+    // si no hay imagen propia para esta emoción, la expresamos por código sobre lucas.png
+    const own = !!IMG[key] && key !== 'lucas';
+    if (!own && mood === 'dead'){ ctx.rotate(.18); ctx.filter = 'grayscale(.85) brightness(.6)'; ctx.shadowColor = '#ff2bd6'; }
     ctx.drawImage(im, ix, iy, iw, ih);
+    ctx.filter = 'none'; ctx.shadowBlur = 0;
+    if (!own && mood === 'dead' && Math.random() < .5){ // chispazo suelto
+      ctx.strokeStyle = '#ffe14d'; ctx.lineWidth = 2; ctx.beginPath();
+      let x = ix + iw * .55, y = iy + ih * .55; ctx.moveTo(x, y);
+      for (let k = 0; k < 4; k++){ x += (Math.random() - .3) * 14; y += (Math.random() - .5) * 14; ctx.lineTo(x, y); } ctx.stroke();
+    }
+    if (!own && mood === 'scared'){ // gotas de sudor
+      for (let k = 0; k < 3; k++){
+        const t = (lt * 1.1 + k / 3) % 1, dx = ix + iw * [.72, .8, .2][k], dy = iy + ih * (.1 + t * .22), z = 1.8;
+        ctx.globalAlpha = 1 - t * .8; ctx.fillStyle = '#5fd4ff'; ctx.strokeStyle = '#0a2a4a'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(dx, dy - 7 * z); ctx.quadraticCurveTo(dx + 5 * z, dy, dx, dy + 4 * z); ctx.quadraticCurveTo(dx - 5 * z, dy, dx, dy - 7 * z); ctx.fill(); ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+    }
+    if (!own && mood === 'happy'){ // destellos de energía
+      for (let k = 0; k < 5; k++){
+        const a = lt * 3 + k * 1.256, rx = Math.cos(a) * iw * .55, ry = Math.sin(a) * ih * .5;
+        ctx.fillStyle = k % 2 ? '#38f9ff' : '#ffe14d'; ctx.shadowColor = ctx.fillStyle; ctx.shadowBlur = 10;
+        ctx.beginPath(); ctx.arc(rx, ry - 6, 2.5, 0, 7); ctx.fill();
+      }
+      ctx.shadowBlur = 0;
+    }
   } else {
     // cuerpo
     ctx.shadowColor = '#38f9ff'; ctx.shadowBlur = 14;
