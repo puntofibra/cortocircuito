@@ -10,10 +10,13 @@
 <meta property="og:title" content="CORTOCIRCUITO ⚡ ¿Me superas?">
 <meta property="og:description" content="Conecta los cables de lado a lado y haz saltar el circuito. Un juego de FuturMovil">
 <meta property="og:url" content="https://puntofibra.github.io/cortocircuito/">
-<meta property="og:image" content="https://puntofibra.github.io/cortocircuito/og.jpg">
+<meta property="og:image" content="https://puntofibra.github.io/cortocircuito/compartir.jpg">
+<meta property="og:image:secure_url" content="https://puntofibra.github.io/cortocircuito/compartir.jpg">
+<meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
+<meta property="og:image:height" content="634">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://puntofibra.github.io/cortocircuito/compartir.jpg">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Cortocircuito">
@@ -251,9 +254,10 @@ ol.rank li.me{background:rgba(56,249,255,.08);border-radius:8px}
 /* =========================================================
    CONFIG
    ========================================================= */
-const VERSION = '2026-11-07.12';
+const VERSION = '2026-11-07.13';
 const API = 'https://script.google.com/macros/s/AKfycbxaKM4kZpLJys6zRmCewH29m6kCD9oci_Lp_EXMtOYMUE3Fi97FAtpLaoUo2rMHEzaJ9g/exec';
 const APP_URL = 'https://puntofibra.github.io/cortocircuito/';
+const SHARE_URL = APP_URL + '?v=2'; // cambiar el número si se cambia la imagen de compartir (WhatsApp guarda la tarjeta antigua)
 const GOOGLE_ID = '454055120059-nuhaop4r62urc3u036cc3grpqo71ulg7.apps.googleusercontent.com';
 const WEB_CREADOR = 'https://puntofibra.github.io/web/';
 const COLS = 7, ROWS = 13;
@@ -1077,8 +1081,8 @@ function renderStreak(){
 /* compartir */
 async function share(){
   const txt = score > 0 && phase === 'over' ? `⚡ He hecho ${fmt(score)} puntos en CORTOCIRCUITO. ¿Me superas?` : '⚡ Prueba CORTOCIRCUITO, el juego de cables más adictivo. ¿Cuánto aguantas?';
-  if (navigator.share){ try{ await navigator.share({ title: 'CORTOCIRCUITO', text: txt, url: APP_URL }); }catch(e){} }
-  else window.open('https://wa.me/?text=' + encodeURIComponent(txt + ' ' + APP_URL), '_blank');
+  if (navigator.share){ try{ await navigator.share({ title: 'CORTOCIRCUITO', text: txt, url: SHARE_URL }); }catch(e){} }
+  else window.open('https://wa.me/?text=' + encodeURIComponent(txt + ' ' + SHARE_URL), '_blank');
 }
 /* instalar */
 let deferredPrompt = null;
