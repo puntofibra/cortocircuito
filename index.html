@@ -121,6 +121,23 @@ ol.rank li.me{background:rgba(56,249,255,.08);border-radius:8px}
 .help{text-align:left;font-size:16px;line-height:1.45}
 .help p{margin:8px 0}
 .help b{color:var(--cyan)}
+.lgSub{color:var(--mute);font-size:15px;margin:0 0 12px}
+.lgBox{border:1px solid #24346a;border-radius:16px;padding:14px;margin:10px 0;background:rgba(5,8,20,.5);text-align:left}
+.lgBox h3{margin:0 0 8px;font-family:Orbitron;font-size:13px;letter-spacing:2px;color:var(--cyan);text-align:center}
+.lgBox .fl{font-size:12px;color:var(--mute);margin:8px 0 3px;letter-spacing:1px;text-transform:uppercase}
+.lgBox input.name{font-size:16px;padding:11px;text-align:left}
+.lgBox .big{margin:12px 0 4px;padding:13px;font-size:15px}
+.lnk{background:none;font-family:Rajdhani;font-size:15px;color:var(--cyan);text-decoration:underline;padding:6px;display:block;margin:2px auto 0}
+.sep{display:flex;align-items:center;gap:10px;color:var(--mute);font-size:13px;margin:12px 0}
+.sep::before,.sep::after{content:"";flex:1;height:1px;background:#24346a}
+#gBtn{display:flex;justify-content:center;min-height:44px}
+.guest{border-color:rgba(255,159,67,.35)}
+.guest h3{color:var(--copper)}
+.guest p{margin:0 0 4px;color:var(--mute);font-size:14px;text-align:center}
+.userBar{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 6px;font-size:15px;color:var(--mute)}
+.userBar b{color:var(--txt)}
+.userBar button{background:none;color:var(--mute);text-decoration:underline;font-family:Rajdhani;font-size:14px}
+.warnBox{border:1px dashed rgba(255,159,67,.5);border-radius:12px;padding:10px;color:var(--copper);margin:6px 0 10px;font-size:15px}
 #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);background:#101a3d;border:1px solid var(--cyan);padding:10px 18px;border-radius:12px;z-index:40;transition:.3s;font-weight:700}
 #toast.on{transform:translateX(-50%) translateY(0)}
 </style>
@@ -153,6 +170,7 @@ ol.rank li.me{background:rgba(56,249,255,.08);border-radius:8px}
   <canvas id="menuCv" width="300" height="120"></canvas>
   <div class="title">CORTO<br>CIRCUITO</div>
   <div class="sub">Conecta los cables de lado a lado y haz saltar el circuito</div>
+  <div id="userBar" class="userBar"></div>
   <div id="streak"></div>
   <button class="big" id="bPlay">⚡ JUGAR</button>
   <div class="grid2">
@@ -179,7 +197,7 @@ ol.rank li.me{background:rgba(56,249,255,.08);border-radius:8px}
   <div id="newRec"></div>
   <div class="score-big" id="oScore">0</div>
   <div class="stats"><div>Nivel<b id="oLevel">1</b></div><div>Circuitos<b id="oCirc">0</b></div><div>Mejor cadena<b id="oChain">0</b></div></div>
-  <div id="nameRow"><input class="name" id="iName" maxlength="14" placeholder="Tu nombre para el ranking"><button class="big pink" id="bSave">GUARDAR EN EL RANKING</button></div>
+  <div id="guestRow" style="display:none"><div class="warnBox">Has jugado sin cuenta: esta puntuación no entra en el ranking.</div><button class="big pink" id="bSave">🔐 ENTRAR Y GUARDAR ESTA PUNTUACIÓN</button></div>
   <div id="oRankMsg" class="sub" style="margin:6px 0"></div>
   <button class="big" id="bAgain">⚡ OTRA PARTIDA</button>
   <div class="grid2"><button class="big alt" id="bShare2">📲 RETAR</button><button class="big alt" id="bRank2">🏆 RANKING</button></div>
@@ -206,6 +224,9 @@ ol.rank li.me{background:rgba(56,249,255,.08);border-radius:8px}
   <p style="color:var(--mute);font-size:14px">Móvil: arrastra para mover, toca para girar, desliza hacia abajo rápido para soltar. También tienes los botones de abajo.</p>
 </div><button class="big" id="bHelpClose">¡ENTENDIDO!</button></div></div>
 
+<!-- LOGIN -->
+<div class="ov" id="ovLogin"><div class="card" id="lgCard"></div></div>
+
 <!-- iOS -->
 <div class="ov" id="ovIos"><div class="card"><div class="help">
   <div class="title" style="font-size:24px;text-align:center">INSTALAR EN IPHONE</div>
@@ -224,6 +245,7 @@ ol.rank li.me{background:rgba(56,249,255,.08);border-radius:8px}
    ========================================================= */
 const API = 'https://script.google.com/macros/s/AKfycbxaKM4kZpLJys6zRmCewH29m6kCD9oci_Lp_EXMtOYMUE3Fi97FAtpLaoUo2rMHEzaJ9g/exec';
 const APP_URL = 'https://puntofibra.github.io/cortocircuito/';
+const GOOGLE_ID = '454055120059-nuhaop4r62urc3u036cc3grpqo71ulg7.apps.googleusercontent.com';
 const WEB_CREADOR = 'https://puntofibra.github.io/web/';
 const COLS = 7, ROWS = 13;
 const N = 1, E = 2, S = 4, W = 8;
@@ -790,45 +812,144 @@ function toMenu(){ phase = 'menu'; musicStop(); grid = null; piece = null; rende
 function showOver(rec){
   $('oScore').textContent = fmt(score); $('oLevel').textContent = level; $('oCirc').textContent = circuits; $('oChain').textContent = 'x' + maxChain;
   $('newRec').innerHTML = rec && score > 0 ? '<div class="newrec">★ NUEVO RÉCORD ★</div>' : '<div class="sub" style="margin:0">Récord: ' + fmt(best) + '</div>';
-  const name = LS.get('name', '');
-  $('iName').value = name; $('oRankMsg').textContent = '';
-  $('nameRow').style.display = score > 0 ? 'block' : 'none';
+  $('oRankMsg').textContent = '';
+  $('guestRow').style.display = (!USER && score > 0) ? 'block' : 'none';
   show('ovOver');
-  if (name && score > 0) saveScore();
+  if (USER && score > 0) saveScore();
 }
 let savedId = '';
 function saveScore(){
-  const name = $('iName').value.trim();
-  if (!name){ $('iName').focus(); toast('Escribe tu nombre'); return; }
-  if (savedId === gameId) return;
-  LS.set('name', name); savedId = gameId;
-  $('nameRow').style.display = 'none'; $('oRankMsg').textContent = 'Guardando en el ranking…';
-  jsonp({ accion: 'guardar', nombre: name, puntos: score, nivel: level, circuitos: circuits, combo: maxChain, id: gameId }).then(r => {
-    if (!r || !r.ok){ $('oRankMsg').textContent = 'No se pudo guardar 😕'; savedId = ''; $('nameRow').style.display = 'block'; return; }
-    rankData = r;
-    const pos = (r.hoy || []).findIndex(x => x.nombre.toLowerCase() === name.toLowerCase() && x.puntos === score);
+  if (!USER || savedId === gameId || score <= 0) return;
+  savedId = gameId;
+  $('guestRow').style.display = 'none'; $('oRankMsg').textContent = 'Guardando en el ranking…';
+  api('guardar', { ses: USER.ses, puntos: score, nivel: level, circuitos: circuits, combo: maxChain, id: gameId }).then(r => {
+    if (!r.ok){
+      savedId = '';
+      if (r.error === 'SESION'){ logout(true); $('oRankMsg').textContent = 'Tu sesión ha caducado.'; $('guestRow').style.display = 'block'; }
+      else $('oRankMsg').textContent = 'No se pudo guardar 😕 ' + (r.error || '');
+      return;
+    }
+    rankData = r; if (r.user){ USER.user = r.user; LS.set('user', USER); }
+    const pos = (r.hoy || []).findIndex(x => String(x.nombre).toLowerCase() === USER.user.nombre.toLowerCase() && x.puntos === score);
     $('oRankMsg').innerHTML = pos >= 0 ? `🏆 Eres el <b style="color:var(--yellow)">#${pos + 1}</b> de hoy` : 'Guardado ✓ — ¡a por el top 10 de hoy!';
   });
 }
-function jsonp(params){
-  return new Promise(res => {
-    if (API.includes('__DEPLOY_ID__')){ res(null); return; }
-    const cb = 'cc' + Math.random().toString(36).slice(2), s = document.createElement('script');
-    const to = setTimeout(() => { cleanup(); res(null); }, 12000);
-    function cleanup(){ clearTimeout(to); delete window[cb]; s.remove(); }
-    window[cb] = d => { cleanup(); res(d); };
-    s.onerror = () => { cleanup(); res(null); };
-    s.src = API + '?' + new URLSearchParams(Object.assign({}, params, { callback: cb, t: Date.now() })).toString();
-    document.body.appendChild(s);
-  });
+function api(accion, d, ms){
+  const ctl = window.AbortController ? new AbortController() : null;
+  const tm = setTimeout(() => { try{ ctl && ctl.abort(); }catch(e){} }, ms || 25000);
+  return fetch(API, { method: 'POST', body: JSON.stringify(Object.assign({ accion }, d || {})), signal: ctl ? ctl.signal : undefined })
+    .then(r => r.json()).catch(() => ({ ok: false, error: 'Sin conexión. Inténtalo otra vez.' }))
+    .finally(() => clearTimeout(tm));
 }
+
+/* =========================================================
+   CUENTAS: correo + contraseña o Google
+   ========================================================= */
+let USER = LS.get('user', null);
+let loginNext = null; // 'jugar' | 'guardar' | null
+function setUser(r){ USER = { ses: r.ses, user: r.user }; LS.set('user', USER); renderUser(); }
+function logout(silent){ if (USER && !silent) api('salir', { ses: USER.ses }); USER = null; LS.set('user', null); renderUser(); }
+function renderUser(){
+  $('userBar').innerHTML = USER ? `👤 <b>${esc(USER.user.nombre)}</b> <button id="bOut">Cerrar sesión</button>` : '';
+  if ($('bOut')) $('bOut').onclick = () => { logout(); toast('Sesión cerrada'); };
+}
+function loadGoogle(cb){
+  if (window.google && google.accounts) return cb();
+  if (document.getElementById('gsi')){ const i = setInterval(() => { if (window.google && google.accounts){ clearInterval(i); cb(); } }, 200); return; }
+  const sc = document.createElement('script'); sc.id = 'gsi'; sc.src = 'https://accounts.google.com/gsi/client'; sc.async = true; sc.onload = cb; document.head.appendChild(sc);
+}
+function openLogin(next, vista){
+  loginNext = next || null; vista = vista || 'elige';
+  const card = $('lgCard');
+  const atras = loginNext === 'guardar' ? 'ovOver' : 'ovMenu';
+  let h = '';
+  if (vista === 'elige'){
+    h = `<div class="title" style="font-size:26px">¿CÓMO QUIERES JUGAR?</div>
+      <div class="lgBox"><h3>🏆 CON CUENTA</h3>
+        <p style="margin:0 0 6px;color:var(--mute);font-size:14px;text-align:center">Tus puntuaciones entran en el ranking</p>
+        <div id="gBtn"></div>
+        <div class="sep">o con tu correo</div>
+        <button class="big" id="lgMail">✉ CORREO Y CONTRASEÑA</button>
+      </div>
+      ${loginNext === 'jugar' ? `<div class="lgBox guest"><h3>🎮 SIN CUENTA</h3><p>Puedes jugar igual, pero <b style="color:var(--copper)">tu puntuación no se guardará en el ranking</b>.</p>
+        <button class="big alt" id="lgGuest">SEGUIR SIN INICIAR SESIÓN</button></div>` : ''}
+      <button class="lnk" id="lgBack">← Volver</button>`;
+  } else if (vista === 'entrar' || vista === 'registro'){
+    h = `<div class="title" style="font-size:24px">${vista === 'entrar' ? 'INICIAR SESIÓN' : 'CREAR CUENTA'}</div>
+      <div class="tabs"><button class="${vista === 'entrar' ? 'on' : ''}" data-v="entrar">ENTRAR</button><button class="${vista === 'registro' ? 'on' : ''}" data-v="registro">CREAR CUENTA</button></div>
+      <div class="lgBox">
+      ${vista === 'registro' ? `<div class="fl">Nombre de jugador</div><input class="name" id="fNom" maxlength="14" autocomplete="nickname" placeholder="Así saldrás en el ranking">` : ''}
+      <div class="fl">Correo</div><input class="name" id="fEmail" type="email" autocomplete="username" placeholder="tu@correo.com">
+      <div class="fl">Contraseña</div><input class="name" id="fPass" type="password" autocomplete="${vista === 'entrar' ? 'current-password' : 'new-password'}" placeholder="${vista === 'entrar' ? '••••••' : 'Mínimo 6 caracteres'}">
+      <button class="big" id="fGo">${vista === 'entrar' ? 'ENTRAR' : 'CREAR CUENTA Y JUGAR'}</button>
+      ${vista === 'entrar' ? '<button class="lnk" id="fOlv">¿Has olvidado la contraseña?</button>' : ''}
+      </div>
+      <button class="lnk" id="lgBack">← Volver</button>`;
+  } else {
+    h = `<div class="title" style="font-size:22px">RECUPERAR CONTRASEÑA</div>
+      <div class="lgBox"><p style="margin:0;color:var(--mute);font-size:14px">Te enviamos un código a tu correo para poner una contraseña nueva.</p>
+      <div class="fl">Correo</div><input class="name" id="fEmail" type="email" autocomplete="username" placeholder="tu@correo.com">
+      <button class="big alt" id="fCod">📧 ENVIARME EL CÓDIGO</button>
+      <div class="fl">Código</div><input class="name" id="fCodigo" inputmode="numeric" maxlength="6" placeholder="123456">
+      <div class="fl">Contraseña nueva</div><input class="name" id="fPass" type="password" autocomplete="new-password" placeholder="Mínimo 6 caracteres">
+      <button class="big" id="fRes">CAMBIAR Y ENTRAR</button></div>
+      <button class="lnk" id="lgBack">← Volver</button>`;
+  }
+  card.innerHTML = h; show('ovLogin');
+  const back = $('lgBack');
+  if (back) back.onclick = () => vista === 'elige' ? show(atras) : openLogin(loginNext, vista === 'recuperar' ? 'entrar' : 'elige');
+  card.querySelectorAll('.tabs button').forEach(b => b.onclick = () => openLogin(loginNext, b.dataset.v));
+  const busy = (b, on) => { if (b){ b.disabled = on; b.style.opacity = on ? .5 : 1; } };
+  const run = async (btn, accion, datos) => {
+    busy(btn, true);
+    const r = await api(accion, datos);
+    busy(btn, false);
+    if (!r.ok){ toast(r.error || 'Error'); return null; }
+    return r;
+  };
+  if (vista === 'elige'){
+    $('lgMail').onclick = () => openLogin(loginNext, 'entrar');
+    if ($('lgGuest')) $('lgGuest').onclick = () => { loginNext = null; startGame(); };
+    loadGoogle(() => {
+      try{
+        google.accounts.id.initialize({ client_id: GOOGLE_ID, ux_mode: 'popup', callback: async g => {
+          toast('Comprobando tu cuenta de Google…');
+          const r = await api('google', { credential: g.credential });
+          if (r.ok) loginOk(r); else toast(r.error || 'No se pudo entrar con Google');
+        }});
+        google.accounts.id.renderButton($('gBtn'), { theme: 'filled_black', size: 'large', shape: 'pill', text: 'continue_with', locale: 'es', width: Math.min(340, ($('gBtn').offsetWidth || 300)) });
+      }catch(e){}
+    });
+  } else if (vista === 'entrar' || vista === 'registro'){
+    const go = async () => {
+      const d = { email: $('fEmail').value, pass: $('fPass').value };
+      if (vista === 'registro') d.nombre = $('fNom').value;
+      const r = await run($('fGo'), vista, d); if (r) loginOk(r);
+    };
+    $('fGo').onclick = go;
+    $('fPass').onkeydown = e => { if (e.key === 'Enter') go(); };
+    if ($('fOlv')) $('fOlv').onclick = () => openLogin(loginNext, 'recuperar');
+    setTimeout(() => { const f = $(vista === 'registro' ? 'fNom' : 'fEmail'); if (f && !('ontouchstart' in window)) f.focus(); }, 50);
+  } else {
+    $('fCod').onclick = async () => { const r = await run($('fCod'), 'recuperar', { email: $('fEmail').value }); if (r) toast('📧 Código enviado. Mira tu correo (y el spam)'); };
+    $('fRes').onclick = async () => { const r = await run($('fRes'), 'restablecer', { email: $('fEmail').value, codigo: $('fCodigo').value, pass: $('fPass').value }); if (r) loginOk(r); };
+  }
+}
+function loginOk(r){
+  setUser(r); SFX.level(); toast('👋 ¡Hola, ' + r.user.nombre + '!');
+  const n = loginNext; loginNext = null;
+  if (n === 'guardar'){ show('ovOver'); saveScore(); }
+  else if (n === 'jugar') startGame();
+  else show('ovMenu');
+}
+function onPlay(){ initAudio(); SFX.click(); if (USER) startGame(); else openLogin('jugar'); }
 let rankData = null, rankTab = 'hoy';
 function openRank(){
   show('ovRank'); paintRank();
-  jsonp({ accion: 'top' }).then(r => { if (r && r.ok){ rankData = r; } paintRank(true); });
+  api('top', null, 15000).then(r => { if (r && r.ok){ rankData = r; } paintRank(true); });
 }
 function paintRank(loaded){
-  const ol = $('rankList'), me = (LS.get('name', '') || '').toLowerCase();
+  const ol = $('rankList'), me = USER ? USER.user.nombre.toLowerCase() : '';
   document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('on', b.dataset.t === rankTab));
   if (!rankData){ ol.innerHTML = '<li>' + (loaded ? 'Sin conexión con el ranking' : 'Cargando…') + '</li>'; return; }
   const list = rankData[rankTab] || [];
@@ -889,9 +1010,10 @@ function drawMenu(){
    ========================================================= */
 document.addEventListener('keydown', e => {
   initAudio();
-  if (e.target.tagName === 'INPUT'){ if (e.key === 'Enter') saveScore(); return; }
+  if (e.target.tagName === 'INPUT') return;
+  if ($('ovLogin').classList.contains('on')) return;
   const k = e.key;
-  if (phase === 'menu' && (k === 'Enter' || k === ' ')){ startGame(); e.preventDefault(); return; }
+  if (phase === 'menu' && (k === 'Enter' || k === ' ') && $('ovMenu').classList.contains('on')){ onPlay(); e.preventDefault(); return; }
   if (phase === 'over' && k === 'Enter'){ startGame(); return; }
   if (k === 'p' || k === 'P' || k === 'Escape'){ phase === 'pause' ? resume() : pause(); return; }
   if (phase !== 'play') return;
@@ -949,7 +1071,7 @@ document.querySelectorAll('#pad button').forEach(b => {
 
 function startGame(){ SFX.click && initAudio(); touchStreak(); savedId = ''; newGame(); resize(); }
 function setAudioBtns(){ $('bMusic').classList.toggle('off', !musicOn); $('bSfx').classList.toggle('off', !sfxOn); }
-$('bPlay').onclick = startGame;
+$('bPlay').onclick = onPlay;
 $('bAgain').onclick = startGame;
 $('bRank').onclick = $('bRank2').onclick = () => { initAudio(); SFX.click(); rankTab = 'hoy'; openRank(); };
 $('bRankClose').onclick = () => phase === 'over' ? show('ovOver') : show('ovMenu');
@@ -964,13 +1086,14 @@ $('bPause').onclick = $('bPause2').onclick = () => phase === 'pause' ? resume() 
 $('bResume').onclick = resume;
 $('bRestart').onclick = startGame;
 $('bToMenu').onclick = $('bToMenu2').onclick = toMenu;
-$('bSave').onclick = saveScore;
+$('bSave').onclick = () => openLogin('guardar');
 $('bMusic').onclick = () => { musicOn = !musicOn; LS.set('music', musicOn); initAudio(); if (musicBus) musicBus.gain.value = musicOn ? .22 : 0; if (musicOn && phase === 'play') musicStart(); setAudioBtns(); };
 $('bSfx').onclick = () => { sfxOn = !sfxOn; LS.set('sfx', sfxOn); initAudio(); if (sfxBus) sfxBus.gain.value = sfxOn ? 1 : 0; setAudioBtns(); };
 document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); });
 window.addEventListener('resize', resize);
 
-setAudioBtns(); renderStreak(); updateHud(); resize();
+setAudioBtns(); renderUser(); renderStreak();
+if (USER) api('yo', { ses: USER.ses }, 15000).then(r => { if (r.ok){ USER.user = r.user; LS.set('user', USER); renderUser(); } else if (r.error === 'SESION') logout(true); }); updateHud(); resize();
 requestAnimationFrame(frame); requestAnimationFrame(drawMenu);
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 </script>
