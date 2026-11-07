@@ -148,8 +148,33 @@ ol.rank li.me{background:rgba(56,249,255,.08);border-radius:8px}
 .userBar b{color:var(--txt)}
 .userBar button{background:none;color:var(--mute);text-decoration:underline;font-family:Rajdhani;font-size:14px}
 .warnBox{border:1px dashed rgba(255,159,67,.5);border-radius:12px;padding:10px;color:var(--copper);margin:6px 0 10px;font-size:15px}
-#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);background:#101a3d;border:1px solid var(--cyan);padding:10px 18px;border-radius:12px;z-index:40;transition:.3s;font-weight:700}
-#toast.on{transform:translateX(-50%) translateY(0)}
+/* ---------- avisos (toasts) ---------- */
+#toasts{position:fixed;top:calc(12px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:60;display:flex;flex-direction:column;gap:10px;width:min(420px,calc(100% - 24px));pointer-events:none}
+.tst{--c:#38f9ff;--g:rgba(56,249,255,.35);position:relative;overflow:hidden;pointer-events:auto;cursor:pointer;display:flex;gap:12px;align-items:center;padding:12px 16px 15px 12px;border-radius:18px;
+  background:linear-gradient(135deg,rgba(20,32,72,.97),rgba(6,10,24,.97));border:1px solid var(--c);
+  box-shadow:0 0 0 1px rgba(255,255,255,.05) inset,0 14px 34px rgba(0,0,0,.55),0 0 26px var(--g);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);animation:tin .45s cubic-bezier(.2,1.4,.4,1) both}
+.tst.out{animation:tout .3s ease-in forwards}
+.tst::before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.18) 50%,transparent 70%);transform:translateX(-120%);animation:tshine 1s .15s ease-out}
+.tst .ic{flex:0 0 42px;height:42px;border-radius:13px;display:grid;place-items:center;font-family:Orbitron;font-weight:900;font-size:20px;color:#04101a;
+  background:radial-gradient(circle at 35% 30%,#fff,var(--c) 55%);box-shadow:0 0 16px var(--g),0 0 0 3px rgba(255,255,255,.06);animation:tzap .5s steps(2) 2}
+.tst .bd{flex:1;min-width:0}
+.tst .tt{font-family:Orbitron;font-size:10px;font-weight:900;letter-spacing:2.5px;color:var(--c);text-shadow:0 0 10px var(--g);margin-bottom:2px}
+.tst .tx{font-size:16px;font-weight:700;color:#fff;line-height:1.25}
+.tst .x{background:none;color:var(--mute);font-size:18px;padding:2px 4px;font-family:Rajdhani;align-self:flex-start}
+.tst .bar{position:absolute;left:0;bottom:0;height:3px;width:100%;background:linear-gradient(90deg,var(--c),#fff);box-shadow:0 0 10px var(--c);transform-origin:left;animation:tbar linear forwards}
+.tst.ok{--c:#3dff8b;--g:rgba(61,255,139,.35)}
+.tst.err{--c:#ff3d7f;--g:rgba(255,61,127,.4)}
+.tst.err .ic{animation:tshake .4s 1}
+.tst.load{--c:#ffe14d;--g:rgba(255,225,77,.35)}
+.tst .spin{width:20px;height:20px;border:3px solid rgba(4,16,26,.25);border-top-color:#04101a;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes tin{0%{opacity:0;transform:translateY(-26px) scale(.86)}100%{opacity:1;transform:none}}
+@keyframes tout{to{opacity:0;transform:translateY(-18px) scale(.92)}}
+@keyframes tbar{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+@keyframes tshine{to{transform:translateX(120%)}}
+@keyframes tzap{50%{filter:brightness(2.2)}}
+@keyframes tshake{0%,100%{transform:none}25%{transform:translateX(-4px) rotate(-6deg)}75%{transform:translateX(4px) rotate(6deg)}}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -247,14 +272,14 @@ ol.rank li.me{background:rgba(56,249,255,.08);border-radius:8px}
   <p>4. Pulsa <b>Añadir</b> y tendrás CORTOCIRCUITO como una app.</p>
 </div><button class="big" id="bIosClose">VALE</button></div></div>
 
-<div id="toast"></div>
+<div id="toasts"></div>
 
 <script>
 'use strict';
 /* =========================================================
    CONFIG
    ========================================================= */
-const VERSION = '2026-11-07.13';
+const VERSION = '2026-11-07.14';
 const API = 'https://script.google.com/macros/s/AKfycbxaKM4kZpLJys6zRmCewH29m6kCD9oci_Lp_EXMtOYMUE3Fi97FAtpLaoUo2rMHEzaJ9g/exec';
 const APP_URL = 'https://puntofibra.github.io/cortocircuito/';
 const SHARE_URL = APP_URL + '?v=2'; // cambiar el número si se cambia la imagen de compartir (WhatsApp guarda la tarjeta antigua)
@@ -910,7 +935,31 @@ function updateHud(){
 }
 function hideAll(){ document.querySelectorAll('.ov').forEach(o => o.classList.remove('on')); }
 function show(id){ document.querySelectorAll('.ov').forEach(o => o.classList.toggle('on', o.id === id)); }
-function toast(t){ const el = $('toast'); el.textContent = t; el.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove('on'), 2200); }
+/* avisos pro: toast(texto, tipo, {titulo, ms}) · tipos: info | ok | err | load (se cierra con .close()) */
+const TOAST_T = { info: ['⚡', 'AVISO'], ok: ['✓', '¡HECHO!'], err: ['!', 'UPS…'], load: ['', 'UN MOMENTO'] };
+function toast(text, type, o){
+  type = type || 'info'; o = o || {};
+  const box = $('toasts'), [ic, tt] = TOAST_T[type] || TOAST_T.info;
+  const ms = o.ms || (type === 'err' ? 4200 : type === 'load' ? 0 : 2800);
+  // máximo 3 a la vez; si se repite el mismo, se renueva
+  [...box.children].forEach(c => { if (c.dataset.text === text) c.remove(); });
+  while (box.children.length >= 3) box.firstChild.remove();
+  const el = document.createElement('div');
+  el.className = 'tst ' + type; el.dataset.text = text;
+  el.innerHTML = `<div class="ic">${type === 'load' ? '<div class="spin"></div>' : ic}</div><div class="bd"><div class="tt">${esc(o.titulo || tt)}</div><div class="tx">${esc(text)}</div></div><button class="x" aria-label="Cerrar">✕</button>${ms ? `<div class="bar" style="animation-duration:${ms}ms"></div>` : ''}`;
+  box.appendChild(el);
+  let done = false;
+  el.close = () => { if (done) return; done = true; el.classList.add('out'); setTimeout(() => el.remove(), 300); };
+  el.onclick = el.close;
+  if (ms) setTimeout(el.close, ms);
+  try{
+    if (type === 'ok'){ tone(880, .08, 'triangle', .07); tone(1320, .12, 'triangle', .06, 0, .07); }
+    else if (type === 'err'){ tone(160, .18, 'sawtooth', .08, 90); }
+    else if (type === 'info') tone(700, .06, 'square', .04);
+  }catch(e){}
+  try{ if (type === 'err' && navigator.vibrate) navigator.vibrate([40, 40, 40]); }catch(e){}
+  return el;
+}
 function pause(){ if (phase !== 'play' && phase !== 'resolve') return; pause.prev = phase; phase = 'pause'; musicStop(); show('ovPause'); }
 function resume(){ if (phase !== 'pause') return; phase = pause.prev || 'play'; hideAll(); last = performance.now(); if (musicOn) musicStart(); }
 function toMenu(){ phase = 'menu'; musicStop(); grid = null; piece = null; renderStreak(); show('ovMenu'); }
@@ -957,7 +1006,7 @@ function setUser(r){ USER = { ses: r.ses, user: r.user }; LS.set('user', USER); 
 function logout(silent){ if (USER && !silent) api('salir', { ses: USER.ses }); USER = null; LS.set('user', null); renderUser(); }
 function renderUser(){
   $('userBar').innerHTML = USER ? `👤 <b>${esc(USER.user.nombre)}</b> <button id="bOut">Cerrar sesión</button>` : '';
-  if ($('bOut')) $('bOut').onclick = () => { logout(); toast('Sesión cerrada'); };
+  if ($('bOut')) $('bOut').onclick = () => { logout(); toast('Has cerrado la sesión. ¡Vuelve pronto!', 'info', { titulo: 'SESIÓN CERRADA' }); };
 }
 function loadGoogle(cb){
   if (window.google && google.accounts) return cb();
@@ -1010,7 +1059,7 @@ function openLogin(next, vista){
     busy(btn, true);
     const r = await api(accion, datos);
     busy(btn, false);
-    if (!r.ok){ toast(r.error || 'Error'); return null; }
+    if (!r.ok){ toast(r.error || 'Algo ha fallado. Inténtalo otra vez.', 'err'); return null; }
     return r;
   };
   if (vista === 'elige'){
@@ -1019,9 +1068,10 @@ function openLogin(next, vista){
     loadGoogle(() => {
       try{
         google.accounts.id.initialize({ client_id: GOOGLE_ID, ux_mode: 'popup', callback: async g => {
-          toast('Comprobando tu cuenta de Google…');
+          const w = toast('Comprobando tu cuenta de Google…', 'load', { titulo: 'CONECTANDO' });
           const r = await api('google', { credential: g.credential });
-          if (r.ok) loginOk(r); else toast(r.error || 'No se pudo entrar con Google');
+          w.close();
+          if (r.ok) loginOk(r); else toast(r.error || 'No se pudo entrar con Google', 'err');
         }});
         google.accounts.id.renderButton($('gBtn'), { theme: 'filled_black', size: 'large', shape: 'pill', text: 'continue_with', locale: 'es', width: Math.min(340, ($('gBtn').offsetWidth || 300)) });
       }catch(e){}
@@ -1037,12 +1087,12 @@ function openLogin(next, vista){
     if ($('fOlv')) $('fOlv').onclick = () => openLogin(loginNext, 'recuperar');
     setTimeout(() => { const f = $(vista === 'registro' ? 'fNom' : 'fEmail'); if (f && !('ontouchstart' in window)) f.focus(); }, 50);
   } else {
-    $('fCod').onclick = async () => { const r = await run($('fCod'), 'recuperar', { email: $('fEmail').value }); if (r) toast('📧 Código enviado. Mira tu correo (y el spam)'); };
+    $('fCod').onclick = async () => { const r = await run($('fCod'), 'recuperar', { email: $('fEmail').value }); if (r) toast('Te hemos enviado un código. Mira tu correo (y la carpeta de spam).', 'ok', { titulo: 'CÓDIGO ENVIADO', ms: 5000 }); };
     $('fRes').onclick = async () => { const r = await run($('fRes'), 'restablecer', { email: $('fEmail').value, codigo: $('fCodigo').value, pass: $('fPass').value }); if (r) loginOk(r); };
   }
 }
 function loginOk(r){
-  setUser(r); SFX.level(); toast('👋 ¡Hola, ' + r.user.nombre + '!');
+  setUser(r); SFX.level(); toast('Tus puntuaciones ya cuentan para el ranking.', 'ok', { titulo: '¡HOLA, ' + r.user.nombre.toUpperCase() + '!' });
   const n = loginNext; loginNext = null;
   if (n === 'guardar'){ show('ovOver'); saveScore(); }
   else if (n === 'jugar') startGame();
@@ -1093,7 +1143,7 @@ if (standalone) $('bInstall').style.display = 'none';
 async function install(){
   if (deferredPrompt){ deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt = null; }
   else if (isIOS) show('ovIos');
-  else toast('Abre el menú del navegador → “Instalar aplicación”');
+  else toast('Abre el menú del navegador (⋮) y pulsa “Instalar aplicación”.', 'info', { titulo: 'INSTALAR', ms: 5000 });
 }
 
 /* menú: Lucas electrocutándose (5 fotogramas: color + 4 rayos X) */
@@ -1296,7 +1346,7 @@ requestAnimationFrame(frame); requestAnimationFrame(drawMenu);
 /* ---------- actualización automática ---------- */
 let updPending = false, swReg = null;
 function safeToReload(){ return phase === 'menu' || phase === 'over' || !grid; }
-function doReload(){ if (doReload.done) return; doReload.done = true; toast('⚡ Actualizando el juego…'); setTimeout(() => location.reload(), 700); }
+function doReload(){ if (doReload.done) return; doReload.done = true; toast('Hay una versión nueva. Actualizando…', 'load', { titulo: 'ACTUALIZACIÓN' }); setTimeout(() => location.reload(), 700); }
 function maybeReload(){ if (updPending && safeToReload() && !$('ovLogin').classList.contains('on')) doReload(); }
 async function checkUpdate(){
   try{
