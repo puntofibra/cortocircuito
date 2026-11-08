@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
 <title>CORTOCIRCUITO ⚡ FuturMovil</title>
 <meta name="description" content="Conecta los cables de lado a lado y haz saltar el circuito. ¿Cuántas cadenas aguantas? Un juego de FuturMovil.">
@@ -637,7 +638,7 @@ body.padplay.padrot.padrotL #pad2{transform:translateY(var(--ph,100vh)) rotate(-
 /* =========================================================
    CONFIG
    ========================================================= */
-const VERSION = '2026-11-08.17';
+const VERSION = '2026-11-08.18';
 const API = 'https://script.google.com/macros/s/AKfycbxaKM4kZpLJys6zRmCewH29m6kCD9oci_Lp_EXMtOYMUE3Fi97FAtpLaoUo2rMHEzaJ9g/exec';
 const APP_URL = 'https://puntofibra.github.io/cortocircuito/';
 const SHARE_URL = APP_URL + '?v=2'; // cambiar el número si se cambia la imagen de compartir (WhatsApp guarda la tarjeta antigua)
@@ -2964,7 +2965,7 @@ setInterval(checkUpdate, 60000);
 setInterval(maybeReload, 2000);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) checkUpdate(); });
 if ('serviceWorker' in navigator){
-  navigator.serviceWorker.register('sw.js').then(r => { swReg = r; }).catch(() => {});
+  navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then(r => { swReg = r; }).catch(() => {});
 }
 setTimeout(checkUpdate, 3000);
 </script>
