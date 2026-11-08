@@ -285,14 +285,31 @@ body.padtrap .pb.trap{display:block}
 .pb.down{transform:translateY(5px) scale(.97);box-shadow:0 1px 0 #050816,0 0 34px var(--pc,#38f9ff)}
 .pb .rip{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.7),transparent 70%);transform:translate(-50%,-50%) scale(0);animation:rip .45s ease-out forwards;pointer-events:none}
 @keyframes rip{to{transform:translate(-50%,-50%) scale(1);opacity:0}}
-.pTouch{flex:1;position:relative;border-radius:24px;overflow:hidden;background:radial-gradient(circle at 50% 50%,rgba(56,249,255,.08),rgba(5,8,20,.9) 70%);
-  border:2px solid color-mix(in srgb,var(--pc,#38f9ff) 45%,transparent);box-shadow:inset 0 0 40px rgba(0,0,0,.6),0 0 24px color-mix(in srgb,var(--pc,#38f9ff) 20%,transparent)}
-.pTouch::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(56,249,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(56,249,255,.06) 1px,transparent 1px);background-size:28px 28px}
-.pTouch.myturn{animation:tpulse 1.2s infinite alternate}
+.pMid{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;position:relative;border-radius:22px;padding:10px;
+  background:radial-gradient(ellipse at 50% 0%,color-mix(in srgb,var(--pc,#38f9ff) 14%,transparent),rgba(5,8,20,.92) 70%);
+  border:2px solid color-mix(in srgb,var(--pc,#38f9ff) 40%,transparent);box-shadow:inset 0 0 40px rgba(0,0,0,.6),0 0 20px color-mix(in srgb,var(--pc,#38f9ff) 16%,transparent)}
+.pMid::before{content:"";position:absolute;inset:0;border-radius:20px;pointer-events:none;background-image:linear-gradient(rgba(56,249,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(56,249,255,.05) 1px,transparent 1px);background-size:26px 26px}
+.pMid.myturn{animation:tpulse 1.2s infinite alternate}
 @keyframes tpulse{to{box-shadow:inset 0 0 40px rgba(0,0,0,.6),0 0 42px var(--pc,#38f9ff)}}
-#pTouchCv{position:absolute;inset:0;width:100%;height:100%}
-.pHint{position:absolute;left:0;right:0;bottom:10px;font-size:13px;color:var(--mute);pointer-events:none}
-.pTurn{position:absolute;left:0;right:0;top:12px;font-family:Orbitron;font-weight:900;font-size:16px;letter-spacing:2px;color:var(--pc,#38f9ff);text-shadow:0 0 14px var(--pc,#38f9ff);pointer-events:none}
+.pmHead{position:relative;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 10px;border-radius:16px;background:rgba(5,8,20,.65);border:1px solid rgba(255,255,255,.06)}
+.pmTurn{font-family:Orbitron;font-weight:900;font-size:clamp(13px,4.2vmin,19px);letter-spacing:2px;color:var(--pc,#38f9ff);text-shadow:0 0 14px var(--pc,#38f9ff);text-align:left;line-height:1.1}
+.pmTurn small{display:block;font-family:Rajdhani;font-weight:600;font-size:12px;letter-spacing:1px;color:var(--mute);text-shadow:none;margin-top:2px}
+.pmScore{text-align:right;font-family:Orbitron;font-weight:900;font-size:clamp(20px,7vmin,32px);color:#fff;line-height:1}
+.pmScore small{display:block;font-size:9px;letter-spacing:3px;color:var(--mute);margin-top:3px}
+.pmOpts{position:relative;flex:1;min-height:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.po{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:0;border-radius:16px;cursor:pointer;color:#fff;
+  background:linear-gradient(180deg,#141d44,#0a1028);border:1px solid #24346a;box-shadow:0 4px 0 #050816;transition:transform .08s,box-shadow .08s,border-color .2s;-webkit-tap-highlight-color:transparent}
+.po i{font-style:normal;font-size:clamp(20px,6.5vmin,30px);line-height:1;filter:drop-shadow(0 0 8px rgba(56,249,255,.4))}
+.po b{font-family:Orbitron;font-size:clamp(8px,2.4vmin,11px);letter-spacing:1px}
+.po em{font-style:normal;font-family:Orbitron;font-size:9px;letter-spacing:2px;padding:2px 8px;border-radius:99px;background:rgba(61,255,139,.12);color:var(--green);border:1px solid rgba(61,255,139,.4)}
+.po.off em{background:rgba(255,43,109,.1);color:#ff6b8f;border-color:rgba(255,43,109,.4)}
+.po.off i{filter:grayscale(1) opacity(.5)}
+.po:active{transform:translateY(3px);box-shadow:0 1px 0 #050816}
+.po.danger{border-color:rgba(255,43,109,.5);background:linear-gradient(180deg,#3a0d22,#14060d)}
+.po.danger i{filter:drop-shadow(0 0 8px rgba(255,43,109,.6))}
+.po.danger em{background:rgba(255,43,109,.12);color:#ff6b8f;border-color:rgba(255,43,109,.45)}
+.po.danger.arm{background:linear-gradient(180deg,#ff2b6d,#a3123f);border-color:#ff8fb0;box-shadow:0 0 26px #ff2b6d,0 4px 0 #050816;animation:tshake .25s 2}
+.po.danger.arm em{background:#fff;color:#a3123f;border-color:#fff}
 .pRot{display:none;position:absolute;inset:0;z-index:5;background:#05070f;align-items:center;justify-content:center;flex-direction:column;gap:8px;text-align:center}
 .pRot div{font-size:60px;animation:vbounce 1.4s infinite}
 .pRot b{font-family:Orbitron;font-size:20px;color:var(--cyan)}
@@ -561,7 +578,15 @@ body.padplay.padrot .pb.big2{height:min(26vw,110px)}
       <button class="pb" data-k="left">◀</button><button class="pb" data-k="right">▶</button>
       <button class="pb" data-k="rotL">↺</button><button class="pb" data-k="rot">↻</button>
     </div>
-    <div class="pTouch" id="pTouch"><canvas id="pTouchCv"></canvas><div class="pHint">Desliza ◀ ▶ para mover · toca para girar · desliza abajo rápido para soltar</div><div class="pTurn" id="pTurn"></div></div>
+    <div class="pMid" id="pMid">
+      <div class="pmHead"><div class="pmTurn"><span id="pTurn">¡A JUGAR!</span><small id="pMidMode"></small></div><div class="pmScore"><span id="pMidSc">0</span><small>PUNTOS</small></div></div>
+      <div class="pmOpts">
+        <button class="po" data-o="music"><i>🎵</i><b>MÚSICA TV</b><em>ON</em></button>
+        <button class="po" data-o="sfx"><i>🔊</i><b>SONIDOS TV</b><em>ON</em></button>
+        <button class="po" data-o="vib"><i>📳</i><b>VIBRACIÓN</b><em>ON</em></button>
+        <button class="po danger" data-o="quit"><i>🚪</i><b>ABANDONAR</b><em>SALIR</em></button>
+      </div>
+    </div>
     <div class="pCol">
       <button class="pb big2" data-k="drop">⤓<small>SOLTAR</small></button>
       <button class="pb" data-k="soft">▼</button><button class="pb" data-k="hold">⇄</button>
@@ -589,7 +614,7 @@ body.padplay.padrot .pb.big2{height:min(26vw,110px)}
 /* =========================================================
    CONFIG
    ========================================================= */
-const VERSION = '2026-11-08.13';
+const VERSION = '2026-11-08.14';
 const API = 'https://script.google.com/macros/s/AKfycbxaKM4kZpLJys6zRmCewH29m6kCD9oci_Lp_EXMtOYMUE3Fi97FAtpLaoUo2rMHEzaJ9g/exec';
 const APP_URL = 'https://puntofibra.github.io/cortocircuito/';
 const SHARE_URL = APP_URL + '?v=2'; // cambiar el número si se cambia la imagen de compartir (WhatsApp guarda la tarjeta antigua)
@@ -1840,6 +1865,19 @@ function tvOnMsg(i, m){
   if (m.t === 'again' && i === 0){ if (TV.n === 1) tvStartSolo(); else tvRevancha(); return; }
   if (m.t === 'change' && i === 0 && TV.n === 2){ duoLeave(true); TV.over = false; TV.boards = null; TV.stage = 'modes'; tvShowChoosing(); return; }
   if (m.t === 'exit' && i === 0){ tvExit(); return; }
+  if (m.t === 'opt' && TV.stage === 'play'){ if (m.k === 'music') $('bMusic').click(); else if (m.k === 'sfx') $('bSfx').click(); TV.slots.forEach(s2 => s2.lastUi = ''); return; }
+  if (m.t === 'quit' && TV.stage === 'play'){ tvQuit(i); return; }
+}
+// un jugador abandona desde su mando
+function tvQuit(i){
+  const nm = TV.slots[i] && TV.slots[i].name || 'Jugador ' + (i + 1);
+  if (TV.n === 1){ if (mode === 'solo' && phase === 'play') gameOver(); return; }
+  if (!DUO || !DUO.local || DUO.overShown) return;
+  clearTimeout(botT);
+  toast(nm + ' ha abandonado la partida', 'info', { titulo: 'ABANDONO' });
+  DUO.st.abandono = i; DUO.st.status = 'over';
+  if (DUO.sim && TV.cur != null) tvSave(TV.cur);
+  duoShowOver();
 }
 function tvInput(i, k, v){
   initAudio();
@@ -1938,7 +1976,8 @@ function tvUiTick(){
         if (DUO.sim){ const B = TV.boards && TV.boards[i]; sc = B ? (i === TV.cur ? score : B.score) : 0; turn = !!B && !B.dead && !B.timeUp; txt = turn ? '¡A JUGAR!' : 'HAS TERMINADO'; }
         else { turn = st.turn === i; sc = st.players[i].s; txt = st.modo === 'coop' ? (turn ? '¡TU TURNO!' : 'TURNO DE ' + String(st.players[st.turn].n).toUpperCase()) : (turn ? '¡TU TURNO!' : 'TURNO DE ' + String(st.players[st.turn].n).toUpperCase()); if (st.modo === 'bombas') bombs = DUO.bombs[i]; }
       }
-      ui = { t: 'ui', scr: 'pad', turn, txt, sc: DUO && DUO.st.modo === 'muerte' ? '💀' : fmt(sc), bombs };
+      const M = DUO && MODOS[DUO.st.modo];
+      ui = { t: 'ui', scr: 'pad', turn, txt, sc: DUO && DUO.st.modo === 'muerte' ? '💀' : fmt(sc), bombs, md: TV.n === 1 ? '⚡ PARTIDA INDIVIDUAL' : (M ? M.i + ' ' + M.n : ''), mus: !!musicOn, sfx: !!sfxOn };
     } else return;
     ui.col = TV_COL[i]; ui.name = sl.name;
     const k = JSON.stringify(ui);
@@ -2148,14 +2187,16 @@ function padPoll(){
 }
 function padIn(k, v){ padSendRaw({ t: 'in', k, v }); }
 function padOnMsg(m){
-  if (m.t === 'vib'){ try{ navigator.vibrate && navigator.vibrate(m.p); }catch(e){} return; }
+  if (m.t === 'vib'){ padVib(m.p); return; }
   if (m.t !== 'ui') return;
   PAD.ui = m;
   if (m.col) document.documentElement.style.setProperty('--pc', m.col);
   if (m.name) $('pName').textContent = String(m.name).toUpperCase();
   if (m.scr === 'pad'){
     padShow('pScrPad');
-    $('pTurn').textContent = m.txt || ''; $('pTouch').classList.toggle('myturn', !!m.turn);
+    $('pTurn').textContent = m.txt || ''; $('pMid').classList.toggle('myturn', !!m.turn);
+    $('pMidSc').textContent = m.sc != null ? m.sc : ''; $('pMidMode').textContent = m.md || '';
+    padOptPaint();
     $('pScore').textContent = m.sc != null ? m.sc : '';
     $('pStatus').textContent = m.turn ? '¡Te toca!' : (m.txt || '');
     document.body.classList.toggle('padtrap', m.bombs >= 0);
@@ -2191,7 +2232,7 @@ function padButtons(){
       const rp = document.createElement('span'), [lx, ly] = padLocal(e, b); rp.className = 'rip';
       const sz = Math.max(b.offsetWidth, b.offsetHeight) * 2.2; rp.style.width = rp.style.height = sz + 'px'; rp.style.left = lx + 'px'; rp.style.top = ly + 'px';
       b.appendChild(rp); setTimeout(() => rp.remove(), 500);
-      try{ navigator.vibrate && navigator.vibrate(k === 'drop' ? 25 : 10); }catch(err){}
+      padVib(k === 'drop' ? 25 : 10);
       if (k === 'soft'){ padIn('soft', 1); return; }
       padIn(k);
       if (k === 'left' || k === 'right'){ rep = setTimeout(function r2(){ padIn(k); rep = setTimeout(r2, 70); }, 230); }
@@ -2199,51 +2240,24 @@ function padButtons(){
     const up = () => { b.classList.remove('down'); clearTimeout(rep); rep = null; if (k === 'soft') padIn('soft', 0); };
     b.addEventListener('pointerup', up); b.addEventListener('pointerleave', up); b.addEventListener('pointercancel', up);
   });
-  // pantalla táctil central: arrastrar mueve, tocar gira, deslizar abajo rápido suelta
-  const tp = $('pTouch'), tcv = $('pTouchCv'), tctx = tcv.getContext('2d');
-  let st = null, trail = [];
-  const fit = () => { const d = Math.min(devicePixelRatio || 1, 2); tcv.width = tp.clientWidth * d; tcv.height = tp.clientHeight * d; tctx.setTransform(d, 0, 0, d, 0, 0); };
-  window.addEventListener('resize', () => setTimeout(fit, 80)); window.addEventListener('padfit', fit); setTimeout(fit, 100);
-  const pt = e => padLocal(e, tp);
-  tp.addEventListener('pointerdown', e => {
-    e.preventDefault(); tp.setPointerCapture(e.pointerId);
-    const [x, y] = pt(e); st = { x, y, t: performance.now(), mx: 0, moved: false, soft: false };
-    trail.push({ x, y, life: 1, ring: true });
-  });
-  tp.addEventListener('pointermove', e => {
-    if (!st) return;
-    const [x, y] = pt(e), w = tp.clientWidth, step = Math.max(26, w / 11);
-    trail.push({ x, y, life: 1 });
-    const want = Math.trunc((x - st.x) / step);
-    while (st.mx < want){ padIn('right'); st.mx++; st.moved = true; try{ navigator.vibrate(6); }catch(err){} }
-    while (st.mx > want){ padIn('left'); st.mx--; st.moved = true; try{ navigator.vibrate(6); }catch(err){} }
-    const dy = y - st.y;
-    if (dy > 60 && Math.abs(x - st.x) < step && !st.soft){ st.soft = true; st.moved = true; padIn('soft', 1); }
-    else if (st.soft && dy < 30){ st.soft = false; padIn('soft', 0); }
-  });
-  const end = e => {
-    if (!st) return;
-    const [x, y] = pt(e), dt = performance.now() - st.t, dy = y - st.y, dx = x - st.x;
-    if (st.soft) padIn('soft', 0);
-    if (dy > 70 && dt < 280 && Math.abs(dx) < 80){ padIn('drop'); try{ navigator.vibrate(30); }catch(err){} for (let i = 0; i < 14; i++) trail.push({ x: x + (Math.random() - .5) * 60, y: y + Math.random() * 30, life: 1, spark: true }); }
-    else if (!st.moved && Math.abs(dx) < 12 && Math.abs(dy) < 12 && dt < 350){ padIn(x < tp.clientWidth * .33 ? 'rotL' : 'rot'); trail.push({ x, y, life: 1, ring: true, big: true }); try{ navigator.vibrate(12); }catch(err){} }
-    st = null;
-  };
-  tp.addEventListener('pointerup', end); tp.addEventListener('pointercancel', () => { if (st && st.soft) padIn('soft', 0); st = null; });
-  (function loop(){
-    requestAnimationFrame(loop);
-    if (!PAD || !$('pScrPad').classList.contains('on')) return;
-    const w = tp.clientWidth, h = tp.clientHeight, col = getComputedStyle(document.documentElement).getPropertyValue('--pc').trim() || '#38f9ff';
-    tctx.clearRect(0, 0, w, h);
-    trail = trail.filter(p => (p.life -= p.ring ? .04 : .06) > 0);
-    trail.forEach((p, i) => {
-      tctx.save(); tctx.globalAlpha = p.life; tctx.shadowColor = col; tctx.shadowBlur = 16;
-      if (p.ring){ tctx.strokeStyle = col; tctx.lineWidth = 3; tctx.beginPath(); tctx.arc(p.x, p.y, (1 - p.life) * (p.big ? 90 : 50) + 8, 0, 7); tctx.stroke(); }
-      else if (p.spark){ tctx.fillStyle = '#fff'; tctx.fillRect(p.x, p.y + (1 - p.life) * 60, 3, 3); }
-      else { tctx.fillStyle = col; tctx.beginPath(); tctx.arc(p.x, p.y, 10 * p.life + 2, 0, 7); tctx.fill(); }
-      tctx.restore();
-    });
-  })();
+  // opciones del centro
+  document.querySelectorAll('#pMid .po').forEach(b => b.addEventListener('click', e => {
+    e.preventDefault(); const o = b.dataset.o; SFX.click && SFX.click();
+    if (o === 'vib'){ padVibOn = !padVibOn; LS.set('padVib', padVibOn); padOptPaint(); if (padVibOn) padVib(30); return; }
+    if (o === 'quit'){
+      if (!b.classList.contains('arm')){ b.classList.add('arm'); b.querySelector('b').textContent = '¿SEGURO?'; b.querySelector('em').textContent = 'CONFIRMAR'; padVib([40, 40, 40]); clearTimeout(b._t); b._t = setTimeout(() => padQuitReset(b), 3000); return; }
+      padQuitReset(b); padSendRaw({ t: 'quit' }); padMsg('🚪', 'SALIENDO…', 'Cerrando la partida en la TV'); padVib(80); return;
+    }
+    padSendRaw({ t: 'opt', k: o }); padVib(15);
+    const ui = PAD.ui || {}; if (o === 'music') ui.mus = !ui.mus; else ui.sfx = !ui.sfx; padOptPaint();
+  }));
+}
+let padVibOn = LS.get('padVib', true);
+function padVib(p){ if (!padVibOn) return; try{ navigator.vibrate && navigator.vibrate(p); }catch(e){} }
+function padQuitReset(b){ clearTimeout(b._t); b.classList.remove('arm'); b.querySelector('b').textContent = 'ABANDONAR'; b.querySelector('em').textContent = 'SALIR'; }
+function padOptPaint(){
+  const ui = (PAD && PAD.ui) || {}, set = (o, on) => { const b = document.querySelector('#pMid .po[data-o="' + o + '"]'); if (!b) return; b.classList.toggle('off', !on); b.querySelector('em').textContent = on ? 'ON' : 'OFF'; };
+  set('music', ui.mus !== false); set('sfx', ui.sfx !== false); set('vib', padVibOn);
 }
 
 /* =========================================================
