@@ -230,6 +230,13 @@ body.tvsim.botmode #game{grid-template-rows:minmax(0,1fr) auto!important;grid-te
 #tvQr{background:#fff;border-radius:16px;padding:12px;width:220px;box-shadow:0 0 30px rgba(56,249,255,.35)}
 #tvQr img,#tvQr canvas{width:100%!important;height:auto!important;display:block}
 .tvlSide{min-width:220px}
+.tvBot{display:none;margin:10px auto 4px;max-width:560px;padding:12px 16px;border-radius:18px;border:1px solid rgba(56,249,255,.35);background:linear-gradient(180deg,rgba(56,249,255,.08),rgba(10,17,36,.9));box-shadow:0 0 22px rgba(56,249,255,.12)}
+.tvBot.on{display:block}
+.tvBot .tbT{font-family:Orbitron;font-weight:900;letter-spacing:2px;font-size:14px;color:var(--cyan);text-shadow:0 0 10px rgba(56,249,255,.6)}
+.tvBot .tbS{color:var(--mute);font-size:14px;margin:2px 0 10px}
+.tvBot .tbB{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.tvBot .tbB button{font-family:Orbitron;font-weight:700;font-size:13px;letter-spacing:1px;padding:10px 16px;border-radius:99px;border:1px solid var(--cyan);background:#0b1124;color:#fff;cursor:pointer}
+.tvBot .tbB button:hover,.tvBot .tbB button:focus{background:var(--cyan);color:#05070f;box-shadow:0 0 18px var(--cyan);outline:none}
 .tslot{display:flex;align-items:center;gap:10px;margin:8px 0;padding:10px 14px;border-radius:14px;background:#0a1124;border:1px solid var(--line);text-align:left;font-size:17px}
 .tslot i{width:14px;height:14px;border-radius:50%;background:var(--sc);box-shadow:0 0 10px var(--sc);opacity:.35}
 .tslot.ok{border-color:var(--sc);box-shadow:0 0 16px color-mix(in srgb,var(--sc) 35%,transparent)}
@@ -264,6 +271,8 @@ body.padmode #app{display:none}
 .pmRow .tgl{flex:1;margin:0}.pmRow .big{flex:1;margin:0}
 .pOverBtns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;width:100%;max-width:640px}
 .pOverBtns .big{flex:1;min-width:160px;margin:4px 0}
+.pOverBtns.col1{flex-direction:column;max-width:360px}
+.pOverBtns.col1 .big{flex:none}
 #pScrPad{flex-direction:row;align-items:stretch;gap:10px;padding:10px}
 .pCol{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:min(30vw,230px);align-content:center}
 .pb{position:relative;overflow:hidden;height:min(22vh,92px);border-radius:20px;font-size:30px;color:var(--pc,#38f9ff);
@@ -287,7 +296,9 @@ body.padtrap .pb.trap{display:block}
 .pRot{display:none;position:absolute;inset:0;z-index:5;background:#05070f;align-items:center;justify-content:center;flex-direction:column;gap:8px;text-align:center}
 .pRot div{font-size:60px;animation:vbounce 1.4s infinite}
 .pRot b{font-family:Orbitron;font-size:20px;color:var(--cyan)}
-@media (orientation:portrait){ body.padplay .pRot{display:flex} }
+body.padplay.padrot #pad2{inset:auto;left:0;top:0;width:var(--ph,100vh);height:var(--pw,100vw);transform-origin:0 0;transform:translateX(var(--pw,100vw)) rotate(90deg)}
+body.padplay.padrot.padrotL #pad2{transform:translateY(var(--ph,100vh)) rotate(-90deg)}
+body.padplay.padrot .pb.big2{height:min(26vw,110px)}
 /* ---------- victoria ---------- */
 #ovDuoOver{overflow:hidden}
 #fxCv{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
@@ -512,6 +523,8 @@ body.padtrap .pb.trap{display:block}
     </div>
   </div>
   <div class="sub" id="tvlMsg"><span class="dots">Esperando mandos</span></div>
+  <div class="tvBot" id="tvBot"><div class="tbT">🤖 ¿NO HAY JUGADOR 2?</div><div class="tbS">Juega contra LUCAS-BOT · también puedes elegirlo desde el móvil del jugador 1</div>
+    <div class="tbB"><button data-l="0">FÁCIL</button><button data-l="1">NORMAL</button><button data-l="2">EXPERTO</button></div></div>
   <button class="big alt" id="bTVCancel">✕ CANCELAR</button>
 </div></div>
 
@@ -576,7 +589,7 @@ body.padtrap .pb.trap{display:block}
 /* =========================================================
    CONFIG
    ========================================================= */
-const VERSION = '2026-11-08.12';
+const VERSION = '2026-11-08.13';
 const API = 'https://script.google.com/macros/s/AKfycbxaKM4kZpLJys6zRmCewH29m6kCD9oci_Lp_EXMtOYMUE3Fi97FAtpLaoUo2rMHEzaJ9g/exec';
 const APP_URL = 'https://puntofibra.github.io/cortocircuito/';
 const SHARE_URL = APP_URL + '?v=2'; // cambiar el número si se cambia la imagen de compartir (WhatsApp guarda la tarjeta antigua)
@@ -933,7 +946,7 @@ function frame(now){
   const dt = Math.min(.05, (now - last) / 1000); last = now;
   requestAnimationFrame(frame);
   try{
-    if (tvSimOn()){ if (TV.cur != null) tvSave(TV.cur); for (const i of [1, 0]){ tvLoad(i); if (!TV.over){ update(dt); if (TV.bot && i === 1) botSimStep(dt); } render(); tvSave(i); } drawLucas(dt); }
+    if (tvSimOn()){ if (TV.cur != null) tvSave(TV.cur); for (const i of [1, 0]){ tvLoad(i); if (!TV.over){ update(dt); if ((TV.bot || TV.vsBot) && i === 1) botSimStep(dt); } render(); tvSave(i); } drawLucas(dt); }
     else { update(dt); render(); drawLucas(dt); }
   }catch(e){ console.error(e); }
 }
@@ -1732,6 +1745,7 @@ async function tvCreate(n){
   const url = APP_URL + '?tv=' + r.code + '&r=' + VERSION;
   $('tvCode').textContent = r.code; $('tvQr').innerHTML = '';
   $('tvlSub').textContent = n === 1 ? 'Escanea el código con tu móvil para usarlo de mando' : 'Los dos jugadores escanean el código con su móvil';
+  $('tvBot').classList.toggle('on', n === 2);
   tvPaintSlots(); show('ovTVL');
   loadQR(() => { try{ new QRCode($('tvQr'), { text: url, width: 400, height: 400, colorDark: '#05070f', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M }); }catch(e){} });
   tvPoll();
@@ -1752,7 +1766,7 @@ async function tvMakeSlot(i){
 }
 function tvPaintSlots(){
   if (!TV) return;
-  $('tvSlots').innerHTML = TV.slots.map((sl, i) => `<div class="tslot ${sl.ok || sl.relay ? 'ok' : ''}" style="--sc:${TV_COL[i]}"><i></i><span>${sl.ok || sl.relay ? '✓ <b>' + esc(sl.name || 'Jugador ' + (i + 1)) + '</b>' : 'Jugador ' + (i + 1) + ' · <span style="color:var(--mute)">' + (sl.name ? 'conectando…' : 'esperando…') + '</span>'}</span></div>`).join('');
+  $('tvSlots').innerHTML = TV.slots.map((sl, i) => `<div class="tslot ${sl.ok || sl.relay ? 'ok' : ''}" style="--sc:${TV_COL[i]}"><i></i><span>${sl.bot ? '🤖 <b>LUCAS-BOT</b> <span style="color:var(--mute)">· ' + ['fácil', 'normal', 'experto'][botLevel] + '</span>' : sl.ok || sl.relay ? '✓ <b>' + esc(sl.name || 'Jugador ' + (i + 1)) + '</b>' : 'Jugador ' + (i + 1) + ' · <span style="color:var(--mute)">' + (sl.name ? 'conectando…' : 'esperando…') + '</span>'}</span></div>`).join('');
 }
 function tvPoll(){
   clearTimeout(TV && TV.pollT);
@@ -1782,6 +1796,8 @@ function tvSend(i, o){
 }
 function tvVib(i, p){ tvSend(i, { t: 'vib', p }); }
 function tvOnConnect(i){
+  if (TV.slots[i].bot) return;
+  if (i === 1) $('tvBot').classList.remove('on');
   tvPaintSlots(); SFX.level();
   toast((TV.slots[i].name || 'Jugador ' + (i + 1)) + ' se ha conectado', 'ok', { titulo: 'MANDO ' + (i + 1) });
   if (TV.slots.every(sl => sl.ok || sl.relay)) setTimeout(tvAllReady, 700);
@@ -1791,6 +1807,19 @@ function tvOnLost(i){
   toast((sl.name || 'Jugador ' + (i + 1)) + ' se ha desconectado. Puede volver a escanear el QR.', 'err', { titulo: 'MANDO ' + (i + 1) });
   // nueva invitación para ese mando
   tvMakeSlot(i).then(ns => { if (!TV) return; ns.name = ''; TV.slots[i] = ns; api('tv_reset', { code: TV.code, slot: i, o: ns.offer }); tvPaintSlots(); tvPoll(); });
+}
+function tvUseBot(lv){
+  if (!TV || TV.n !== 2 || TV.stage) return;
+  const s1 = TV.slots[1];
+  if (s1 && (s1.ok || s1.relay) && !s1.bot) return;
+  botLevel = [0, 1, 2].includes(lv) ? lv : 1; LS.set('botLv', botLevel);
+  try{ s1 && s1.dc && s1.dc.close(); s1 && s1.pc && s1.pc.close(); }catch(e){}
+  TV.vsBot = true;
+  TV.slots[1] = { i: 1, name: 'LUCAS-BOT', bot: true, ok: true, ses: '', lastUi: '', inSeen: 1e9 };
+  $('tvBot').classList.remove('on');
+  tvPaintSlots(); SFX.level();
+  toast('LUCAS-BOT (' + ['fácil', 'normal', 'experto'][botLevel] + ') será el jugador 2', 'ok', { titulo: 'RIVAL MÁQUINA' });
+  if (TV.slots[0] && (TV.slots[0].ok || TV.slots[0].relay)) setTimeout(tvAllReady, 700);
 }
 function tvAllReady(){
   if (!TV) return;
@@ -1807,6 +1836,7 @@ function tvOnMsg(i, m){
   if (m.t === 'hello'){ sl.name = String(m.n || sl.name || '').slice(0, 14); sl.ses = m.ses || ''; tvPaintSlots(); return; }
   if (m.t === 'in'){ tvInput(i, m.k, m.v); return; }
   if (m.t === 'pick' && i === 0 && TV.stage === 'modes'){ tvStartDuo(m); return; }
+  if (/^bot[012]$/.test(m.t || '') && i === 0){ tvUseBot(+m.t[3]); return; }
   if (m.t === 'again' && i === 0){ if (TV.n === 1) tvStartSolo(); else tvRevancha(); return; }
   if (m.t === 'change' && i === 0 && TV.n === 2){ duoLeave(true); TV.over = false; TV.boards = null; TV.stage = 'modes'; tvShowChoosing(); return; }
   if (m.t === 'exit' && i === 0){ tvExit(); return; }
@@ -1845,7 +1875,7 @@ function tvStartDuo(cfg){
   TV.stage = 'play'; TV.over = false; TV.cfg = { modo: md, single: !!cfg.single, meta: [500, 1000, 2000].includes(+cfg.meta) ? +cfg.meta : 1000 };
   const st = { code: 'TV', seed: Math.floor(Math.random() * 2e9), status: 'playing', players: TV.slots.map(sl => ({ n: sl.name || 'Jugador', s: 0, h: null })),
     turn: first, turnN: 0, grid: '', move: null, t0: Date.now(), turnAt: Date.now(), rev: 0, first, modo: md, meta: TV.cfg.meta, single: TV.cfg.single, ev: [], v: 1, now: Date.now() };
-  DUO = { local: true, code: 'TV', token: '', me: first, st, v: 1, off: 0, turnN: -1, rev: 0, myTurn: false, path: [], skipAsk: 0 };
+  DUO = { local: true, bot: !!TV.vsBot, code: 'TV', token: '', me: first, st, v: 1, off: 0, turnN: -1, rev: 0, myTurn: false, path: [], skipAsk: 0 };
   tvBoardsSetup();
   duoBegin();
   tvBoardsStart();
@@ -1895,9 +1925,11 @@ function tvExit(){
 function tvUiTick(){
   if (!TV) return;
   TV.slots.forEach((sl, i) => {
-    if (!(sl.ok || sl.relay)) return;
+    if (!(sl.ok || sl.relay) || sl.bot) return;
     let ui;
-    if (TV.stage === 'modes') ui = i === 0 ? { t: 'ui', scr: 'modes' } : { t: 'ui', scr: 'msg', icon: '🎮', title: 'PREPARADO', sub: esc(TV.slots[0].name) + ' está eligiendo el modo de juego…' };
+    if (!TV.stage && TV.n === 2 && i === 0) ui = { t: 'ui', scr: 'over', icon: '🎮', title: 'ESPERANDO AL JUGADOR 2', sub: 'Que escanee el QR de la TV…<br>o juega ya contra <b style="color:var(--cyan)">🤖 LUCAS-BOT</b>:', col1: true, btns: [['bot1', '⚡ NORMAL'], ['bot0', 'FÁCIL'], ['bot2', '🔥 EXPERTO']] };
+    else if (!TV.stage) return;
+    else if (TV.stage === 'modes') ui = i === 0 ? { t: 'ui', scr: 'modes' } : { t: 'ui', scr: 'msg', icon: '🎮', title: 'PREPARADO', sub: esc(TV.slots[0].name) + ' está eligiendo el modo de juego…' };
     else if (TV.stage === 'play'){
       let turn = true, txt = '', sc = 0, bombs = -1;
       if (TV.n === 1){ sc = score; txt = phase === 'play' ? '¡A JUGAR!' : ''; }
@@ -2036,7 +2068,36 @@ function botSimStep(dt){
 }
 
 /* ---------- el móvil como mando ---------- */
-function padShow(id){ document.querySelectorAll('#pad2 .pScr').forEach(e => e.classList.toggle('on', e.id === id)); document.body.classList.toggle('padplay', id === 'pScrPad'); }
+function padShow(id){ document.querySelectorAll('#pad2 .pScr').forEach(e => e.classList.toggle('on', e.id === id)); document.body.classList.toggle('padplay', id === 'pScrPad'); if (id === 'pScrPad'){ padLockLand(); padOrient(); } }
+// mando en horizontal aunque el móvil tenga el giro automático bloqueado: si la pantalla sigue en vertical, giramos el mando nosotros
+let padGamma = 0;
+function padOrient(){
+  const w = innerWidth, h = innerHeight, rot = !!PAD && h > w;
+  const b = document.body;
+  b.style.setProperty('--pw', w + 'px'); b.style.setProperty('--ph', h + 'px');
+  b.classList.toggle('padrot', rot); b.classList.toggle('padrotL', rot && padGamma > 40);
+  if (padOrient.was !== rot + '' + (padGamma > 40)){ padOrient.was = rot + '' + (padGamma > 40); setTimeout(() => window.dispatchEvent(new Event('padfit')), 60); }
+}
+// coordenadas táctiles dentro de un elemento del mando, contando con el giro
+function padLocal(e, el){
+  const r = el.getBoundingClientRect(), b = document.body.classList;
+  if (!b.contains('padrot')) return [e.clientX - r.left, e.clientY - r.top];
+  if (b.contains('padrotL')) return [r.bottom - e.clientY, e.clientX - r.left];
+  return [e.clientY - r.top, r.right - e.clientX];
+}
+function padLockLand(){
+  try{ if (screen.orientation && screen.orientation.lock && (document.fullscreenElement || document.webkitFullscreenElement)) screen.orientation.lock('landscape').then(padOrient).catch(() => {}); }catch(e){}
+}
+function padSensors(){
+  try{ if (window.DeviceOrientationEvent && DeviceOrientationEvent.requestPermission) DeviceOrientationEvent.requestPermission().catch(() => {}); }catch(e){}
+}
+window.addEventListener('resize', () => { if (PAD) padOrient(); });
+window.addEventListener('orientationchange', () => { if (PAD) setTimeout(padOrient, 200); });
+window.addEventListener('deviceorientation', e => {
+  if (!PAD || e.gamma == null) return;
+  // de lado: gamma cerca de ±90 → hacia qué lado está girado el móvil
+  if (Math.abs(e.gamma) > 50 && Math.abs(e.beta || 0) < 50){ const g = e.gamma; if ((g > 0) !== (padGamma > 40)){ padGamma = g > 0 ? 90 : -90; padOrient(); } }
+});
 function padOpen(code){
   PAD = { code: String(code || '').toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4), slot: -1, pc: null, dc: null, relay: false, ui: null, modo: LS.get('duoModo', 'clasico'), meta: LS.get('duoMeta', 1000) };
   document.body.classList.add('padmode'); hideAll();
@@ -2049,7 +2110,7 @@ function padMsg(icon, t, sub){ $('pMsgIcon').textContent = icon; $('pMsgT').text
 async function padJoin(){
   const nombre = $('pNameIn').value.trim();
   if (nombre.length < 2){ toast('Escribe tu nombre', 'err'); return; }
-  LS.set('name', nombre); initAudio();
+  LS.set('name', nombre); initAudio(); goFullscreen(); padSensors();
   padMsg('📡', 'CONECTANDO', 'Conectando con la TV…');
   const r = await api('tv_unir', { code: PAD.code, nombre });
   if (!r.ok){ padMsg('⚠️', 'NO SE PUDO CONECTAR', esc(r.error || 'Inténtalo otra vez')); return; }
@@ -2103,6 +2164,7 @@ function padOnMsg(m){
   } else if (m.scr === 'modes'){ padModes(); }
   else if (m.scr === 'over'){
     $('pOverIcon').textContent = m.icon || '🏆'; $('pOverT').textContent = m.title || 'FIN'; $('pOverS').innerHTML = m.sub || '';
+    $('pOverBtns').classList.toggle('col1', !!m.col1);
     $('pOverBtns').innerHTML = (m.btns || []).map(([k, t], i) => `<button class="big ${i === 0 ? 'pink' : 'alt'}" data-k="${k}">${t}</button>`).join('');
     $('pOverBtns').querySelectorAll('button').forEach(b => b.onclick = () => { SFX.click(); padSendRaw({ t: b.dataset.k }); padMsg('⏳', 'UN MOMENTO', ''); });
     padShow('pScrOver');
@@ -2126,8 +2188,8 @@ function padButtons(){
     const k = b.dataset.k;
     b.addEventListener('pointerdown', e => {
       e.preventDefault(); b.classList.add('down');
-      const r = b.getBoundingClientRect(), rp = document.createElement('span'); rp.className = 'rip';
-      const sz = Math.max(r.width, r.height) * 2.2; rp.style.width = rp.style.height = sz + 'px'; rp.style.left = (e.clientX - r.left) + 'px'; rp.style.top = (e.clientY - r.top) + 'px';
+      const rp = document.createElement('span'), [lx, ly] = padLocal(e, b); rp.className = 'rip';
+      const sz = Math.max(b.offsetWidth, b.offsetHeight) * 2.2; rp.style.width = rp.style.height = sz + 'px'; rp.style.left = lx + 'px'; rp.style.top = ly + 'px';
       b.appendChild(rp); setTimeout(() => rp.remove(), 500);
       try{ navigator.vibrate && navigator.vibrate(k === 'drop' ? 25 : 10); }catch(err){}
       if (k === 'soft'){ padIn('soft', 1); return; }
@@ -2140,9 +2202,9 @@ function padButtons(){
   // pantalla táctil central: arrastrar mueve, tocar gira, deslizar abajo rápido suelta
   const tp = $('pTouch'), tcv = $('pTouchCv'), tctx = tcv.getContext('2d');
   let st = null, trail = [];
-  const fit = () => { const r = tp.getBoundingClientRect(), d = Math.min(devicePixelRatio || 1, 2); tcv.width = r.width * d; tcv.height = r.height * d; tctx.setTransform(d, 0, 0, d, 0, 0); };
-  window.addEventListener('resize', fit); setTimeout(fit, 100);
-  const pt = e => { const r = tp.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  const fit = () => { const d = Math.min(devicePixelRatio || 1, 2); tcv.width = tp.clientWidth * d; tcv.height = tp.clientHeight * d; tctx.setTransform(d, 0, 0, d, 0, 0); };
+  window.addEventListener('resize', () => setTimeout(fit, 80)); window.addEventListener('padfit', fit); setTimeout(fit, 100);
+  const pt = e => padLocal(e, tp);
   tp.addEventListener('pointerdown', e => {
     e.preventDefault(); tp.setPointerCapture(e.pointerId);
     const [x, y] = pt(e); st = { x, y, t: performance.now(), mx: 0, moved: false, soft: false };
@@ -2811,6 +2873,7 @@ $('bTV1').onclick = () => tvCreate(1);
 $('bTV2').onclick = () => tvCreate(2);
 $('bTVBack').onclick = () => show('ovMenu');
 $('bTVCancel').onclick = () => tvExit();
+$('tvBot').querySelectorAll('button').forEach(b => b.onclick = () => { SFX.click(); tvUseBot(+b.dataset.l); });
 $('pJoinBtn').onclick = padJoin;
 $('pNameIn').onkeydown = e => { if (e.key === 'Enter') padJoin(); };
 $('pStart').onclick = () => { SFX.click(); LS.set('duoSingle', $('pSingle').checked); padSendRaw({ t: 'pick', modo: PAD.modo, single: $('pSingle').checked, meta: PAD.meta }); padMsg('🚀', '¡EMPEZAMOS!', 'Mira la TV'); };
