@@ -173,6 +173,26 @@ body.duo #bPauseM{display:none!important}
 .duoRes div span{font-family:Orbitron;font-weight:900;font-size:26px;color:#fff}
 .duoRes .win{border-color:var(--yellow);box-shadow:0 0 18px rgba(255,225,77,.35)}
 .codeIn{text-transform:uppercase;letter-spacing:8px;font-family:Orbitron!important;font-weight:900}
+/* ---------- victoria ---------- */
+#ovDuoOver{overflow:hidden}
+#fxCv{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.vcard{position:relative;overflow:visible!important;--wc:#38f9ff;animation:vin .7s cubic-bezier(.2,1.5,.4,1) both;border-color:var(--wc)!important;box-shadow:0 0 60px color-mix(in srgb,var(--wc) 45%,transparent),0 0 0 1px rgba(255,255,255,.06) inset!important}
+.vrays{position:absolute;left:50%;top:44px;width:520px;height:520px;margin:-260px 0 0 -260px;pointer-events:none;z-index:-1;opacity:.55;
+  background:repeating-conic-gradient(from 0deg,color-mix(in srgb,var(--wc) 55%,transparent) 0 8deg,transparent 8deg 22deg);
+  -webkit-mask:radial-gradient(circle,#000 0,#000 30%,transparent 68%);mask:radial-gradient(circle,#000 0,#000 30%,transparent 68%);animation:vspin 9s linear infinite}
+.vtrophy{font-size:76px;line-height:1;margin-top:-64px;filter:drop-shadow(0 0 24px var(--wc)) drop-shadow(0 0 8px #ffe14d);animation:vbounce 1.2s ease-in-out infinite}
+.vlabel{font-family:Orbitron;font-weight:900;letter-spacing:8px;font-size:15px;color:#ffe14d;text-shadow:0 0 14px #ffe14d;margin-top:8px;animation:vflick 2.5s infinite}
+.vname{font-family:Orbitron;font-weight:900;font-size:clamp(30px,9vw,48px);line-height:1.05;margin:4px 0 6px;color:#fff;
+  text-shadow:0 0 10px var(--wc),0 0 30px var(--wc),0 0 60px var(--wc);animation:vpop .6s .25s cubic-bezier(.2,1.6,.4,1) both;word-break:break-word}
+.vreason{color:var(--txt);font-size:16px;font-weight:700;opacity:.85;margin-bottom:6px}
+.vcard.lose .vtrophy{filter:drop-shadow(0 0 24px var(--wc))}
+.duoRes .win{animation:vwin 1s ease-in-out infinite alternate}
+@keyframes vin{from{opacity:0;transform:scale(.6) translateY(40px)}to{opacity:1;transform:none}}
+@keyframes vspin{to{transform:rotate(360deg)}}
+@keyframes vbounce{0%,100%{transform:translateY(0) rotate(-6deg) scale(1)}50%{transform:translateY(-10px) rotate(6deg) scale(1.08)}}
+@keyframes vpop{from{opacity:0;transform:scale(2.2);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+@keyframes vflick{0%,90%,94%,100%{opacity:1}92%{opacity:.3}}
+@keyframes vwin{to{box-shadow:0 0 28px rgba(255,225,77,.65);transform:scale(1.03)}}
 /* ---------- avisos (toasts) ---------- */
 #toasts{position:fixed;top:calc(12px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:60;display:flex;flex-direction:column;gap:10px;width:min(420px,calc(100% - 24px));pointer-events:none}
 .tst{--c:#38f9ff;--g:rgba(56,249,255,.35);position:relative;overflow:hidden;pointer-events:auto;cursor:pointer;display:flex;gap:12px;align-items:center;padding:12px 16px 15px 12px;border-radius:18px;
@@ -325,12 +345,15 @@ body.duo #bPauseM{display:none!important}
 </div></div>
 
 <!-- DOBLES: final -->
-<div class="ov" id="ovDuoOver"><div class="card">
-  <div class="title" style="font-size:28px" id="doTitle">¡FIN!</div>
-  <div class="sub" id="doSub"></div>
+<div class="ov" id="ovDuoOver"><canvas id="fxCv"></canvas><div class="card vcard">
+  <div class="vrays"></div>
+  <div class="vtrophy" id="doTrophy">🏆</div>
+  <div class="vlabel" id="doLabel">VICTORIA</div>
+  <div class="vname" id="doTitle">MANU</div>
+  <div class="vreason" id="doSub"></div>
   <div class="duoRes"><div id="doP0"><b style="color:var(--cyan)" id="doN0"></b><span id="doS0">0</span></div><div id="doP1"><b style="color:var(--pink)" id="doN1"></b><span id="doS1">0</span></div></div>
   <button class="big pink" id="bRevancha">⚡ REVANCHA</button>
-  <button class="big alt" id="bDuoMenu">☰ MENÚ</button>
+  <button class="big alt" id="bDuoMenu">✕ SALIR DE LA PARTIDA</button>
 </div></div>
 
 <!-- LOGIN -->
@@ -352,7 +375,7 @@ body.duo #bPauseM{display:none!important}
 /* =========================================================
    CONFIG
    ========================================================= */
-const VERSION = '2026-11-08.3';
+const VERSION = '2026-11-08.4';
 const API = 'https://script.google.com/macros/s/AKfycbxaKM4kZpLJys6zRmCewH29m6kCD9oci_Lp_EXMtOYMUE3Fi97FAtpLaoUo2rMHEzaJ9g/exec';
 const APP_URL = 'https://puntofibra.github.io/cortocircuito/';
 const SHARE_URL = APP_URL + '?v=2'; // cambiar el número si se cambia la imagen de compartir (WhatsApp guarda la tarjeta antigua)
@@ -1548,6 +1571,7 @@ function duoNet(m){
     st.players[mv.by].s += mv.pts; st.players[mv.by].h = mv.hold;
     st.move = mv; st.grid = mv.grid; st.turn = DUO.me; st.turnN = DUO.turnN + 1; st.turnAt = srvNow();
     if (mv.over) st.status = 'over';
+    if (mv.lose) st.loser = mv.by;
     DUO.live = null;
     duoReplayStart(mv);
   }
@@ -1649,7 +1673,7 @@ function duoOnState(st){
   duoSync();
 }
 function duoBegin(){
-  const st = DUO.st;
+  const st = DUO.st; cancelAnimationFrame(vfx);
   mode = 'duo'; document.body.classList.add('duo');
   decGrid(st.grid); score = 0; level = 1; circuits = 0; chain = 0; maxChain = 0; particles = []; floaters = []; zapCells = [];
   piece = null; holdP = null; canHold = true; lucasMood = 'idle'; dropAcc = 0; lockAcc = 0; lockMoves = 0; zapT = 0;
@@ -1706,22 +1730,22 @@ function duoRecord(final){
   }
   else if (final) l[3] = t;
 }
+function duoRedLine(){ for (let r = 0; r < 2; r++) for (let c = 0; c < COLS; c++) if (grid[r][c]) return true; return false; }
 function duoAfterResolve(over){
-  if (DUO.myTurn){ duoSend(!!over); return; }
+  if (DUO.myTurn){ duoSend(!!over || duoRedLine()); return; }
   const mv = DUO.replayMove;
   if (mv) decGrid(mv.grid);
   DUO.turnN = (mv ? mv.turnN : DUO.turnN) + 1; DUO.replayMove = null;
   piece = null; phase = 'wait'; updateHud(); duoSync();
 }
 function duoSend(over){
-  const pts = over ? 0 : score;
+  const pts = score;
   DUO.myTurn = false; piece = null; phase = 'wait';
-  let nextFits = true;
-  if (!over){ const p = duoPiece(DUO.turnN + 1); nextFits = fits(p, 1, 3, 0); }
-  const payload = { code: DUO.code, token: DUO.token, turnN: DUO.turnN, pi: over ? -1 : DUO.pi, path: over ? [] : DUO.path, grid: encGrid(), pts, hold: DUO.hold, over: over || !nextFits };
-  p2pSend({ t: 'm', mv: { turnN: DUO.turnN, by: DUO.me, pi: payload.pi, path: payload.path.length ? [payload.path[payload.path.length - 1].slice(0, 3).concat(0)] : [], grid: payload.grid, pts, hold: DUO.hold, over: payload.over } });
+  // "over" = este jugador ha tocado la línea roja (o no le cabe la pieza): pierde él
+  const payload = { code: DUO.code, token: DUO.token, turnN: DUO.turnN, pi: DUO.path.length ? DUO.pi : -1, path: DUO.path.length ? DUO.path : [], grid: encGrid(), pts: over ? score : pts, hold: DUO.hold, over: !!over, lose: !!over };
+  p2pSend({ t: 'm', mv: { turnN: DUO.turnN, by: DUO.me, pi: payload.pi, path: payload.path.length ? [payload.path[payload.path.length - 1].slice(0, 3).concat(0)] : [], grid: payload.grid, pts, hold: DUO.hold, over: payload.over, lose: payload.lose } });
   DUO.st.players[DUO.me].s += pts; DUO.st.players[DUO.me].h = DUO.hold; DUO.st.turn = 1 - DUO.me; DUO.st.turnAt = srvNow();
-  DUO.turnN++; DUO.st.turnN = DUO.turnN; if (payload.over) DUO.st.status = 'over';
+  DUO.turnN++; DUO.st.turnN = DUO.turnN; if (payload.over){ DUO.st.status = 'over'; DUO.st.loser = DUO.me; }
   score = 0; updateHud(); drawMini();
   const send = (n) => api('duo_jugada', payload).then(r => {
     if (r.ok && r.ignorada && r.st && r.st.turnN < payload.turnN && n < 15) setTimeout(() => send(n + 1), 600);  // el servidor aún no tiene la jugada anterior
@@ -1774,16 +1798,81 @@ function duoTick(){
 function duoShowOver(){
   if (phase === 'duoOver') return;
   phase = 'duoOver'; piece = null; musicStop();
-  const st = DUO.st, me = DUO.me, p = st.players, rival = 1 - me;
-  let win = p[0].s === p[1].s ? -1 : (p[0].s > p[1].s ? 0 : 1);
-  if (st.abandono != null) win = 1 - st.abandono;
+  const st = DUO.st, me = DUO.me, p = st.players;
+  // reglas: quien toca la línea roja pierde; si se acaba el tiempo, gana quien tenga más puntos
+  let win, reason;
+  if (st.abandono != null){ win = 1 - st.abandono; reason = (st.abandono === me ? 'Has abandonado' : p[st.abandono].n + ' ha abandonado') + ' el duelo'; }
+  else if (st.loser != null){ win = 1 - st.loser; reason = (st.loser === me ? 'Has tocado' : p[st.loser].n + ' ha tocado') + ' la línea roja ⚡'; }
+  else { win = p[0].s === p[1].s ? -1 : (p[0].s > p[1].s ? 0 : 1); reason = '⏱ Se acabó el tiempo · ' + (win === -1 ? 'empate a puntos' : 'gana por puntos'); }
   const iWin = win === me;
-  $('doTitle').textContent = win === -1 ? '¡EMPATE!' : iWin ? '¡HAS GANADO!' : '¡GANA ' + String(p[win].n).toUpperCase() + '!';
-  $('doSub').textContent = st.abandono != null ? (st.abandono === me ? 'Has abandonado el duelo' : p[st.abandono].n + ' ha abandonado el duelo') : (iWin ? '¡Eres el rey de los cortocircuitos!' : win === -1 ? 'Igualados. ¿Desempate?' : '¿Te vas a quedar así? Pide la revancha');
-  [0, 1].forEach(i => { $('doN' + i).textContent = (i === me ? 'TÚ · ' : '') + p[i].n; $('doS' + i).textContent = fmt(p[i].s); $('doP' + i).classList.toggle('win', win === i); });
+  // aviso en el tablero antes de la celebración
+  if (st.loser != null){ shake = 18; flash = .8; SFX.bomb(); floaters.push({ x: wall + COLS * cell / 2, y: cell * 3, txt: '¡LÍNEA ROJA!', col: '#ff2b6d', life: 1.4, size: 1.4 }); }
+  else if (st.abandono == null){ floaters.push({ x: wall + COLS * cell / 2, y: ROWS * cell * .4, txt: '¡TIEMPO!', col: '#ffe14d', life: 1.4, size: 1.5 }); SFX.level(); }
+  const card = document.querySelector('#ovDuoOver .vcard');
+  const wc = win === -1 ? '#ffe14d' : (win === 0 ? '#38f9ff' : '#ff2bd6');
+  card.style.setProperty('--wc', wc); card.classList.toggle('lose', !iWin && win !== -1);
+  $('doTrophy').textContent = win === -1 ? '🤝' : '🏆';
+  $('doLabel').textContent = win === -1 ? 'EMPATE' : iWin ? '¡VICTORIA!' : 'GANADOR';
+  $('doTitle').textContent = win === -1 ? '¡IGUALADOS!' : (iWin ? '¡HAS GANADO!' : String(p[win].n).toUpperCase());
+  $('doSub').textContent = reason;
+  [0, 1].forEach(i => { $('doN' + i).textContent = (i === me ? 'TÚ · ' : '') + p[i].n; $('doS' + i).textContent = '0'; $('doP' + i).classList.toggle('win', win === i); });
   $('bRevancha').style.display = st.abandono != null ? 'none' : '';
-  if (iWin){ SFX.level(); lucasMood = 'happy'; moodT = 3; } else { SFX.over(); lucasMood = 'dead'; }
-  setTimeout(() => { if (phase === 'duoOver') show('ovDuoOver'); }, 900);
+  lucasMood = iWin ? 'happy' : (win === -1 ? 'idle' : 'dead'); moodT = 99;
+  setTimeout(() => {
+    if (phase !== 'duoOver') return;
+    show('ovDuoOver');
+    // los marcadores suben contando
+    [0, 1].forEach(i => { const to = p[i].s, t0 = performance.now(); (function step(n){ const k = Math.min(1, (n - t0) / 1400); $('doS' + i).textContent = fmt(Math.round(to * (1 - Math.pow(1 - k, 3)))); if (k < 1 && phase === 'duoOver') requestAnimationFrame(step); })(t0); });
+    victoryFx(wc, true);
+    fanfare(iWin || win === -1);
+  }, st.loser != null || st.abandono == null ? 1300 : 500);
+}
+// fanfarria de victoria (sintetizada)
+function fanfare(happy){
+  if (!AC) return;
+  const notes = happy ? [[0, 0], [4, .12], [7, .24], [12, .36], [7, .52], [12, .62], [16, .74]] : [[0, 0], [-1, .2], [-5, .4], [-12, .65]];
+  notes.forEach(([s, t]) => { tone(523 * Math.pow(2, s / 12), .22, 'square', .07, 0, t); tone(523 * Math.pow(2, (s + 12) / 12), .2, 'triangle', .05, 0, t); });
+  if (happy){ setTimeout(() => { for (let i = 0; i < 6; i++) setTimeout(() => SFX.spark(), i * 140); }, 900); tone(130, .8, 'sawtooth', .08, 260, .74); }
+}
+// confeti, fuegos artificiales y rayos a pantalla completa
+let vfx = null;
+function victoryFx(color, party){
+  const cvs = $('fxCv'), ctx = cvs.getContext('2d'), d = Math.min(devicePixelRatio || 1, 2);
+  const W = cvs.width = innerWidth * d, H = cvs.height = innerHeight * d;
+  const cols = [color, '#ffe14d', '#ffffff', '#3dff8b', '#ff9f43'];
+  const P = [], start = performance.now(); let lastBurst = 0;
+  if (party) for (let i = 0; i < 160; i++) P.push({ k: 'c', x: Math.random() * W, y: -Math.random() * H * .6, vx: (Math.random() - .5) * 80 * d, vy: (120 + Math.random() * 180) * d, r: Math.random() * 6, vr: (Math.random() - .5) * 10, w: (5 + Math.random() * 6) * d, h: (8 + Math.random() * 10) * d, col: cols[i % cols.length], life: 99 });
+  const burst = () => {
+    const x = W * (.15 + Math.random() * .7), y = H * (.12 + Math.random() * .35), c = cols[Math.random() * cols.length | 0], n = 46;
+    for (let i = 0; i < n; i++){ const a = i / n * Math.PI * 2, v = (180 + Math.random() * 220) * d; P.push({ k: 's', x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, col: Math.random() < .3 ? '#fff' : c, life: 1.2 + Math.random() * .4, max: 1.6, s: (2 + Math.random() * 2) * d }); }
+    P.push({ k: 'f', x, y, life: .25, max: .25, col: c });
+    if (AC) noise(.3, .12, 600, 'lowpass');
+  };
+  cancelAnimationFrame(vfx); let lt = start;
+  (function loop(now){
+    if (!$('ovDuoOver').classList.contains('on')){ ctx.clearRect(0, 0, W, H); return; }
+    vfx = requestAnimationFrame(loop);
+    const dt = Math.min(.05, (now - lt) / 1000); lt = now; const t = (now - start) / 1000;
+    if (party && t < 5 && now - lastBurst > 420 + Math.random() * 300){ lastBurst = now; burst(); }
+    ctx.clearRect(0, 0, W, H);
+    // rayos eléctricos al principio
+    if (t < 1.2 && Math.random() < .5){
+      ctx.save(); ctx.strokeStyle = '#fff'; ctx.shadowColor = color; ctx.shadowBlur = 20 * d; ctx.lineWidth = 2.5 * d; ctx.beginPath();
+      let x = Math.random() * W, y = 0; ctx.moveTo(x, y);
+      while (y < H * .6){ x += (Math.random() - .5) * 80 * d; y += (30 + Math.random() * 40) * d; ctx.lineTo(x, y); }
+      ctx.stroke(); ctx.restore();
+    }
+    for (let i = P.length - 1; i >= 0; i--){
+      const q = P[i];
+      if (q.k === 'c'){ q.x += q.vx * dt; q.y += q.vy * dt; q.r += q.vr * dt; q.vx += Math.sin(t * 3 + i) * 20 * dt * d;
+        if (q.y > H + 20){ if (t < 6) { q.y = -20; q.x = Math.random() * W; } else { P.splice(i, 1); continue; } }
+        ctx.save(); ctx.translate(q.x, q.y); ctx.rotate(q.r); ctx.scale(1, Math.abs(Math.cos(q.r * 1.7))); ctx.fillStyle = q.col; ctx.fillRect(-q.w / 2, -q.h / 2, q.w, q.h); ctx.restore(); continue; }
+      q.life -= dt; if (q.life <= 0){ P.splice(i, 1); continue; }
+      const a = q.life / q.max;
+      if (q.k === 's'){ q.vx *= .985; q.vy = q.vy * .985 + 260 * d * dt; q.x += q.vx * dt; q.y += q.vy * dt; ctx.globalAlpha = Math.min(1, a * 1.5); ctx.fillStyle = q.col; ctx.fillRect(q.x, q.y, q.s, q.s); ctx.globalAlpha = 1; }
+      else if (q.k === 'f'){ const g = ctx.createRadialGradient(q.x, q.y, 0, q.x, q.y, 120 * d); g.addColorStop(0, 'rgba(255,255,255,' + a * 2.4 + ')'); g.addColorStop(1, 'rgba(255,255,255,0)'); ctx.fillStyle = g; ctx.fillRect(q.x - 120 * d, q.y - 120 * d, 240 * d, 240 * d); }
+    }
+  })(start);
 }
 async function duoRevancha(){
   if (!DUO) return;
