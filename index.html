@@ -41,27 +41,29 @@ button{font-family:Orbitron,sans-serif;cursor:pointer;border:0;color:inherit}
 
 /* ---------- JUEGO ---------- */
 #game{height:100%;display:grid;gap:14px;padding:14px;
-  grid-template-columns:1fr auto 1fr;grid-template-areas:"left board right";align-items:center}
+  grid-template-columns:1fr auto 1fr;grid-template-rows:minmax(0,1fr);grid-template-areas:"left board right";align-items:center}
+#boardWrap{align-self:stretch}
 #left,#right{display:flex;flex-direction:column;gap:12px;min-width:0}
 #left{align-items:flex-end}#right{align-items:flex-start}
 #bPauseM{display:none;position:absolute;top:6px;right:6px;z-index:5;width:34px;height:34px;align-items:center;justify-content:center;border-radius:10px;background:rgba(5,8,20,.75);border:1px solid var(--line);font-size:13px;color:var(--txt)}
 #boardWrap{grid-area:board;height:100%;display:flex;align-items:center;justify-content:center;min-width:0;min-height:0;position:relative}
 #board{display:block;border-radius:14px}
 #left{grid-area:left}#right{grid-area:right}
-.box{background:linear-gradient(160deg,rgba(20,30,64,.85),rgba(8,12,28,.9));border:1px solid var(--line);border-radius:14px;padding:10px 14px;width:190px;
+.box{background:linear-gradient(160deg,rgba(20,30,64,.85),rgba(8,12,28,.9));border:1px solid var(--line);border-radius:14px;padding:10px 14px;width:clamp(190px,15vw,250px);
   box-shadow:0 0 0 1px rgba(56,249,255,.05) inset,0 10px 30px rgba(0,0,0,.4)}
 .lbl{font-family:Orbitron;font-size:10px;letter-spacing:2px;color:var(--mute);text-transform:uppercase}
 .val{font-family:Orbitron;font-weight:900;font-size:26px;color:#fff;text-shadow:0 0 12px rgba(56,249,255,.6);line-height:1.15}
 .val.sm{font-size:18px}
 .mini{display:block;margin:4px auto 0}
 #lucasBox{padding:6px}
-#lucasCv{display:block;margin:auto}
-.row2{display:flex;gap:8px;width:190px}
+#lucasCv{display:block;margin:auto;width:100%;height:auto;aspect-ratio:180/170}
+.mini{width:clamp(80px,6.5vw,110px);height:clamp(80px,6.5vw,110px)}
+.row2{display:flex;gap:8px;width:clamp(190px,15vw,250px)}
 .ibtn{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 0;font-size:16px}
 .ibtn:active{transform:scale(.95)}
 .ibtn.off{opacity:.35}
 #pad{grid-area:pad;display:none}
-.keys{font-size:12px;color:var(--mute);line-height:1.6;width:190px}
+.keys{font-size:12px;color:var(--mute);line-height:1.6;width:clamp(190px,15vw,250px)}
 .keys b{color:var(--txt);font-family:Orbitron;font-size:10px;background:#141c38;border:1px solid var(--line);padding:1px 6px;border-radius:5px}
 
 #lucasMini{display:none;grid-area:lucasM;align-self:center}
@@ -173,6 +175,14 @@ body.duo #bPauseM{display:none!important}
 .duoRes div span{font-family:Orbitron;font-weight:900;font-size:26px;color:#fff}
 .duoRes .win{border-color:var(--yellow);box-shadow:0 0 18px rgba(255,225,77,.35)}
 .codeIn{text-transform:uppercase;letter-spacing:8px;font-family:Orbitron!important;font-weight:900}
+.tgl{display:flex;gap:12px;align-items:center;text-align:left;margin:4px 0 6px;padding:12px;border-radius:14px;background:rgba(5,8,20,.5);border:1px solid #24346a;cursor:pointer}
+.tgl input{display:none}
+.tgl .sw{flex:0 0 50px;height:28px;border-radius:99px;background:#1a2445;border:1px solid #2a3b77;position:relative;transition:.25s}
+.tgl .sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#7d8bb3;transition:.25s}
+.tgl input:checked + .sw{background:rgba(255,225,77,.25);border-color:var(--yellow);box-shadow:0 0 12px rgba(255,225,77,.4)}
+.tgl input:checked + .sw::after{left:25px;background:var(--yellow);box-shadow:0 0 10px var(--yellow)}
+.tgl .tx b{display:block;font-size:16px;color:#fff}
+.tgl .tx small{font-size:13px;color:var(--mute);line-height:1.3}
 /* ---------- victoria ---------- */
 #ovDuoOver{overflow:hidden}
 #fxCv{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
@@ -232,7 +242,7 @@ body.duo #bPauseM{display:none!important}
       <div class="keys"><b>← →</b> mover &nbsp;<b>↑</b> girar &nbsp;<b>Z</b> girar ↺<br><b>↓</b> bajar &nbsp;<b>ESPACIO</b> soltar<br><b>C</b> guardar &nbsp;<b>P</b> pausa</div>
     </aside>
     <canvas id="lucasMini" width="128" height="128"></canvas>
-    <div id="boardWrap"><div id="duoBar"><div class="dp" id="dp0"><b id="dn0">—</b><span id="ds0">0</span><i id="dt0"></i></div><div class="dvs"><b id="duoClock">3:00</b><button id="bDuoExit" title="Salir del duelo">✕ salir</button></div><div class="dp" id="dp1"><b id="dn1">—</b><span id="ds1">0</span><i id="dt1"></i></div></div><canvas id="board"></canvas><button id="bPauseM" title="Pausa">❚❚</button></div>
+    <div id="boardWrap"><div id="duoBar"><div class="dp" id="dp0"><b id="dn0">—</b><span id="ds0">0</span><i id="dt0"></i></div><div class="dvs"><small id="duoModeTag" style="font-size:9px;letter-spacing:1px;color:var(--yellow)"></small><b id="duoClock">3:00</b><button id="bDuoExit" title="Salir del duelo">✕ salir</button></div><div class="dp" id="dp1"><b id="dn1">—</b><span id="ds1">0</span><i id="dt1"></i></div></div><canvas id="board"></canvas><button id="bPauseM" title="Pausa">❚❚</button></div>
     <aside id="right">
       <div class="box"><div class="lbl" id="nextLbl">Siguiente</div><canvas id="nextCv" class="mini" width="80" height="80"></canvas></div>
       <div class="box"><div class="lbl">Nivel</div><div class="val sm" id="sLevel">1</div><div class="lbl" style="margin-top:6px">Circuitos</div><div class="val sm" id="sCirc">0</div></div>
@@ -310,6 +320,7 @@ body.duo #bPauseM{display:none!important}
 <div class="ov" id="ovDuoMenu"><div class="card">
   <div class="title" style="font-size:30px">DOBLES</div>
   <div class="sub">Por turnos en el mismo tablero. Quien cierra el circuito se lleva los puntos.</div>
+  <label class="tgl"><input type="checkbox" id="duoSingle"><span class="sw"></span><span class="tx"><b>Una sola ficha por tirada</b><small>Modo más fácil. Si no lo marcas, se juega con 2 fichas como siempre.</small></span></label>
   <button class="big pink" id="bDuoCrear">⚡ CREAR PARTIDA (QR)</button>
   <div class="lgBox"><h3>¿TE HAN DADO UN CÓDIGO?</h3>
     <input class="name codeIn" id="duoCodeIn" maxlength="4" placeholder="ABCD" autocomplete="off">
@@ -323,6 +334,7 @@ body.duo #bPauseM{display:none!important}
   <div class="sub" style="margin-bottom:4px">Que tu rival escanee este QR con su móvil. No necesita cuenta.</div>
   <div id="qrBox"></div>
   <div class="codeBig" id="duoCode">····</div>
+  <div class="sub" id="duoModeTxt" style="margin:0 0 4px;color:var(--yellow)"></div>
   <div class="sub"><span class="dots">Esperando rival</span></div>
   <div class="grid2"><button class="big alt" id="bDuoShare">📲 ENVIAR ENLACE</button><button class="big alt" id="bDuoCancel">✕ CANCELAR</button></div>
 </div></div>
@@ -375,7 +387,7 @@ body.duo #bPauseM{display:none!important}
 /* =========================================================
    CONFIG
    ========================================================= */
-const VERSION = '2026-11-08.4';
+const VERSION = '2026-11-08.6';
 const API = 'https://script.google.com/macros/s/AKfycbxaKM4kZpLJys6zRmCewH29m6kCD9oci_Lp_EXMtOYMUE3Fi97FAtpLaoUo2rMHEzaJ9g/exec';
 const APP_URL = 'https://puntofibra.github.io/cortocircuito/';
 const SHARE_URL = APP_URL + '?v=2'; // cambiar el número si se cambia la imagen de compartir (WhatsApp guarda la tarjeta antigua)
@@ -506,7 +518,7 @@ function newTile(){
   return { m: bag.pop(), bomb: level >= 2 && Math.random() < .06, id: ++uid, fy: 0, vy: 0 };
 }
 function newPiece(){ return { a: newTile(), b: newTile(), r: 1, c: 3, o: 0 }; }
-function cellsOf(p, r = p.r, c = p.c, o = p.o){ return [[r, c, p.a], [r + OFF[o][0], c + OFF[o][1], p.b]]; }
+function cellsOf(p, r = p.r, c = p.c, o = p.o){ return p.single ? [[r, c, p.a]] : [[r, c, p.a], [r + OFF[o][0], c + OFF[o][1], p.b]]; }
 function fits(p, r, c, o){
   return cellsOf(p, r, c, o).every(([rr, cc]) => cc >= 0 && cc < COLS && rr < ROWS && (rr < 0 || !grid[rr][cc]));
 }
@@ -540,7 +552,7 @@ function rotate(dir){
   const kicks = [[0,0],[0,-1],[0,1],[-1,0],[0,-2],[0,2]];
   for (const [dr, dc] of kicks){
     if (fits(piece, piece.r + dr, piece.c + dc, o)){
-      piece.r += dr; piece.c += dc; piece.o = o; piece.a.m = fa(piece.a.m); piece.b.m = fa(piece.b.m);
+      piece.r += dr; piece.c += dc; piece.o = o; piece.a.m = fa(piece.a.m); if (piece.b) piece.b.m = fa(piece.b.m);
       SFX.rot(); afterMove(); return;
     }
   }
@@ -779,8 +791,16 @@ function wallSparks(dt){
    DIBUJO
    ========================================================= */
 function resize(){
-  dpr = Math.min(window.devicePixelRatio || 1, 2);
-  const wrap = $('boardWrap'), db = $('duoBar'), aw = wrap.clientWidth, ah = wrap.clientHeight - (db.offsetParent ? db.offsetHeight + 6 : 0);
+  dpr = Math.min(window.devicePixelRatio || 1, 3);
+  // lienzos nítidos en pantallas grandes y con zoom (Ctrl +)
+  [[$('lucasCv'), 180, 170], [$('lucasMini'), 128, 128], [$('nextCv'), 80, 80], [$('holdCv'), 80, 80], [$('menuCv'), 680, 520]].forEach(([cv, lw, lh]) => {
+    const r = cv.getBoundingClientRect(), w = r.width || lw / 2, h = r.height || lh / 2, k = Math.max(dpr, 1);
+    cv.width = Math.max(1, Math.round(w * k)); cv.height = Math.max(1, Math.round(h * k)); cv._k = cv.width / lw;
+  });
+  const wrap = $('boardWrap'), db = $('duoBar'), ah = wrap.clientHeight - (db.offsetParent ? db.offsetHeight + 6 : 0);
+  // en PC (horizontal) el tablero aprovecha toda la altura; en móvil, el ancho
+  const isPC = !matchMedia('(max-width:820px), (orientation:portrait)').matches;
+  const aw = isPC ? Math.max(wrap.clientWidth, innerWidth - 2 * ($('holdBox').offsetWidth + 60)) : wrap.clientWidth;
   cell = Math.max(16, Math.floor(Math.min(aw / (COLS + 1.2), ah / ROWS)));
   wall = Math.round(cell * .6);
   bw = COLS * cell + wall * 2; bh = ROWS * cell;
@@ -959,9 +979,10 @@ function bolt(ctx, x1, y1, x2, y2){
   ctx.lineTo(x2, y2); ctx.stroke();
 }
 function drawPieceMini(cvs, p){
-  const ctx = cvs.getContext('2d'), s = 34, W2 = cvs.width, H2 = cvs.height;
-  ctx.clearRect(0, 0, W2, H2);
+  const ctx = cvs.getContext('2d'), s = 34, W2 = 80, H2 = 80;
+  ctx.setTransform(cvs._k || 1, 0, 0, cvs._k || 1, 0, 0); ctx.clearRect(0, 0, W2, H2);
   if (!p) return;
+  if (p.single){ drawCable(ctx, W2 / 2 - s / 2, H2 / 2 - s / 2, s, p.a, 0); return; }
   drawCable(ctx, W2 / 2 - s / 2, H2 / 2 - 1, s, p.a, 0);
   drawCable(ctx, W2 / 2 - s / 2, H2 / 2 - s - 1, s, p.b, 0);
 }
@@ -1015,6 +1036,7 @@ function thrust(ctx, x, y, w, mood, i){
   ctx.restore();
 }
 function paintLucas(ctx, cx0, cy0, sc, mood){
+  ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
   const bob = Math.sin(lt * 3) * 4 + (mood === 'happy' ? Math.abs(Math.sin(lt * 14)) * -8 : 0);
   const jit = mood === 'scared' ? (Math.random() - .5) * 3 : 0;
   const key = mood === 'happy' ? 'lucas_feliz' : mood === 'scared' ? 'lucas_susto' : mood === 'dead' ? 'lucas_roto' : 'lucas';
@@ -1090,8 +1112,8 @@ function paintLucas(ctx, cx0, cy0, sc, mood){
 }
 function drawLucas(dt){
   lt += dt;
-  if (lcv.offsetParent !== null){ lctx.clearRect(0, 0, lcv.width, lcv.height); paintLucas(lctx, lcv.width / 2, lcv.height / 2, 1, lucasMood); }
-  if (lmv.offsetParent !== null){ lmctx.clearRect(0, 0, lmv.width, lmv.height); paintLucas(lmctx, 64, 62, .86, lucasMood); }
+  if (lcv.offsetParent !== null){ const k = lcv._k || 1; lctx.setTransform(k, 0, 0, k, 0, 0); lctx.clearRect(0, 0, 180, 170); paintLucas(lctx, 90, 85, 1, lucasMood); }
+  if (lmv.offsetParent !== null){ const k = lmv._k || 1; lmctx.setTransform(k, 0, 0, k, 0, 0); lmctx.clearRect(0, 0, 128, 128); paintLucas(lmctx, 64, 62, .86, lucasMood); }
 }
 
 /* =========================================================
@@ -1338,8 +1360,8 @@ function drawMenu(now){
   requestAnimationFrame(drawMenu);
   if (!$('ovMenu').classList.contains('on')) return;
   const dt = Math.min(.05, (now - mLast) / 1000); mLast = now;
-  const W2 = mcv.width, H2 = mcv.height, ctx = mctx, T = 5.2, t = (now / 1000) % T;
-  ctx.clearRect(0, 0, W2, H2);
+  const W2 = 680, H2 = 520, ctx = mctx, T = 5.2, t = (now / 1000) % T;
+  ctx.setTransform(mcv._k || 1, 0, 0, mcv._k || 1, 0, 0); ctx.clearRect(0, 0, W2, H2);
   const base = RAYOS[1];
   const ready = base && base.complete && base.naturalWidth;
   // fases: 0-2.2 tranquilo · 2.2-3.5 descarga creciente · 3.5-3.75 estallido · resto: humo y vuelta
@@ -1560,8 +1582,8 @@ function duoNet(m){
     let L = DUO.live;
     if (!L || L.n !== m.n || L.pi !== m.pi){ L = DUO.live = { n: m.n, pi: m.pi, p: duoPiece(m.pi) }; }
     L.p.r = m.r; L.p.c = m.c; L.p.o = m.o;
-    let a = L.p.a.m0, b = L.p.b.m0; for (let i = 0; i < ((m.o % 4) + 4) % 4; i++){ a = rotR(a); b = rotR(b); }
-    L.p.a.m = a; L.p.b.m = b;
+    let a = L.p.a.m0, b = L.p.b ? L.p.b.m0 : 0; for (let i = 0; i < ((m.o % 4) + 4) % 4; i++){ a = rotR(a); b = rotR(b); }
+    L.p.a.m = a; if (L.p.b) L.p.b.m = b;
     if (L.lastR !== undefined && (L.lastR !== m.r || L.lastC !== m.c)) SFX.move();
     L.lastR = m.r; L.lastC = m.c;
   } else if (m.t === 'm'){     // jugada terminada: se aplica al instante
@@ -1580,7 +1602,7 @@ const DUO_TURN_MS = 10000, DUO_MAX_MS = 180000;
 function mulberry(a){ return function(){ a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 const DUO_MASKS = [5, 10, 5, 10, 3, 6, 12, 9, 3, 6, 12, 9, 7, 14, 13, 11, 15];
 function duoTile(r, k){ const m = DUO_MASKS[r() * DUO_MASKS.length | 0]; const bomb = r() < (k >= 6 && k < 100000 ? .06 : 0); return { m, m0: m, bomb, id: ++uid, fy: 0, vy: 0 }; }
-function duoPiece(idx){ const r = mulberry((DUO.st.seed + idx * 7919) | 0); return { a: duoTile(r, idx), b: duoTile(r, idx), r: 1, c: 3, o: 0, idx }; }
+function duoPiece(idx){ const r = mulberry((DUO.st.seed + idx * 7919) | 0); const p = { a: duoTile(r, idx), b: duoTile(r, idx), r: 1, c: 3, o: 0, idx }; if (DUO.st.single){ delete p.b; p.single = true; } return p; }
 function encGrid(){ let s = ''; for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++){ const t = grid[r][c]; s += t ? (t.m + (t.bomb ? 16 : 0)).toString(32) : '.'; } return s; }
 function decGrid(s){
   grid = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
@@ -1593,17 +1615,19 @@ function duoActiveName(){ return DUO.myTurn ? 'PARA TI' : 'PARA ' + String(duoRi
 function duoActiveColor(){ const i = DUO.myTurn ? DUO.me : 1 - DUO.me; return i === 0 ? '#38f9ff' : '#ff2bd6'; }
 
 // --- crear / unirse ---
-function duoMenu(){ initAudio(); SFX.click(); $('duoCodeIn').value = ''; show('ovDuoMenu'); }
+function duoMenu(){ initAudio(); SFX.click(); $('duoCodeIn').value = ''; $('duoSingle').checked = !!LS.get('duoSingle', false); show('ovDuoMenu'); }
 async function duoCrear(){
   if (!USER){ openLogin('duo'); return; }
   const w = toast('Creando el duelo…', 'load', { titulo: 'DOBLES' });
   const offer = await p2pHostOffer();
-  const r = await api('duo_crear', { ses: USER.ses, o: offer });
+  const single = $('duoSingle').checked; LS.set('duoSingle', single);
+  const r = await api('duo_crear', { ses: USER.ses, o: offer, single });
   w.close();
   if (!r.ok){ if (r.error === 'SESION'){ logout(true); openLogin('duo'); } else toast(r.error || 'No se pudo crear la partida', 'err'); return; }
   duoInit(r);
   const url = APP_URL + '?duo=' + r.st.code;
   $('duoCode').textContent = r.st.code; $('qrBox').innerHTML = '';
+  $('duoModeTxt').textContent = r.st.single ? 'Modo: 1 ficha por tirada' : 'Modo: 2 fichas por tirada';
   show('ovDuo');
   loadQR(() => { try{ new QRCode($('qrBox'), { text: url, width: 400, height: 400, colorDark: '#05070f', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M }); }catch(e){} });
 }
@@ -1628,7 +1652,7 @@ async function duoOpenJoin(code){
     if (j.ok){ duoInit(j); duoOnState(j.st); return; }
   }
   if (r.st.status !== 'waiting'){ toast('Ese duelo ya ha empezado o ha terminado', 'err', { titulo: 'DUELO' }); return; }
-  $('joinTxt').innerHTML = '<b style="color:var(--cyan)">' + esc(r.st.players[0].n) + '</b> te reta a un duelo de CORTOCIRCUITO';
+  $('joinTxt').innerHTML = '<b style="color:var(--cyan)">' + esc(r.st.players[0].n) + '</b> te reta a un duelo de CORTOCIRCUITO<br><span style="color:var(--yellow)">' + (r.st.single ? '1 ficha por tirada' : '2 fichas por tirada') + '</span>';
   $('joinName').value = USER ? USER.user.nombre : LS.get('name', '');
   $('bJoin').dataset.code = code; $('bJoin').dataset.offer = r.st.o || '';
   show('ovJoin');
@@ -1674,7 +1698,7 @@ function duoOnState(st){
 }
 function duoBegin(){
   const st = DUO.st; cancelAnimationFrame(vfx);
-  mode = 'duo'; document.body.classList.add('duo');
+  mode = 'duo'; document.body.classList.add('duo'); $('duoModeTag').textContent = st.single ? '1 FICHA' : '2 FICHAS';
   decGrid(st.grid); score = 0; level = 1; circuits = 0; chain = 0; maxChain = 0; particles = []; floaters = []; zapCells = [];
   piece = null; holdP = null; canHold = true; lucasMood = 'idle'; dropAcc = 0; lockAcc = 0; lockMoves = 0; zapT = 0;
   DUO.turnN = st.turnN; DUO.myTurn = false;
@@ -1768,8 +1792,8 @@ function duoReplayStart(mv){
 function duoRpFrame(f){
   const k = ((f[2] % 4) + 4) % 4;
   piece.r = f[0]; piece.c = f[1]; piece.o = f[2];
-  let a = piece.a.m0, b = piece.b.m0; for (let i = 0; i < k; i++){ a = rotR(a); b = rotR(b); }
-  piece.a.m = a; piece.b.m = b; dirty = true;
+  let a = piece.a.m0, b = piece.b ? piece.b.m0 : 0; for (let i = 0; i < k; i++){ a = rotR(a); b = rotR(b); }
+  piece.a.m = a; if (piece.b) piece.b.m = b; dirty = true;
 }
 function duoReplayStep(dt){
   const rp = DUO.rp; if (!rp || !piece) return;
