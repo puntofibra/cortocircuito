@@ -244,8 +244,10 @@ body.tvsim.botmode #game{grid-template-rows:minmax(0,1fr) auto!important;grid-te
 .tvwIcons{font-size:30px;letter-spacing:6px;animation:vbounce 2s infinite}
 body.tvsim #left,body.tvsim #right,body.tvsim #lucasMini,body.tvsim #rivalCv{display:none!important}
 body.tvsim #game{grid-template-columns:1fr!important;grid-template-areas:"board"!important}
-body.tvsim #boardWrap{flex-direction:row;flex-wrap:wrap;justify-content:center;align-content:center;gap:24px}
-body.tvsim #duoBar{flex-basis:100%;max-width:900px}
+body.tvsim #boardWrap{display:grid;grid-template-columns:auto auto;grid-template-rows:auto auto;justify-content:center;align-content:center;align-items:start;column-gap:clamp(20px,4vw,80px);row-gap:14px}
+body.tvsim #duoBar{grid-column:1 / -1;grid-row:1;justify-self:center;width:min(900px,100%);max-width:none}
+body.tvsim #board{grid-column:1;grid-row:2}
+body.tvsim #board2{grid-column:2;grid-row:2}
 #board2{display:none;border-radius:14px}
 body.tvsim #board2{display:block}
 /* ---------- mando (móvil) ---------- */
@@ -614,7 +616,7 @@ body.padplay.padrot .pb.big2{height:min(26vw,110px)}
 /* =========================================================
    CONFIG
    ========================================================= */
-const VERSION = '2026-11-08.14';
+const VERSION = '2026-11-08.15';
 const API = 'https://script.google.com/macros/s/AKfycbxaKM4kZpLJys6zRmCewH29m6kCD9oci_Lp_EXMtOYMUE3Fi97FAtpLaoUo2rMHEzaJ9g/exec';
 const APP_URL = 'https://puntofibra.github.io/cortocircuito/';
 const SHARE_URL = APP_URL + '?v=2'; // cambiar el número si se cambia la imagen de compartir (WhatsApp guarda la tarjeta antigua)
@@ -1744,7 +1746,8 @@ function tvSave(i){
 }
 function tvResize(){
   const wrap = $('boardWrap'), db = $('duoBar');
-  const ah = wrap.clientHeight - (db.offsetHeight + 30), aw = (wrap.clientWidth - 40) / 2;
+  const gap = Math.max(20, Math.min(80, innerWidth * .04));
+  const ah = wrap.clientHeight - (db.offsetHeight + 30), aw = (wrap.clientWidth - gap - 20) / 2;
   const c = Math.max(14, Math.floor(Math.min(aw / (COLS + 1.2), ah / ROWS)));
   [[$('board'), 0], [$('board2'), 1]].forEach(([el, i]) => {
     const B = TV.boards[i]; if (!B) return;
@@ -2081,28 +2084,31 @@ function botTurnStart(){
     let bc = 3, bh = -1; for (let x = 0; x < COLS; x++){ let h = 0; for (let y = 0; y < ROWS; y++) if (grid[y][x]){ h = ROWS - y; break; } if (h > bh){ bh = h; bc = x; } }
     plan = { o: 0, c: bc };
   } else plan = botBest(piece, md, 1, botLevel === 2) || { o: 0, c: 3 };
-  const wait = [520, 330, 190][botLevel];
+  // ritmo humano: piensa un rato y mueve la ficha paso a paso (el nivel cambia lo bien que juega, no lo rápido)
+  const think = [1100, 850, 650][botLevel] + Math.random() * 700, gapT = () => [300, 250, 210][botLevel] + Math.random() * 120;
+  let first = true;
   const step = () => {
     if (!DUO || !DUO.bot || phase !== 'play' || DUO.me !== 1) return;
     if (piece.o !== plan.o && !piece.trap && !piece.single || (piece.single && piece.o !== plan.o)) rotate(1);
     else if (piece.c < plan.c && fits(piece, piece.r, piece.c + 1, piece.o)) move(1);
     else if (piece.c > plan.c && fits(piece, piece.r, piece.c - 1, piece.o)) move(-1);
-    else { hardDrop(); return; }
-    botT = setTimeout(step, wait * .55);
+    else { botT = setTimeout(() => { if (DUO && DUO.bot && phase === 'play' && DUO.me === 1) hardDrop(); }, 250 + Math.random() * 250); return; }
+    botT = setTimeout(step, gapT());
   };
-  botT = setTimeout(step, wait + Math.random() * 300);
+  botT = setTimeout(step, think);
 }
 // cara a cara / espejo: el bot juega su tablero en tiempo real
 function botSimStep(dt){
   const B = TV.boards[1];
   if (phase !== 'play' || !piece || DUO.dead || DUO.timeUp) return;
-  if (!B.bot || B.bot.id !== piece.a.id){ B.bot = { id: piece.a.id, plan: botBest(piece, DUO.st.modo, 1, false) || { o: 0, c: 3 }, t: [0.6, 0.35, 0.18][botLevel] + Math.random() * .3 }; }
+  if (!B.bot || B.bot.id !== piece.a.id){ B.bot = { id: piece.a.id, plan: botBest(piece, DUO.st.modo, 1, false) || { o: 0, c: 3 }, t: [1.0, 0.8, 0.6][botLevel] + Math.random() * .6 }; }
   B.bot.t -= dt; if (B.bot.t > 0) return;
-  B.bot.t = [0.26, 0.15, 0.08][botLevel];
+  B.bot.t = ([0.3, 0.25, 0.21][botLevel] + Math.random() * .12);
   const plan = B.bot.plan;
   if (piece.o !== plan.o) rotate(1);
   else if (piece.c < plan.c && fits(piece, piece.r, piece.c + 1, piece.o)) move(1);
   else if (piece.c > plan.c && fits(piece, piece.r, piece.c - 1, piece.o)) move(-1);
+  else if (!B.bot.ready){ B.bot.ready = true; B.bot.t = .25 + Math.random() * .25; }
   else hardDrop();
 }
 
