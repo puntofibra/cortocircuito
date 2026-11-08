@@ -285,19 +285,25 @@ body.padmode #app{display:none}
   #pScrModes .pmRow .tgl .tx b{font-size:19px}
   #pScrModes .pmRow .big{width:100%;flex:none;max-width:none;padding:20px;font-size:22px}
 }
-.pOverBtns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;width:100%;max-width:640px}
-.pOverBtns .big{flex:1;min-width:160px;margin:4px 0}
+.pOverBtns{display:flex;flex-direction:column;gap:12px;justify-content:center;width:100%;max-width:560px;margin-top:8px}
+.pOverBtns .big{flex:none;width:100%;max-width:none;min-width:0;margin:0;padding:20px 16px;font-size:20px}
+.pOverBtns .big.pink{padding:24px 16px;font-size:23px}
 .pOverBtns.col1{flex-direction:column;max-width:360px}
 .pOverBtns.col1 .big{flex:none}
 #pScrPad{flex-direction:row;align-items:stretch;gap:10px;padding:10px}
-.pCol{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:min(30vw,230px);align-content:center}
+.pCol{display:flex;flex-direction:column;gap:12px;width:min(27vw,240px);flex:none}
+.pCol .pb{flex:1;height:auto!important;min-height:0;font-size:clamp(34px,12vmin,60px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.pCol .pb small{font-size:11px}
+.pbRot{color:#fff!important}
 .pb{position:relative;overflow:hidden;height:min(22vh,92px);border-radius:20px;font-size:30px;color:var(--pc,#38f9ff);
   background:linear-gradient(180deg,#18245a,#0a1028);border:1px solid color-mix(in srgb,var(--pc,#38f9ff) 40%,#24346a);
   box-shadow:0 6px 0 #050816,0 0 18px color-mix(in srgb,var(--pc,#38f9ff) 18%,transparent);text-shadow:0 0 12px var(--pc,#38f9ff);transition:transform .06s,box-shadow .06s}
 .pb small{display:block;font-size:10px;letter-spacing:2px;font-family:Orbitron}
 .pb.big2{grid-column:span 2;height:min(26vh,110px);font-size:34px;color:#fff;background:linear-gradient(180deg,color-mix(in srgb,var(--pc,#38f9ff) 70%,#000),color-mix(in srgb,var(--pc,#38f9ff) 30%,#05070f))}
-.pb.trap{display:none;color:var(--yellow);border-color:var(--yellow)}
-body.padtrap .pb.trap{display:block}
+.po.bomb{display:none;border-color:rgba(255,225,77,.55);background:linear-gradient(180deg,#3a2c05,#140f02)}
+body.padtrap .po.bomb{display:flex}
+.po.bomb em{background:rgba(255,225,77,.15);color:var(--yellow);border-color:rgba(255,225,77,.5)}
+.po.bomb:disabled{opacity:.4}
 .pb.down{transform:translateY(5px) scale(.97);box-shadow:0 1px 0 #050816,0 0 34px var(--pc,#38f9ff)}
 .pb .rip{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.7),transparent 70%);transform:translate(-50%,-50%) scale(0);animation:rip .45s ease-out forwards;pointer-events:none}
 @keyframes rip{to{transform:translate(-50%,-50%) scale(1);opacity:0}}
@@ -312,7 +318,8 @@ body.padtrap .pb.trap{display:block}
 .pmTurn small{display:block;font-family:Rajdhani;font-weight:600;font-size:12px;letter-spacing:1px;color:var(--mute);text-shadow:none;margin-top:2px}
 .pmScore{text-align:right;font-family:Orbitron;font-weight:900;font-size:clamp(20px,7vmin,32px);color:#fff;line-height:1}
 .pmScore small{display:block;font-size:9px;letter-spacing:3px;color:var(--mute);margin-top:3px}
-.pmOpts{position:relative;flex:1;min-height:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.pmOpts{position:relative;flex:1;min-height:0;display:flex;gap:8px}
+.pmOpts .po{flex:1 1 0;min-width:0}
 .po{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:0;border-radius:16px;cursor:pointer;color:#fff;
   background:linear-gradient(180deg,#141d44,#0a1028);border:1px solid #24346a;box-shadow:0 4px 0 #050816;transition:transform .08s,box-shadow .08s,border-color .2s;-webkit-tap-highlight-color:transparent}
 .po i{font-style:normal;font-size:clamp(20px,6.5vmin,30px);line-height:1;filter:drop-shadow(0 0 8px rgba(56,249,255,.4))}
@@ -331,7 +338,7 @@ body.padtrap .pb.trap{display:block}
 .pRot b{font-family:Orbitron;font-size:20px;color:var(--cyan)}
 body.padplay.padrot #pad2{inset:auto;left:0;top:0;width:var(--ph,100vh);height:var(--pw,100vw);transform-origin:0 0;transform:translateX(var(--pw,100vw)) rotate(90deg)}
 body.padplay.padrot.padrotL #pad2{transform:translateY(var(--ph,100vh)) rotate(-90deg)}
-body.padplay.padrot .pb.big2{height:min(26vw,110px)}
+
 /* ---------- victoria ---------- */
 #ovDuoOver{overflow:hidden}
 #fxCv{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
@@ -591,8 +598,8 @@ body.padplay.padrot .pb.big2{height:min(26vw,110px)}
   </div>
   <div class="pScr" id="pScrPad">
     <div class="pCol">
-      <button class="pb" data-k="left">◀</button><button class="pb" data-k="right">▶</button>
-      <button class="pb" data-k="rotL">↺</button><button class="pb" data-k="rot">↻</button>
+      <button class="pb pbDir" data-k="left">◀<small>IZQUIERDA</small></button>
+      <button class="pb pbRot" data-k="rot">↻<small>GIRAR</small></button>
     </div>
     <div class="pMid" id="pMid">
       <div class="pmHead"><div class="pmTurn"><span id="pTurn">¡A JUGAR!</span><small id="pMidMode"></small></div><div class="pmScore"><span id="pMidSc">0</span><small>PUNTOS</small></div></div>
@@ -600,13 +607,13 @@ body.padplay.padrot .pb.big2{height:min(26vw,110px)}
         <button class="po" data-o="music"><i>🎵</i><b>MÚSICA TV</b><em>ON</em></button>
         <button class="po" data-o="sfx"><i>🔊</i><b>SONIDOS TV</b><em>ON</em></button>
         <button class="po" data-o="vib"><i>📳</i><b>VIBRACIÓN</b><em>ON</em></button>
+        <button class="po bomb" data-o="trap" id="pTrap"><i>💣</i><b>BOMBA</b><em id="pTrapN">3</em></button>
         <button class="po danger" data-o="quit"><i>🚪</i><b>ABANDONAR</b><em>SALIR</em></button>
       </div>
     </div>
     <div class="pCol">
+      <button class="pb pbDir" data-k="right">▶<small>DERECHA</small></button>
       <button class="pb big2" data-k="drop">⤓<small>SOLTAR</small></button>
-      <button class="pb" data-k="soft">▼</button><button class="pb" data-k="hold">⇄</button>
-      <button class="pb trap" data-k="trap" id="pTrap">💣</button>
     </div>
   </div>
 </div>
@@ -630,7 +637,7 @@ body.padplay.padrot .pb.big2{height:min(26vw,110px)}
 /* =========================================================
    CONFIG
    ========================================================= */
-const VERSION = '2026-11-08.16';
+const VERSION = '2026-11-08.17';
 const API = 'https://script.google.com/macros/s/AKfycbxaKM4kZpLJys6zRmCewH29m6kCD9oci_Lp_EXMtOYMUE3Fi97FAtpLaoUo2rMHEzaJ9g/exec';
 const APP_URL = 'https://puntofibra.github.io/cortocircuito/';
 const SHARE_URL = APP_URL + '?v=2'; // cambiar el número si se cambia la imagen de compartir (WhatsApp guarda la tarjeta antigua)
@@ -670,7 +677,7 @@ function initAudio(){
   }catch(e){ AC = null; }
 }
 function tone(f, d, type = 'square', v = .12, f2 = 0, t0 = 0, bus){
-  if (!AC) return;
+  if (!AC || (!bus && !sfxOn) || (bus === musicBus && !musicOn)) return;
   const t = AC.currentTime + t0, o = AC.createOscillator(), g = AC.createGain();
   o.type = type; o.frequency.setValueAtTime(f, t);
   if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + d);
@@ -679,7 +686,7 @@ function tone(f, d, type = 'square', v = .12, f2 = 0, t0 = 0, bus){
 }
 let noiseBuf = null;
 function noise(d, v = .2, freq = 2000, type = 'highpass', t0 = 0){
-  if (!AC) return;
+  if (!AC || !sfxOn) return;
   if (!noiseBuf){ noiseBuf = AC.createBuffer(1, AC.sampleRate, AC.sampleRate); const ch = noiseBuf.getChannelData(0); for (let i = 0; i < ch.length; i++) ch[i] = Math.random() * 2 - 1; }
   const t = AC.currentTime + t0, s = AC.createBufferSource(), f = AC.createBiquadFilter(), g = AC.createGain();
   s.buffer = noiseBuf; f.type = type; f.frequency.value = freq;
@@ -2220,7 +2227,7 @@ function padOnMsg(m){
     $('pScore').textContent = m.sc != null ? m.sc : '';
     $('pStatus').textContent = m.turn ? '¡Te toca!' : (m.txt || '');
     document.body.classList.toggle('padtrap', m.bombs >= 0);
-    if (m.bombs >= 0){ $('pTrap').textContent = '💣' + m.bombs; $('pTrap').disabled = !m.bombs || !m.turn; }
+    if (m.bombs >= 0){ $('pTrapN').textContent = m.bombs; $('pTrap').disabled = !m.bombs || !m.turn; }
     document.querySelectorAll('#pScrPad .pb').forEach(b => b.style.opacity = m.turn ? 1 : .45);
   } else if (m.scr === 'modes'){ padModes(); }
   else if (m.scr === 'over'){
@@ -2263,6 +2270,7 @@ function padButtons(){
   // opciones del centro
   document.querySelectorAll('#pMid .po').forEach(b => b.addEventListener('click', e => {
     e.preventDefault(); const o = b.dataset.o; SFX.click && SFX.click();
+    if (o === 'trap'){ if (!b.disabled){ padIn('trap'); padVib(40); } return; }
     if (o === 'vib'){ padVibOn = !padVibOn; LS.set('padVib', padVibOn); padOptPaint(); if (padVibOn) padVib(30); return; }
     if (o === 'quit'){
       if (!b.classList.contains('arm')){ b.classList.add('arm'); b.querySelector('b').textContent = '¿SEGURO?'; b.querySelector('em').textContent = 'CONFIRMAR'; padVib([40, 40, 40]); clearTimeout(b._t); b._t = setTimeout(() => padQuitReset(b), 3000); return; }
@@ -2364,7 +2372,7 @@ $('bRestart').onclick = startGame;
 $('bToMenu').onclick = $('bToMenu2').onclick = toMenu;
 $('bSave').onclick = () => openLogin('guardar');
 $('bMusic').onclick = () => { musicOn = !musicOn; LS.set('music', musicOn); initAudio(); if (musicBus) musicBus.gain.value = musicOn ? .22 : 0; if (musicOn && phase === 'play') musicStart(); setAudioBtns(); };
-$('bSfx').onclick = () => { sfxOn = !sfxOn; LS.set('sfx', sfxOn); initAudio(); if (sfxBus) sfxBus.gain.value = sfxOn ? 1 : 0; setAudioBtns(); };
+$('bSfx').onclick = () => { sfxOn = !sfxOn; LS.set('sfx', sfxOn); initAudio(); if (sfxBus){ try{ sfxBus.gain.cancelScheduledValues(AC.currentTime); sfxBus.gain.setValueAtTime(sfxOn ? 1 : 0, AC.currentTime); }catch(e){} sfxBus.gain.value = sfxOn ? 1 : 0; } setAudioBtns(); };
 document.addEventListener('visibilitychange', () => { if (document.hidden && mode !== 'duo') pause(); });
 window.addEventListener('resize', resize);
 
