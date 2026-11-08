@@ -387,7 +387,7 @@ body.duo #bPauseM{display:none!important}
 /* =========================================================
    CONFIG
    ========================================================= */
-const VERSION = '2026-11-08.6';
+const VERSION = '2026-11-08.7';
 const API = 'https://script.google.com/macros/s/AKfycbxaKM4kZpLJys6zRmCewH29m6kCD9oci_Lp_EXMtOYMUE3Fi97FAtpLaoUo2rMHEzaJ9g/exec';
 const APP_URL = 'https://puntofibra.github.io/cortocircuito/';
 const SHARE_URL = APP_URL + '?v=2'; // cambiar el número si se cambia la imagen de compartir (WhatsApp guarda la tarjeta antigua)
@@ -1618,6 +1618,7 @@ function duoActiveColor(){ const i = DUO.myTurn ? DUO.me : 1 - DUO.me; return i 
 function duoMenu(){ initAudio(); SFX.click(); $('duoCodeIn').value = ''; $('duoSingle').checked = !!LS.get('duoSingle', false); show('ovDuoMenu'); }
 async function duoCrear(){
   if (!USER){ openLogin('duo'); return; }
+  if (!(await versionFresca())) return;
   const w = toast('Creando el duelo…', 'load', { titulo: 'DOBLES' });
   const offer = await p2pHostOffer();
   const single = $('duoSingle').checked; LS.set('duoSingle', single);
@@ -1625,7 +1626,7 @@ async function duoCrear(){
   w.close();
   if (!r.ok){ if (r.error === 'SESION'){ logout(true); openLogin('duo'); } else toast(r.error || 'No se pudo crear la partida', 'err'); return; }
   duoInit(r);
-  const url = APP_URL + '?duo=' + r.st.code;
+  const url = APP_URL + '?duo=' + r.st.code + '&r=' + VERSION;
   $('duoCode').textContent = r.st.code; $('qrBox').innerHTML = '';
   $('duoModeTxt').textContent = r.st.single ? 'Modo: 1 ficha por tirada' : 'Modo: 2 fichas por tirada';
   show('ovDuo');
@@ -1637,11 +1638,24 @@ function loadQR(cb){
 }
 async function duoShareLink(){
   if (!DUO) return;
-  const url = APP_URL + '?duo=' + DUO.code, txt = '⚡ ¡Te reto a un duelo de CORTOCIRCUITO! Entra aquí:';
+  const url = APP_URL + '?duo=' + DUO.code + '&r=' + VERSION, txt = '⚡ ¡Te reto a un duelo de CORTOCIRCUITO! Entra aquí:';
   if (navigator.share){ try{ await navigator.share({ title: 'Duelo CORTOCIRCUITO', text: txt, url }); }catch(e){} }
   else window.open('https://wa.me/?text=' + encodeURIComponent(txt + ' ' + url), '_blank');
 }
+// antes de un duelo, los dos móviles deben tener la misma versión del juego
+async function versionFresca(extra){
+  try{
+    const j = await fetch('version.json?t=' + Date.now(), { cache: 'no-store' }).then(r => r.json());
+    if (j.v && j.v !== VERSION && new URLSearchParams(location.search).get('r') !== j.v){
+      toast('Actualizando el juego a la última versión…', 'load', { titulo: 'ACTUALIZACIÓN' });
+      const u = new URL(location.href); u.searchParams.set('r', j.v); Object.keys(extra || {}).forEach(k => u.searchParams.set(k, extra[k]));
+      setTimeout(() => location.replace(u.toString()), 600); return false;
+    }
+  }catch(e){}
+  return true;
+}
 async function duoOpenJoin(code){
+  if (!(await versionFresca({ duo: String(code || '').toUpperCase() }))) return;
   code = String(code || '').toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4);
   if (code.length !== 4){ toast('El código tiene 4 letras', 'err'); return; }
   const saved = LS.get('duo', null);
@@ -1933,7 +1947,7 @@ requestAnimationFrame(frame); requestAnimationFrame(drawMenu);
 /* ---------- actualización automática ---------- */
 let updPending = false, swReg = null;
 function safeToReload(){ return mode !== 'duo' && !$('ovDuo').classList.contains('on') && !$('ovJoin').classList.contains('on') && (phase === 'menu' || phase === 'over' || !grid); }
-function doReload(){ if (doReload.done) return; doReload.done = true; toast('Hay una versión nueva. Actualizando…', 'load', { titulo: 'ACTUALIZACIÓN' }); setTimeout(() => location.reload(), 700); }
+function doReload(){ if (doReload.done || new URLSearchParams(location.search).get('r') === String(updPending)) return; doReload.done = true; toast('Hay una versión nueva. Actualizando…', 'load', { titulo: 'ACTUALIZACIÓN' }); setTimeout(() => { const u = new URL(location.href); u.searchParams.set('r', updPending || Date.now()); location.replace(u.toString()); }, 700); }
 function maybeReload(){ if (updPending && safeToReload() && !$('ovLogin').classList.contains('on')) doReload(); }
 async function checkUpdate(){
   try{
@@ -1941,7 +1955,7 @@ async function checkUpdate(){
     const r = await fetch('version.json?t=' + Date.now(), { cache: 'no-store' });
     if (!r.ok) return;
     const j = await r.json();
-    if (j.v && j.v !== VERSION){ updPending = true; maybeReload(); }
+    if (j.v && j.v !== VERSION){ updPending = j.v; maybeReload(); }
   }catch(e){}
 }
 setInterval(checkUpdate, 60000);
