@@ -271,6 +271,20 @@ body.padmode #app{display:none}
 .pmg .mc .mi{font-size:24px!important}
 .pmRow{display:flex;gap:10px;align-items:center;width:100%;max-width:760px}
 .pmRow .tgl{flex:1;margin:0}.pmRow .big{flex:1;margin:0}
+@media (orientation:portrait){
+  #pScrModes{justify-content:stretch;align-items:stretch;gap:12px;padding:14px 14px max(14px,env(safe-area-inset-bottom));overflow:hidden}
+  #pScrModes .title{flex:none;margin:4px 0 0;font-size:22px!important}
+  #pScrModes .pmg{flex:1;min-height:0;max-width:none;margin:0;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-template-rows:repeat(4,minmax(0,1fr));gap:10px}
+  #pScrModes .pmg .mc{display:flex!important;flex-direction:column!important;align-items:center;justify-content:center;gap:4px;padding:8px 8px!important;min-height:0;border-radius:18px}
+  #pScrModes .pmg .mc .mi{font-size:clamp(30px,9vw,44px)!important;margin:0 0 4px}
+  #pScrModes .pmg .mc .mn{font-size:clamp(12px,3.6vw,15px);min-height:0;white-space:normal;overflow:visible;text-overflow:clip;text-align:center}
+  #pScrModes .pmg .mc .mt{margin-top:4px}
+  #pScrModes #pMetaRow{flex:none;justify-content:center}
+  #pScrModes .pmRow{flex:none;flex-direction:column;gap:12px;max-width:none}
+  #pScrModes .pmRow .tgl{width:100%;flex:none;padding:16px 18px;justify-content:center}
+  #pScrModes .pmRow .tgl .tx b{font-size:19px}
+  #pScrModes .pmRow .big{width:100%;flex:none;max-width:none;padding:20px;font-size:22px}
+}
 .pOverBtns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;width:100%;max-width:640px}
 .pOverBtns .big{flex:1;min-width:160px;margin:4px 0}
 .pOverBtns.col1{flex-direction:column;max-width:360px}
@@ -616,7 +630,7 @@ body.padplay.padrot .pb.big2{height:min(26vw,110px)}
 /* =========================================================
    CONFIG
    ========================================================= */
-const VERSION = '2026-11-08.15';
+const VERSION = '2026-11-08.16';
 const API = 'https://script.google.com/macros/s/AKfycbxaKM4kZpLJys6zRmCewH29m6kCD9oci_Lp_EXMtOYMUE3Fi97FAtpLaoUo2rMHEzaJ9g/exec';
 const APP_URL = 'https://puntofibra.github.io/cortocircuito/';
 const SHARE_URL = APP_URL + '?v=2'; // cambiar el número si se cambia la imagen de compartir (WhatsApp guarda la tarjeta antigua)
