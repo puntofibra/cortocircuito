@@ -1,6 +1,6 @@
 /**
  * CORTOCIRCUITO — API (GitHub Pages ⇄ Apps Script)
- * Hojas: Usuarios · Sesiones · Ranking
+ * Hojas: Usuarios · Sesiones · Ranking · Licencias · Dispositivos · Pagos
  * Peticiones: POST con JSON en el cuerpo {accion, ...}  (y GET ?accion=top&callback= para JSONP)
  */
 const TZ = 'Europe/Madrid';
@@ -82,6 +82,11 @@ function rutear_(d) {
       case 'tv_ui': return conLock_(() => tvSet_(d, 'ui'));
       case 'tv_reset': return conLock_(() => tvReset_(d));
       case 'tv_in': return conLock_(() => tvIn_(d));
+      case 'lic_estado': return conLock_(() => licEstado_(d));
+      case 'lic_pagado': return conLock_(() => licPagado_(d));
+      case 'adm_info': return { ok: true, llave: !!PropertiesService.getScriptProperties().getProperty('ADMIN_NFC') };
+      case 'adm_nfc': return conLock_(() => admNfc_(d));
+      case 'adm': return conLock_(() => adm_(d));
       default: return { ok: true, juego: 'CORTOCIRCUITO' };
     }
   } catch (err) {
@@ -449,4 +454,191 @@ function tvIn_(d) {
   sl.inp = (sl.inp || []).concat([{ n: sl.inN, m: d.m }]).slice(-40);
   tvPut_(st);
   return { ok: true };
+}
+
+
+/* =========================================================
+   LICENCIAS · prueba gratis → pago único (myPOS)
+   Hojas: Licencias · Dispositivos · Pagos
+   ========================================================= */
+const ADMIN_EMAIL = 'futurmovil.com@gmail.com';
+const H_LIC = ['clave', 'tipo', 'email', 'nombre', 'inicio', 'estado', 'intentos', 'pagoAt', 'ref', 'extra', 'dids', 'notas'];
+const H_DEV = ['did', 'fp', 'alta', 'ultimo', 'emails', 'bloq', 'pagado', 'ua', 'visitas'];
+const H_PAG = ['fecha', 'ref', 'clave', 'email', 'nombre', 'did', 'intento', 'estado', 'resuelto'];
+const shLic_ = () => hoja_('Licencias', H_LIC);
+const shDev_ = () => hoja_('Dispositivos', H_DEV);
+const shPag_ = () => hoja_('Pagos', H_PAG);
+const DIA_MS = 86400000;
+
+function cfg_() {
+  let c = {};
+  try { c = JSON.parse(PropertiesService.getScriptProperties().getProperty('CFG') || '{}'); } catch (e) {}
+  return { dias: Number(c.dias) > 0 ? Number(c.dias) : 7, precio: Number(c.precio) > 0 ? Number(c.precio) : 0.99, on: c.on !== false };
+}
+function filas_(sh, cab) {
+  const last = sh.getLastRow();
+  if (last < 2) return [];
+  return sh.getRange(2, 1, last - 1, cab.length).getValues().map((r, i) => { const o = { _fila: i + 2 }; cab.forEach((k, j) => o[k] = r[j]); return o; });
+}
+function setFila_(sh, cab, o, campos) {
+  Object.keys(campos).forEach(k => { const c = cab.indexOf(k) + 1; if (c > 0) { sh.getRange(o._fila, c).setValue(campos[k]); o[k] = campos[k]; } });
+}
+const ms_ = v => v instanceof Date ? v.getTime() : (Number(v) || (v ? new Date(v).getTime() : 0));
+const lista_ = v => String(v || '').split(',').map(x => x.trim()).filter(Boolean);
+const refDe_ = clave => 'CC-' + sha_('ref' + clave).slice(0, 5).toUpperCase();
+
+function devGet_(did, fp, ua) {
+  const sh = shDev_(), rows = filas_(sh, H_DEV), now = new Date();
+  did = String(did || '').replace(/[^\w-]/g, '').slice(0, 64);
+  fp = String(fp || '').replace(/[^\w]/g, '').slice(0, 64);
+  let d = did ? rows.find(r => r.did === did) : null;
+  // si ha borrado sus datos, lo reconocemos por la huella del móvil
+  if (!d && fp) { const m = rows.filter(r => r.fp === fp); if (m.length) d = m.sort((a, b) => ms_(a.alta) - ms_(b.alta))[0]; }
+  if (!d) {
+    const nd = did.length >= 16 ? did : Utilities.getUuid();
+    sh.appendRow([nd, fp, now, now, '', '', '', String(ua || '').slice(0, 120), 1]);
+    return filas_(sh, H_DEV).find(r => r.did === nd);
+  }
+  setFila_(sh, H_DEV, d, { ultimo: now, fp: fp || d.fp, visitas: (Number(d.visitas) || 0) + 1 });
+  return d;
+}
+function licGet_(clave, u, crear) {
+  const sh = shLic_();
+  let l = filas_(sh, H_LIC).find(r => String(r.clave) === clave);
+  if (!l && crear) {
+    sh.appendRow([clave, u ? 'cuenta' : 'móvil', u ? u.email : '', u ? u.nombre : 'Sin cuenta', new Date(), '', 0, '', refDe_(clave), 0, '', '']);
+    l = filas_(sh, H_LIC).find(r => String(r.clave) === clave);
+  }
+  return l;
+}
+// resuelve el estado de una licencia en un móvil
+function licResolver_(l, dev, cfg) {
+  const now = Date.now(), shL = shLic_();
+  // pago avisado sin validar en 24 h → no confirmado
+  if (l.estado === 'pendiente' && now - ms_(l.pagoAt) > DIA_MS) {
+    const n = (Number(l.intentos) || 0) + 1;
+    setFila_(shL, H_LIC, l, { estado: n >= 3 ? 'bloqueado' : 'rechazado', intentos: n });
+    pagMarcar_(l.clave, n >= 3 ? 'no confirmado · bloqueado' : 'no confirmado');
+    if (n >= 3) licBloquearDevs_(l, true);
+  }
+  const inicio = Math.min(ms_(l.inicio) || now, ms_(dev && dev.alta) || now);
+  const total = cfg.dias + (Number(l.extra) || 0);
+  const dias = Math.max(0, Math.ceil((inicio + total * DIA_MS - now) / DIA_MS));
+  const pagado = l.estado === 'pagado' || l.estado === 'regalado' || (dev && dev.pagado === 'sí');
+  let st;
+  if (!cfg.on || pagado) st = 'ok';
+  else if (l.estado === 'bloqueado' || (dev && dev.bloq === 'sí')) st = 'bloqueado';
+  else if (l.estado === 'pendiente') st = 'pendiente';
+  else if (l.estado === 'rechazado') st = 'rechazado';
+  else if (dias > 0) st = 'prueba';
+  else st = 'pago';
+  return { st, dias, intentos: Number(l.intentos) || 0, ref: l.ref || refDe_(l.clave), precio: cfg.precio };
+}
+function licBloquearDevs_(l, bloq) {
+  const sh = shDev_(), rows = filas_(sh, H_DEV), ids = lista_(l.dids);
+  rows.filter(r => ids.indexOf(r.did) >= 0).forEach(r => setFila_(sh, H_DEV, r, { bloq: bloq ? 'sí' : '' }));
+}
+function pagMarcar_(clave, estado) {
+  const sh = shPag_(), rows = filas_(sh, H_PAG).filter(r => String(r.clave) === clave && !r.resuelto);
+  rows.forEach(r => setFila_(sh, H_PAG, r, { estado, resuelto: new Date() }));
+}
+function licCtx_(d) {
+  const cfg = cfg_(), dev = devGet_(d.did, d.fp, d.ua);
+  const u = d.ses ? sesion_(d.ses) : null;
+  const clave = u ? u.email : 'dev:' + dev.did;
+  const l = licGet_(clave, u, true);
+  // enlazar móvil ⇄ licencia
+  const ids = lista_(l.dids); if (ids.indexOf(dev.did) < 0) { ids.push(dev.did); setFila_(shLic_(), H_LIC, l, { dids: ids.slice(-20).join(',') }); }
+  if (u) { const em = lista_(dev.emails); if (em.indexOf(u.email) < 0) { em.push(u.email); setFila_(shDev_(), H_DEV, dev, { emails: em.slice(-10).join(',') }); } if (l.nombre !== u.nombre) setFila_(shLic_(), H_LIC, l, { nombre: u.nombre }); }
+  return { cfg, dev, u, l };
+}
+function licEstado_(d) {
+  const c = licCtx_(d);
+  return Object.assign({ ok: true, did: c.dev.did }, licResolver_(c.l, c.dev, c.cfg));
+}
+function licPagado_(d) {
+  const c = licCtx_(d);
+  const r = licResolver_(c.l, c.dev, c.cfg);
+  if (r.st !== 'pago' && r.st !== 'rechazado') return Object.assign({ ok: true, did: c.dev.did }, r);
+  const now = new Date(), intento = (Number(c.l.intentos) || 0) + 1;
+  setFila_(shLic_(), H_LIC, c.l, { estado: 'pendiente', pagoAt: now });
+  shPag_().appendRow([now, r.ref, c.l.clave, c.l.email, c.l.nombre, c.dev.did, intento, 'pendiente', '']);
+  try {
+    MailApp.sendEmail({ to: ADMIN_EMAIL, subject: '💶 CORTOCIRCUITO — pago por validar ' + r.ref + ' (' + c.cfg.precio.toFixed(2).replace('.', ',') + ' €)',
+      htmlBody: '<div style="font-family:Arial;background:#05070f;color:#dfe8ff;padding:22px;border-radius:12px"><h2 style="color:#38f9ff;margin:0 0 8px">Pago por validar</h2>' +
+        '<p><b>' + (c.l.nombre || 'Sin cuenta') + '</b> ' + (c.l.email || '(sin cuenta)') + '</p><p>Referencia: <b style="color:#ffe14d">' + r.ref + '</b> · intento ' + intento + ' de 3</p>' +
+        '<p>Tienes 24 horas para validarlo en el modo admin del juego (toca 10 veces el título).</p></div>', name: 'CORTOCIRCUITO' });
+  } catch (e) {}
+  return Object.assign({ ok: true, did: c.dev.did }, licResolver_(c.l, c.dev, c.cfg));
+}
+
+/* ---------- admin con llave NFC ---------- */
+function admNfc_(d) {
+  const props = PropertiesService.getScriptProperties(), cache = CacheService.getScriptCache();
+  const fails = Number(cache.get('adm_fails') || 0);
+  if (fails >= 5) return { ok: false, error: 'Demasiados intentos. Espera 15 minutos.' };
+  const h = String(d.h || '');
+  if (h.length < 32) return { ok: false, error: 'Llave no válida' };
+  let sal = props.getProperty('ADMIN_SAL'); if (!sal) { sal = Utilities.getUuid(); props.setProperty('ADMIN_SAL', sal); }
+  const guardada = props.getProperty('ADMIN_NFC');
+  if (!guardada) {
+    if (!d.registrar) return { ok: false, error: 'No hay llave registrada' };
+    props.setProperty('ADMIN_NFC', sha_(sal + h));
+  } else if (sha_(sal + h) !== guardada) {
+    cache.put('adm_fails', String(fails + 1), 900);
+    return { ok: false, error: 'Esa llave no es la del administrador' };
+  }
+  cache.remove('adm_fails');
+  // el móvil del admin nunca paga
+  if (d.did) { const sh = shDev_(), dv = filas_(sh, H_DEV).find(r => r.did === String(d.did)); if (dv) setFila_(sh, H_DEV, dv, { pagado: 'sí' }); }
+  const tok = Utilities.getUuid() + Utilities.getUuid();
+  cache.put('adm_' + tok, '1', 21600);
+  return { ok: true, tok, nueva: !guardada };
+}
+function adm_(d) {
+  const cache = CacheService.getScriptCache();
+  if (!d.tok || !cache.get('adm_' + d.tok)) return { ok: false, error: 'ADMIN' };
+  cache.put('adm_' + d.tok, '1', 21600);
+  const cfg = cfg_(), op = d.op, shL = shLic_();
+  const lic = () => filas_(shL, H_LIC), devs = () => filas_(shDev_(), H_DEV);
+  const findL = () => lic().find(r => String(r.clave) === String(d.clave));
+  const vista = (l, dv) => { const dev = dv.find(x => lista_(l.dids).indexOf(x.did) >= 0); const r = licResolver_(l, dev, cfg);
+    return { clave: l.clave, tipo: l.tipo, email: l.email, nombre: l.nombre, inicio: ms_(l.inicio), st: l.estado === 'regalado' ? 'regalo' : r.st, dias: r.dias, intentos: r.intentos, ref: r.ref, pagoAt: ms_(l.pagoAt), moviles: lista_(l.dids).length, extra: Number(l.extra) || 0 }; };
+  if (op === 'resumen' || op === 'jugadores') {
+    const dv = devs(), L = lic().map(l => vista(l, dv));
+    const cnt = k => L.filter(x => x.st === k).length;
+    const rk = shRk_(), hoy = Utilities.formatDate(new Date(), TZ, 'yyyy-MM-dd');
+    const rkRows = rk.getLastRow() > 1 ? rk.getRange(2, 1, rk.getLastRow() - 1, 2).getValues() : [];
+    const partHoy = rkRows.filter(r => (r[1] instanceof Date ? Utilities.formatDate(r[1], TZ, 'yyyy-MM-dd') : String(r[1])) === hoy).length;
+    return { ok: true, cfg, lista: op === 'jugadores' ? L.sort((a, b) => b.inicio - a.inicio).slice(0, 400) : undefined,
+      res: { cuentas: usuarios_().length, moviles: dv.length, prueba: cnt('prueba'), pago: cnt('pago'), pendiente: cnt('pendiente'), rechazado: cnt('rechazado'), bloqueado: cnt('bloqueado'), pagados: cnt('ok'), regaladas: cnt('regalo'),
+        ingresos: Math.round(cnt('ok') * cfg.precio * 100) / 100, partidas: rkRows.length, partidasHoy: partHoy, activos7: dv.filter(x => Date.now() - ms_(x.ultimo) < 7 * DIA_MS).length },
+      pendientes: L.filter(x => x.st === 'pendiente').sort((a, b) => a.pagoAt - b.pagoAt) };
+  }
+  if (op === 'cfg') {
+    const c = { dias: Math.max(1, Math.min(365, parseInt(d.dias, 10) || cfg.dias)), precio: Math.max(0.1, Math.min(99, Number(String(d.precio).replace(',', '.')) || cfg.precio)), on: d.on !== false };
+    PropertiesService.getScriptProperties().setProperty('CFG', JSON.stringify(c));
+    return { ok: true, cfg: c };
+  }
+  if (op === 'nfcBorrar') { PropertiesService.getScriptProperties().deleteProperty('ADMIN_NFC'); return { ok: true }; }
+  if (op === 'ranking') {
+    const sh = shRk_(), last = sh.getLastRow(); if (last < 2) return { ok: true, lista: [] };
+    const ini = Math.max(2, last - 199), rows = sh.getRange(ini, 1, last - ini + 1, 9).getValues();
+    return { ok: true, lista: rows.map((r, i) => ({ fila: ini + i, fecha: ms_(r[0]), nombre: r[2], puntos: r[3], email: r[8] })).sort((a, b) => b.puntos - a.puntos).slice(0, 60) };
+  }
+  if (op === 'rkBorrar') {
+    const sh = shRk_(), f = parseInt(d.fila, 10);
+    if (f >= 2 && f <= sh.getLastRow() && Number(sh.getRange(f, 4).getValue()) === Number(d.puntos)) { sh.deleteRow(f); cache.remove('top'); return { ok: true }; }
+    return { ok: false, error: 'No encontrado (recarga la lista)' };
+  }
+  const l = findL(); if (!l) return { ok: false, error: 'Jugador no encontrado' };
+  if (op === 'validar' || op === 'regalar') { setFila_(shL, H_LIC, l, { estado: op === 'regalar' ? 'regalado' : 'pagado' }); pagMarcar_(l.clave, op === 'regalar' ? 'regalado' : 'validado'); licBloquearDevs_(l, false); const sh = shDev_(); devs().filter(x => lista_(l.dids).indexOf(x.did) >= 0).forEach(x => setFila_(sh, H_DEV, x, { pagado: 'sí' })); }
+  else if (op === 'rechazar') { const n = (Number(l.intentos) || 0) + 1; setFila_(shL, H_LIC, l, { estado: n >= 3 ? 'bloqueado' : 'rechazado', intentos: n }); pagMarcar_(l.clave, 'rechazado'); if (n >= 3) licBloquearDevs_(l, true); }
+  else if (op === 'desbloquear') { setFila_(shL, H_LIC, l, { estado: '', intentos: 0 }); licBloquearDevs_(l, false); }
+  else if (op === 'bloquear') { setFila_(shL, H_LIC, l, { estado: 'bloqueado' }); licBloquearDevs_(l, true); }
+  else if (op === 'quitarPago') { setFila_(shL, H_LIC, l, { estado: '' }); const sh = shDev_(); devs().filter(x => lista_(l.dids).indexOf(x.did) >= 0).forEach(x => setFila_(sh, H_DEV, x, { pagado: '' })); }
+  else if (op === 'extender') setFila_(shL, H_LIC, l, { extra: (Number(l.extra) || 0) + (parseInt(d.dias, 10) || 7) });
+  else if (op === 'reiniciar') { const dv = devs().find(x => lista_(l.dids).indexOf(x.did) >= 0); const ini = Math.min(ms_(l.inicio) || Date.now(), ms_(dv && dv.alta) || Date.now()); setFila_(shL, H_LIC, l, { extra: Math.ceil((Date.now() - ini) / DIA_MS), estado: (l.estado === 'pagado' || l.estado === 'regalado') ? l.estado : '', intentos: 0 }); }
+  else return { ok: false, error: 'Operación desconocida' };
+  return { ok: true, j: vista(findL(), devs()) };
 }

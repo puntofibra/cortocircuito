@@ -387,6 +387,67 @@ body.padplay.padrot.padrotL #pad2{transform:translateY(var(--ph,100vh)) rotate(-
 @keyframes tzap{50%{filter:brightness(2.2)}}
 @keyframes tshake{0%,100%{transform:none}25%{transform:translateX(-4px) rotate(-6deg)}75%{transform:translateX(4px) rotate(6deg)}}
 @keyframes spin{to{transform:rotate(360deg)}}
+
+/* ---------- pago único ---------- */
+#ovPay{z-index:60;background:radial-gradient(ellipse at 50% 20%,rgba(255,43,214,.18),rgba(3,5,12,.94) 60%)}
+.pay{position:relative;width:min(460px,100%);max-height:100%;overflow:auto;text-align:center;padding:26px 22px 20px;border-radius:26px;
+  background:linear-gradient(170deg,#141d48,#070b19 70%);border:1px solid rgba(255,225,77,.45);box-shadow:0 0 70px rgba(255,43,214,.25),0 0 0 1px rgba(255,255,255,.05) inset;animation:vin .6s cubic-bezier(.2,1.4,.4,1) both}
+.pay .pyLucas{width:120px;height:auto;margin:-6px auto 2px;display:block;filter:drop-shadow(0 0 22px rgba(56,249,255,.55));animation:vbounce 2.2s ease-in-out infinite}
+.pay .pyIco{font-size:64px;line-height:1;margin:2px 0 6px;filter:drop-shadow(0 0 20px var(--pyc,#ff2b6d))}
+.pay .pyLbl{font-family:Orbitron;font-weight:900;font-size:11px;letter-spacing:4px;color:var(--pyc,#ffe14d);text-shadow:0 0 12px var(--pyc,#ffe14d)}
+.pay .pyT{font-family:Orbitron;font-weight:900;font-size:clamp(20px,6vw,26px);line-height:1.15;margin:6px 0 8px;background:linear-gradient(90deg,#38f9ff,#ffe14d,#ff2bd6);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pay .pyS{color:#c7d2f5;font-size:16px;line-height:1.4;margin:0 0 14px}
+.pyPrice{display:flex;align-items:center;justify-content:center;gap:14px;margin:0 0 14px;padding:14px;border-radius:18px;background:rgba(255,225,77,.07);border:1px dashed rgba(255,225,77,.5)}
+.pyPrice b{white-space:nowrap;font-family:Orbitron;font-weight:900;font-size:clamp(30px,10vw,44px);color:#fff;text-shadow:0 0 22px rgba(255,225,77,.7);line-height:1}
+.pyPrice span{text-align:left;font-family:Orbitron;font-size:11px;letter-spacing:2px;color:var(--yellow);line-height:1.5}
+.pyPrice span small{display:block;font-family:Rajdhani;font-size:13px;letter-spacing:0;color:var(--mute)}
+.pyList{list-style:none;padding:0;margin:0 0 16px;text-align:left;display:grid;gap:8px}
+.pyList li{display:flex;gap:10px;align-items:flex-start;font-size:15px;color:#dfe8ff;line-height:1.3}
+.pyList li i{font-style:normal;flex:none;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;background:rgba(61,255,139,.15);color:var(--green);border:1px solid rgba(61,255,139,.5)}
+.pyRef{margin:10px 0;padding:10px;border-radius:14px;background:#0a1124;border:1px solid var(--line);font-size:14px;color:var(--mute)}
+.pyRef b{font-family:Orbitron;color:var(--yellow);letter-spacing:2px}
+.pyFoot{font-size:12px;color:var(--mute);margin-top:10px;letter-spacing:.5px}
+.pyTries{display:flex;gap:6px;justify-content:center;margin:0 0 12px}
+.pyTries i{width:34px;height:6px;border-radius:9px;background:#1a2445}
+.pyTries i.on{background:#ff2b6d;box-shadow:0 0 10px #ff2b6d}
+/* ---------- admin ---------- */
+#ovAdm{z-index:65;align-items:stretch;padding:12px}
+.adm{width:min(980px,100%);margin:auto;max-height:100%;display:flex;flex-direction:column;border-radius:22px;background:linear-gradient(170deg,#0f1838,#060a17);border:1px solid rgba(61,255,139,.45);box-shadow:0 0 50px rgba(61,255,139,.15);overflow:hidden}
+.admTop{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.admTop b{font-family:Orbitron;font-weight:900;letter-spacing:3px;color:var(--green);text-shadow:0 0 12px rgba(61,255,139,.6);flex:1;text-align:left}
+.admTop button{padding:8px 12px;border-radius:12px;background:#0b1124;border:1px solid var(--line);font-family:Orbitron;font-size:11px}
+.admTabs{display:flex;gap:6px;padding:10px 12px;overflow-x:auto;border-bottom:1px solid var(--line)}
+.admTabs button{flex:none;padding:9px 14px;border-radius:99px;background:#0b1124;border:1px solid var(--line);font-family:Orbitron;font-size:11px;letter-spacing:1px;color:var(--mute)}
+.admTabs button.on{border-color:var(--green);color:var(--green);box-shadow:0 0 12px rgba(61,255,139,.3)}
+.admTabs button em{font-style:normal;background:#ff2b6d;color:#fff;border-radius:99px;padding:1px 6px;margin-left:4px;font-size:10px}
+.admBody{flex:1;min-height:0;overflow:auto;padding:14px;text-align:left}
+.admStats{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.admStat{padding:14px;border-radius:16px;background:#0a1124;border:1px solid var(--line)}
+.admStat small{display:block;font-family:Orbitron;font-size:9px;letter-spacing:2px;color:var(--mute)}
+.admStat b{font-family:Orbitron;font-size:26px;color:#fff}
+.admStat.g b{color:var(--green)}.admStat.y b{color:var(--yellow)}.admStat.r b{color:#ff6b8f}.admStat.c b{color:var(--cyan)}
+.admRow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:12px;margin:0 0 8px;border-radius:14px;background:#0a1124;border:1px solid var(--line)}
+.admRow .who{flex:1 1 200px;min-width:0}
+.admRow .who b{display:block;color:#fff;font-size:16px}
+.admRow .who small{color:var(--mute);font-size:13px;word-break:break-all}
+.admRow .acts{display:flex;flex-wrap:wrap;gap:6px}
+.admRow .acts button{padding:7px 10px;border-radius:10px;background:#111a3a;border:1px solid var(--line);font-size:12px;font-family:Orbitron}
+.admRow .acts button.ok{border-color:var(--green);color:var(--green)}
+.admRow .acts button.ko{border-color:#ff2b6d;color:#ff6b8f}
+.chipSt{display:inline-block;padding:3px 9px;border-radius:99px;font-family:Orbitron;font-size:10px;letter-spacing:1px;border:1px solid}
+.chipSt.ok,.chipSt.regalo{color:var(--green);border-color:var(--green)}.chipSt.prueba{color:var(--cyan);border-color:var(--cyan)}.chipSt.pago{color:var(--yellow);border-color:var(--yellow)}
+.chipSt.pendiente{color:#ff9f43;border-color:#ff9f43}.chipSt.rechazado,.chipSt.bloqueado{color:#ff6b8f;border-color:#ff2b6d}
+.admSearch{width:100%;padding:12px 14px;border-radius:12px;background:#070b19;border:1px solid var(--line);color:#fff;font-size:16px;margin:0 0 10px}
+.admForm{display:grid;gap:12px;max-width:520px}
+.admForm label{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px;border-radius:14px;background:#0a1124;border:1px solid var(--line)}
+.admForm input[type=number],.admForm input[type=text]{width:110px;padding:8px;border-radius:10px;background:#070b19;border:1px solid var(--line);color:#fff;font-size:16px;text-align:center}
+.admH{font-family:Orbitron;font-size:12px;letter-spacing:2px;color:var(--green);margin:18px 0 8px}
+.admBtns{display:flex;flex-wrap:wrap;gap:8px}
+.admBtns button{padding:11px 14px;border-radius:12px;background:#111a3a;border:1px solid var(--line);font-family:Orbitron;font-size:11px}
+.admEmpty{color:var(--mute);text-align:center;padding:30px}
+.nfcRing{width:130px;height:130px;margin:6px auto 14px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:56px;border:2px solid var(--green);box-shadow:0 0 30px rgba(61,255,139,.4),inset 0 0 30px rgba(61,255,139,.2)}
+.nfcRing.scan{animation:nfcp 1.1s ease-in-out infinite}
+@keyframes nfcp{50%{box-shadow:0 0 60px rgba(61,255,139,.8),inset 0 0 40px rgba(61,255,139,.4);transform:scale(1.05)}}
 </style>
 </head>
 <body>
@@ -412,6 +473,23 @@ body.padplay.padrot.padrotL #pad2{transform:translateY(var(--ph,100vh)) rotate(-
     </div>
   </div>
 </div>
+
+
+<!-- PAGO ÚNICO -->
+<div class="ov" id="ovPay"><div class="pay" id="payCard"></div></div>
+<!-- ADMIN -->
+<div class="ov" id="ovAdmKey"><div class="card" style="text-align:center">
+  <div class="nfcRing" id="nfcRing">🔑</div>
+  <div class="title" style="font-size:24px">MODO ADMIN</div>
+  <div class="sub" id="nfcTxt">Acerca tu llave NFC</div>
+  <button class="big" id="bNfc" style="background:linear-gradient(90deg,#3dff8b,#38f9ff);color:#05070f">📡 ESCANEAR LLAVE</button>
+  <button class="big alt" id="bNfcX">✕ CERRAR</button>
+</div></div>
+<div class="ov" id="ovAdm"><div class="adm">
+  <div class="admTop"><b>🛠 PANEL ADMIN</b><button id="bAdmRef">↻</button><button id="bAdmX">✕ CERRAR</button></div>
+  <div class="admTabs" id="admTabs"><button data-t="res" class="on">📊 RESUMEN</button><button data-t="pag">💶 PAGOS</button><button data-t="jug">👥 JUGADORES</button><button data-t="rk">🏆 RANKING</button><button data-t="cfg">⚙️ AJUSTES</button></div>
+  <div class="admBody" id="admBody"></div>
+</div></div>
 
 <!-- MENÚ -->
 <div class="ov on" id="ovMenu"><div class="card">
@@ -638,7 +716,7 @@ body.padplay.padrot.padrotL #pad2{transform:translateY(var(--ph,100vh)) rotate(-
 /* =========================================================
    CONFIG
    ========================================================= */
-const VERSION = '2026-11-08.18';
+const VERSION = '2026-11-08.19';
 const API = 'https://script.google.com/macros/s/AKfycbxaKM4kZpLJys6zRmCewH29m6kCD9oci_Lp_EXMtOYMUE3Fi97FAtpLaoUo2rMHEzaJ9g/exec';
 const APP_URL = 'https://puntofibra.github.io/cortocircuito/';
 const SHARE_URL = APP_URL + '?v=2'; // cambiar el número si se cambia la imagen de compartir (WhatsApp guarda la tarjeta antigua)
@@ -1497,7 +1575,7 @@ function api(accion, d, ms){
    ========================================================= */
 let USER = LS.get('user', null);
 let loginNext = null; // 'jugar' | 'guardar' | null
-function setUser(r){ USER = { ses: r.ses, user: r.user }; LS.set('user', USER); renderUser(); }
+function setUser(r){ USER = { ses: r.ses, user: r.user }; LS.set('user', USER); renderUser(); if (DID) licRefresh(); }
 function logout(silent){ if (USER && !silent) api('salir', { ses: USER.ses }); USER = null; LS.set('user', null); renderUser(); }
 function renderUser(){
   $('userBar').innerHTML = USER ? `👤 <b>${esc(USER.user.nombre)}</b> <button id="bOut">Cerrar sesión</button>` : '';
@@ -1595,7 +1673,7 @@ function loginOk(r){
   else if (n === 'duo') duoCrear();
   else show('ovMenu');
 }
-function onPlay(){ initAudio(); SFX.click(); if (USER) startGame(); else openLogin('jugar'); }
+function onPlay(){ initAudio(); SFX.click(); licGate(() => { if (USER) startGame(); else openLogin('jugar'); }); }
 let rankData = null, rankTab = 'hoy';
 function openRank(){
   show('ovRank'); paintRank();
@@ -1781,7 +1859,7 @@ function tvResize(){
 function goFullscreen(){
   try{ const d = document.documentElement, f = d.requestFullscreen || d.webkitRequestFullscreen || d.mozRequestFullScreen || d.msRequestFullscreen; if (f && !document.fullscreenElement && !document.webkitFullscreenElement) f.call(d); }catch(e){}
 }
-function tvMenu(){ goFullscreen(); initAudio(); SFX.click(); show('ovTV'); }
+function tvMenu(){ goFullscreen(); initAudio(); SFX.click(); licGate(() => show('ovTV')); }
 async function tvCreate(n){
   initAudio();
   const w = toast('Preparando la sala de TV…', 'load', { titulo: 'MODO TV' });
@@ -2354,7 +2432,7 @@ document.querySelectorAll('#pad button').forEach(b => {
   b.addEventListener('pointerup', stop); b.addEventListener('pointerleave', stop); b.addEventListener('pointercancel', stop);
 });
 
-function startGame(){ if (mode === 'duo') duoLeave(true); mode = 'solo'; document.body.classList.remove('duo'); SFX.click && initAudio(); touchStreak(); savedId = ''; newGame(); resize(); }
+function startGame(){ if (!TV && !licAllowed()){ payShow(LIC.st); return; } if (mode === 'duo') duoLeave(true); mode = 'solo'; document.body.classList.remove('duo'); SFX.click && initAudio(); touchStreak(); savedId = ''; newGame(); resize(); }
 function setAudioBtns(){ $('bMusic').classList.toggle('off', !musicOn); $('bSfx').classList.toggle('off', !sfxOn); }
 $('bPlay').onclick = onPlay;
 $('bAgain').onclick = startGame;
@@ -2492,7 +2570,7 @@ function duoActiveName(){ if (DUO.st.modo === 'coop') return 'EQUIPO'; if (DUO.s
 function duoActiveColor(){ const i = DUO.myTurn ? DUO.me : 1 - DUO.me; return i === 0 ? '#38f9ff' : '#ff2bd6'; }
 
 // --- crear / unirse ---
-function duoMenu(){ initAudio(); SFX.click(); $('duoCodeIn').value = ''; $('duoSingle').checked = !!LS.get('duoSingle', false); duoModoSel = MODOS[LS.get('duoModo', 'clasico')] ? LS.get('duoModo', 'clasico') : 'clasico'; duoMetaSel = LS.get('duoMeta', 1000); duoMenuPaint(); show('ovDuoMenu'); }
+function duoMenu(){ initAudio(); SFX.click(); if (!licAllowed()){ payShow(LIC.st); return; } $('duoCodeIn').value = ''; $('duoSingle').checked = !!LS.get('duoSingle', false); duoModoSel = MODOS[LS.get('duoModo', 'clasico')] ? LS.get('duoModo', 'clasico') : 'clasico'; duoMetaSel = LS.get('duoMeta', 1000); duoMenuPaint(); show('ovDuoMenu'); }
 async function duoCrear(){
   if (!USER){ openLogin('duo'); return; }
   if (!(await versionFresca())) return;
@@ -2536,6 +2614,7 @@ async function duoOpenJoin(code){
   if (!(await versionFresca({ duo: String(code || '').toUpperCase() }))) return;
   code = String(code || '').toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4);
   if (code.length !== 4){ toast('El código tiene 4 letras', 'err'); return; }
+  if (!licAllowed()){ payShow(LIC.st); return; }
   const saved = LS.get('duo', null);
   const r = await api('duo_estado', { code }, 12000);
   if (!r.ok || !r.st){ toast(r.error || 'Esa partida no existe', 'err', { titulo: 'DUELO' }); return; }
@@ -2968,6 +3047,207 @@ if ('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then(r => { swReg = r; }).catch(() => {});
 }
 setTimeout(checkUpdate, 3000);
+
+/* =========================================================
+   LICENCIA: prueba gratis → pago único
+   ========================================================= */
+const SOPORTE_WA = '34633200100';
+let LIC = LS.get('lic', null), DID = '', FP = '';
+function cookieGet(k){ const m = document.cookie.match(new RegExp('(?:^|; )' + k + '=([^;]*)')); return m ? decodeURIComponent(m[1]) : ''; }
+function idbDid(v){
+  return new Promise(res => { try{ const rq = indexedDB.open('cc', 1); rq.onupgradeneeded = () => rq.result.createObjectStore('k'); rq.onerror = () => res(''); rq.onsuccess = () => { try{ const tx = rq.result.transaction('k', 'readwrite'), st = tx.objectStore('k'); if (v){ st.put(v, 'did'); res(v); } else { const g = st.get('did'); g.onsuccess = () => res(g.result || ''); g.onerror = () => res(''); } }catch(e){ res(''); } }; }catch(e){ res(''); } });
+}
+function didSave(v){ DID = v; LS.set('did', v); try{ document.cookie = 'ccdid=' + v + ';max-age=63072000;path=/;SameSite=Lax'; }catch(e){} idbDid(v); }
+async function sha256(t){ try{ const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join(''); }catch(e){ let h = 0; for (let i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) | 0; return 'x' + (h >>> 0).toString(16).padStart(32, '0'); } }
+async function huella(){
+  let cv = '', gl = '';
+  try{ const c = document.createElement('canvas'); c.width = 220; c.height = 40; const x = c.getContext('2d'); x.textBaseline = 'top'; x.font = '16px Arial'; x.fillStyle = '#f60'; x.fillRect(10, 5, 90, 20); x.fillStyle = '#069'; x.fillText('Cortocircuito⚡', 4, 8); x.fillStyle = 'rgba(102,204,0,.7)'; x.fillText('Lucas 5G', 60, 18); cv = c.toDataURL(); }catch(e){}
+  try{ const c = document.createElement('canvas'), g = c.getContext('webgl'); const d = g && g.getExtension('WEBGL_debug_renderer_info'); gl = d ? g.getParameter(d.UNMASKED_RENDERER_WEBGL) + '|' + g.getParameter(d.UNMASKED_VENDOR_WEBGL) : ''; }catch(e){}
+  const n = navigator, sc = screen;
+  return sha256([n.userAgent, n.language, (n.languages || []).join(','), n.hardwareConcurrency, n.deviceMemory, n.maxTouchPoints, n.platform, sc.width + 'x' + sc.height, sc.colorDepth, devicePixelRatio, Intl.DateTimeFormat().resolvedOptions().timeZone, gl, await sha256(cv)].join('#'));
+}
+async function licInit(){
+  DID = LS.get('did', '') || cookieGet('ccdid') || await idbDid('');
+  if (!DID) DID = (crypto.randomUUID ? crypto.randomUUID() : (Date.now().toString(36) + Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2)));
+  didSave(DID);
+  FP = await huella();
+  licRefresh();
+  setInterval(licRefresh, 10 * 60000);
+}
+async function licRefresh(){
+  if (PAD) return;
+  const r = await api('lic_estado', { did: DID, fp: FP, ses: USER ? USER.ses : '', ua: navigator.userAgent }, 12000);
+  if (r && r.ok){ if (r.did && r.did !== DID) didSave(r.did); LIC = { st: r.st, dias: r.dias, intentos: r.intentos, ref: r.ref, precio: r.precio, t: Date.now() }; LS.set('lic', LIC); }
+  return LIC;
+}
+function licAllowed(){ return !LIC || ['pago', 'rechazado', 'bloqueado'].indexOf(LIC.st) < 0; }
+// antes de empezar a jugar: si hace falta pagar, salta la pantalla de pago
+function licGate(fn){ if (licAllowed()) return fn(); payShow(LIC.st); }
+const euro = v => (v == null || isNaN(Number(v)) ? .99 : Number(v)).toFixed(2).replace('.', ',') + ' €';
+function payShow(kind, preview){
+  const L = LIC || { precio: .99, intentos: 0, ref: 'CC-XXXXX' }, P = euro(L.precio), c = $('payCard');
+  const close = preview ? '<button class="big alt" id="pyClose" style="margin-top:8px">✕ CERRAR VISTA PREVIA</button>' : '<button class="big alt" id="pyClose" style="margin-top:8px">← VOLVER AL MENÚ</button>';
+  const tries = n => '<div class="pyTries">' + [0, 1, 2].map(i => '<i class="' + (i < n ? 'on' : '') + '"></i>').join('') + '</div>';
+  const offer = `<div class="pyPrice"><b>${P}</b><span>PAGO ÚNICO<small>Sin suscripciones · sin mensualidades</small></span></div>
+    <ul class="pyList">
+      <li><i>✓</i><span><b>Pagas una sola vez y es tuyo para siempre.</b> Nunca te cobraremos nada más.</span></li>
+      <li><i>✓</i><span>Sin cuotas, sin renovaciones automáticas, sin letra pequeña.</span></li>
+      <li><i>✓</i><span>Todos los modos: individual, 2 jugadores, contra Lucas-Bot y modo TV.</span></li>
+      <li><i>✓</i><span>Conservas tus récords y tu puesto en el ranking.</span></li>
+    </ul>
+    <button class="big pink" id="pyPay">⚡ PAGAR ${P} Y SEGUIR JUGANDO</button>
+    <div id="pyStep2" style="display:none"><div class="pyRef">Si te pide concepto, escribe tu referencia: <b>${esc(L.ref || '')}</b></div>
+    <button class="big" id="pyDone" style="background:linear-gradient(90deg,#3dff8b,#38f9ff);color:#05070f">✅ YA HE PAGADO</button></div>`;
+  if (kind === 'pago') c.innerHTML = `<img class="pyLucas" src="lucas_feliz.png" alt=""><div class="pyLbl" style="--pyc:#ffe14d">TU PRUEBA GRATIS HA TERMINADO</div>
+    <div class="pyT">¿TE HA ENGANCHADO? HAZLO TUYO</div>
+    <div class="pyS">Has disfrutado de <b>CORTOCIRCUITO</b> gratis. Para seguir jugando, consigue el juego completo para siempre por menos que un café ☕</div>${offer}${close}
+    <div class="pyFoot">🔒 Pago seguro con myPOS · Un juego de FuturMovil</div>`;
+  else if (kind === 'rechazado') c.innerHTML = `<div class="pyIco" style="--pyc:#ff2b6d">⚠️</div><div class="pyLbl" style="--pyc:#ff6b8f">PAGO NO CONFIRMADO</div>
+    <div class="pyT">NO HEMOS PODIDO CONFIRMAR TU PAGO</div>
+    <div class="pyS">Tu pago de ${P} no se ha completado. Puede que tu banco lo haya rechazado o que no llegara a finalizarse. Vuelve a intentarlo para seguir jugando.</div>
+    ${tries(L.intentos || 1)}<div class="pyS" style="font-size:13px;color:var(--mute);margin-top:-6px">Intento ${L.intentos || 1} de 3</div>${offer}
+    <button class="big alt" id="pyWa" style="margin-top:8px">💬 ¿YA PAGASTE? ESCRÍBENOS</button>${close}`;
+  else if (kind === 'bloqueado') c.innerHTML = `<div class="pyIco" style="--pyc:#ff2b6d">🔒</div><div class="pyLbl" style="--pyc:#ff6b8f">ACCESO BLOQUEADO</div>
+    <div class="pyT">TU JUEGO ESTÁ BLOQUEADO</div>
+    <div class="pyS">Se ha superado el número de intentos de pago sin confirmar. Para desbloquear CORTOCIRCUITO, contacta con soporte.</div>
+    ${tries(3)}<button class="big pink" id="pyWa">💬 CONTACTAR CON SOPORTE</button>${close}`;
+  else c.innerHTML = `<img class="pyLucas" src="lucas_feliz.png" alt=""><div class="pyLbl" style="--pyc:#3dff8b">PAGO RECIBIDO</div>
+    <div class="pyT">¡GRACIAS! YA ES TUYO 🎉</div>
+    <div class="pyS">CORTOCIRCUITO es tuyo para siempre. Sin cuotas, sin nada más que pagar. ¡A cerrar circuitos!</div>
+    <button class="big pink" id="pyGo">⚡ ¡A JUGAR!</button>`;
+  const on = (id, f) => { const b = $(id); if (b) b.onclick = f; };
+  on('pyClose', () => { SFX.click(); preview ? show('ovAdm') : toMenu(); });
+  on('pyWa', () => window.open('https://wa.me/' + SOPORTE_WA + '?text=' + encodeURIComponent('Hola, escribo por CORTOCIRCUITO (ref. ' + (L.ref || '') + ')'), '_blank'));
+  on('pyPay', () => { SFX.click(); window.open('https://mypos.com/@futurmovil/' + (Number(L.precio) || .99).toFixed(2), '_blank'); $('pyStep2').style.display = 'block'; setTimeout(() => $('pyDone').scrollIntoView({ behavior: 'smooth', block: 'center' }), 100); $('pyPay').classList.replace('pink', 'alt'); $('pyPay').textContent = '↻ ABRIR EL PAGO OTRA VEZ'; });
+  on('pyDone', async () => {
+    SFX.click();
+    if (preview){ payShow('gracias', true); return; }
+    const w = toast('Comprobando tu pago…', 'load', { titulo: 'PAGO' });
+    const r = await api('lic_pagado', { did: DID, fp: FP, ses: USER ? USER.ses : '', ua: navigator.userAgent }, 15000);
+    w.close();
+    if (r && r.ok){ LIC = { st: r.st, dias: r.dias, intentos: r.intentos, ref: r.ref, precio: r.precio, t: Date.now() }; LS.set('lic', LIC); }
+    if (licAllowed()){ SFX.level(); fanfare && fanfare(true); payShow('gracias'); }
+    else toast('No se ha podido registrar. Inténtalo otra vez.', 'err');
+  });
+  on('pyGo', () => { SFX.click(); preview ? show('ovAdm') : toMenu(); });
+  show('ovPay');
+}
+
+/* ---------- modo admin (10 toques en el título + llave NFC) ---------- */
+let ADM = LS.get('admTok', ''), admTab = 'res', admData = null, admTaps = [];
+document.querySelector('#ovMenu .title').addEventListener('pointerdown', () => {
+  const now = Date.now(); admTaps = admTaps.filter(t => now - t < 4000); admTaps.push(now);
+  if (admTaps.length >= 10){ admTaps = []; admOpen(); }
+});
+async function admOpen(){
+  try{ navigator.vibrate && navigator.vibrate([30, 30, 30]); }catch(e){}
+  if (ADM){ const r = await api('adm', { tok: ADM, op: 'resumen' }, 15000); if (r.ok){ admData = r; show('ovAdm'); admPaint(); return; } ADM = ''; LS.set('admTok', ''); }
+  const r = await api('adm_info', {}, 12000);
+  admKeyNew = !(r && r.llave);
+  $('nfcTxt').innerHTML = admKeyNew ? '<b style="color:var(--green)">Primera vez:</b> registra tu llave NFC. Pulsa ESCANEAR y acerca la llave a la parte de atrás del móvil.' : 'Pulsa ESCANEAR y acerca tu llave NFC a la parte de atrás del móvil.';
+  $('nfcRing').classList.remove('scan'); show('ovAdmKey');
+}
+let admKeyNew = false, nfcCtl = null;
+$('bNfcX').onclick = () => { try{ nfcCtl && nfcCtl.abort(); }catch(e){} toMenu(); };
+$('bNfc').onclick = async () => {
+  if (!('NDEFReader' in window)){ toast('Este dispositivo no puede leer llaves NFC desde la web. Usa Chrome en un móvil Android con NFC activado.', 'err', { titulo: 'NFC' }); return; }
+  try{
+    try{ nfcCtl && nfcCtl.abort(); }catch(e){}
+    nfcCtl = new AbortController();
+    const rd = new NDEFReader(); await rd.scan({ signal: nfcCtl.signal });
+    $('nfcRing').classList.add('scan'); $('nfcTxt').textContent = 'Acerca la llave a la parte de atrás del móvil…';
+    rd.onreadingerror = () => toast('No se pudo leer la llave. Vuelve a acercarla.', 'err');
+    rd.onreading = async ev => {
+      try{ nfcCtl.abort(); }catch(e){}
+      $('nfcRing').classList.remove('scan');
+      let id = ev.serialNumber || '';
+      if (!id){ try{ id = ev.message.records.map(r => r.recordType + ':' + new TextDecoder().decode(r.data)).join('|'); }catch(e){} }
+      if (!id){ toast('Esta llave no tiene identificador. Prueba con otra.', 'err'); return; }
+      const h = await sha256('cortocircuito-admin|' + id);
+      const r = await api('adm_nfc', { h, registrar: admKeyNew, did: DID }, 15000);
+      if (!r.ok){ toast(r.error || 'Llave no válida', 'err', { titulo: 'MODO ADMIN' }); try{ navigator.vibrate && navigator.vibrate([200]); }catch(e){} return; }
+      ADM = r.tok; LS.set('admTok', ADM); SFX.level(); licRefresh();
+      toast(r.nueva ? 'Llave registrada. Desde ahora solo esta llave abre el modo admin.' : 'Bienvenido, administrador', 'ok', { titulo: 'MODO ADMIN' });
+      admLoad('res');
+    };
+  }catch(e){ toast('Activa el NFC del móvil y permite el acceso para leer la llave.', 'err', { titulo: 'NFC' }); }
+};
+async function admCall(op, d){
+  const r = await api('adm', Object.assign({ tok: ADM, op }, d || {}), 20000);
+  if (!r.ok && r.error === 'ADMIN'){ ADM = ''; LS.set('admTok', ''); toast('La sesión de admin ha caducado. Vuelve a pasar la llave.', 'err'); admOpen(); }
+  return r;
+}
+async function admLoad(t){
+  admTab = t || admTab;
+  $('admTabs').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.t === admTab));
+  show('ovAdm'); $('admBody').innerHTML = '<div class="admEmpty">Cargando…</div>';
+  const op = admTab === 'jug' ? 'jugadores' : admTab === 'rk' ? 'ranking' : 'resumen';
+  const r = await admCall(op); if (!r.ok){ $('admBody').innerHTML = '<div class="admEmpty">' + esc(r.error || 'Error') + '</div>'; return; }
+  if (op === 'ranking') admData = Object.assign(admData || {}, { rk: r.lista }); else admData = Object.assign(admData || {}, r);
+  admPaint();
+}
+const ST_TXT = { regalo: '🎁 REGALADA', ok: 'PAGADO', prueba: 'EN PRUEBA', pago: 'DEBE PAGAR', pendiente: 'PAGO SIN VALIDAR', rechazado: 'NO CONFIRMADO', bloqueado: 'BLOQUEADO' };
+const fdate = t => t ? new Date(t).toLocaleString('es-ES', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—';
+function admRowHtml(j){
+  const ex = j.st === 'pendiente' ? ' · quedan ' + Math.max(0, Math.ceil((j.pagoAt + 864e5 - Date.now()) / 36e5)) + ' h' : j.st === 'prueba' ? ' · ' + j.dias + ' días de prueba' : '';
+  const b = (op, t, cl) => `<button class="${cl || ''}" data-op="${op}" data-k="${esc(j.clave)}">${t}</button>`;
+  return `<div class="admRow"><div class="who"><b>${esc(j.nombre || 'Sin cuenta')} <span class="chipSt ${j.st}">${ST_TXT[j.st] || j.st}</span></b>
+    <small>${esc(j.email || 'Jugador sin cuenta')} · ref ${esc(j.ref)} · desde ${fdate(j.inicio)} · ${j.moviles} móvil${j.moviles === 1 ? '' : 'es'} · intentos ${j.intentos}/3${ex}</small></div>
+    <div class="acts">${j.st === 'pendiente' ? b('validar', '✓ VALIDAR', 'ok') + b('rechazar', '✗ RECHAZAR', 'ko') : ''}${j.st !== 'ok' && j.st !== 'regalo' ? b('regalar', '🎁 REGALAR LICENCIA', 'ok') : ''}${j.st !== 'ok' && j.st !== 'regalo' && j.st !== 'pendiente' ? b('validar', '✓ MARCAR PAGADO', 'ok') : ''}
+    ${j.st === 'bloqueado' || j.st === 'rechazado' ? b('desbloquear', '🔓 DESBLOQUEAR') : ''}${j.st !== 'bloqueado' ? b('bloquear', '🔒 BLOQUEAR', 'ko') : ''}
+    ${j.st !== 'ok' && j.st !== 'regalo' ? b('extender', '+7 DÍAS') + b('reiniciar', '↺ PRUEBA DE NUEVO') : b('quitarPago', 'QUITAR LICENCIA', 'ko')}</div></div>`;
+}
+function admPaint(){
+  const D = admData || {}, R = D.res || {}, body = $('admBody');
+  const pend = (D.pendientes || []).length;
+  $('admTabs').querySelector('[data-t="pag"]').innerHTML = '💶 PAGOS' + (pend ? '<em>' + pend + '</em>' : '');
+  if (admTab === 'res'){
+    const t = (k, v, c) => `<div class="admStat ${c || ''}"><small>${k}</small><b>${v}</b></div>`;
+    body.innerHTML = `<div class="admStats">${t('INGRESOS', euro(R.ingresos || 0), 'g')}${t('PAGADOS', R.pagados || 0, 'g')}${t('REGALADAS', R.regaladas || 0, 'g')}${t('PAGOS SIN VALIDAR', R.pendiente || 0, 'y')}
+      ${t('EN PRUEBA', R.prueba || 0, 'c')}${t('DEBEN PAGAR', R.pago || 0, 'y')}${t('NO CONFIRMADOS', R.rechazado || 0, 'r')}${t('BLOQUEADOS', R.bloqueado || 0, 'r')}
+      ${t('CUENTAS', R.cuentas || 0)}${t('MÓVILES', R.moviles || 0)}${t('ACTIVOS 7 DÍAS', R.activos7 || 0, 'c')}${t('PARTIDAS HOY', R.partidasHoy || 0)}${t('PARTIDAS TOTALES', R.partidas || 0)}</div>
+      ${pend ? '<div class="admH">⏳ PAGOS POR VALIDAR</div>' + D.pendientes.map(admRowHtml).join('') : ''}
+      <div class="admH">COBRO</div><div class="admRow"><div class="who"><b>${D.cfg && D.cfg.on ? '🟢 Cobro activado' : '⚪ Cobro desactivado (todo gratis)'}</b><small>Prueba de ${D.cfg ? D.cfg.dias : 7} días · pago único de ${euro(D.cfg && D.cfg.precio)}</small></div></div>`;
+  } else if (admTab === 'pag'){
+    body.innerHTML = '<div class="admH">⏳ PAGOS POR VALIDAR (24 H)</div>' + (pend ? D.pendientes.map(admRowHtml).join('') : '<div class="admEmpty">No hay pagos pendientes 👌</div>') +
+      '<div class="pyFoot" style="text-align:left">Comprueba en myPOS que te ha llegado el pago (importe y referencia) y pulsa VALIDAR. Si no lo validas en 24 horas, al jugador le saldrá que no se ha podido confirmar su pago.</div>';
+  } else if (admTab === 'jug'){
+    const L = D.lista || [];
+    body.innerHTML = `<input class="admSearch" id="admQ" placeholder="🔎 Buscar por nombre, correo o referencia…"><div id="admList"></div>`;
+    const draw = () => { const q = $('admQ').value.trim().toLowerCase(); const f = L.filter(j => !q || [j.nombre, j.email, j.ref, j.st, ST_TXT[j.st]].join(' ').toLowerCase().includes(q)); $('admList').innerHTML = f.length ? f.map(admRowHtml).join('') : '<div class="admEmpty">Sin resultados</div>'; };
+    $('admQ').oninput = draw; draw();
+  } else if (admTab === 'rk'){
+    const L = D.rk || [];
+    body.innerHTML = '<div class="admH">🏆 MEJORES PUNTUACIONES RECIENTES</div>' + (L.length ? L.map(x => `<div class="admRow"><div class="who"><b>${esc(x.nombre)} · ${fmt(x.puntos)}</b><small>${esc(x.email || '')} · ${fdate(x.fecha)}</small></div><div class="acts"><button class="ko" data-rk="${x.fila}" data-p="${x.puntos}">🗑 BORRAR</button></div></div>`).join('') : '<div class="admEmpty">Sin puntuaciones</div>');
+  } else if (admTab === 'cfg'){
+    const c = D.cfg || { dias: 7, precio: .99, on: true };
+    body.innerHTML = `<div class="admForm">
+      <label><span><b>Cobro activado</b><br><small style="color:var(--mute)">Apagado = el juego es gratis para todos</small></span><span class="tgl" style="margin:0;padding:0;border:0;background:none"><input type="checkbox" id="cfOn" ${c.on ? 'checked' : ''}><span class="sw"></span></span></label>
+      <label><span><b>Días de prueba gratis</b></span><input type="number" id="cfDias" min="1" max="365" value="${c.dias}"></label>
+      <label><span><b>Precio del pago único (€)</b></span><input type="text" id="cfPrecio" inputmode="decimal" value="${String(c.precio).replace('.', ',')}"></label>
+      <button class="big pink" id="cfSave">💾 GUARDAR AJUSTES</button></div>
+      <div class="admH">👁 VISTA PREVIA DE LAS PANTALLAS</div>
+      <div class="admBtns"><button data-pv="pago">💶 PANTALLA DE PAGO</button><button data-pv="rechazado">⚠️ PAGO NO CONFIRMADO</button><button data-pv="bloqueado">🔒 BLOQUEADO</button><button data-pv="gracias">🎉 GRACIAS</button></div>
+      <div class="admH">🔑 LLAVE NFC</div>
+      <div class="admBtns"><button id="cfNfc">CAMBIAR LLAVE NFC</button><button id="cfOut">CERRAR SESIÓN ADMIN</button></div>`;
+    $('cfSave').onclick = async () => { const r = await admCall('cfg', { on: $('cfOn').checked, dias: $('cfDias').value, precio: $('cfPrecio').value }); if (r.ok){ admData.cfg = r.cfg; toast('Ajustes guardados', 'ok'); licRefresh(); } else toast(r.error, 'err'); };
+    body.querySelectorAll('[data-pv]').forEach(b => b.onclick = () => { const keep = LIC; if (!LIC) LIC = { precio: c.precio, intentos: 1, ref: 'CC-DEMO1' }; LIC = Object.assign({}, LIC, { precio: c.precio, intentos: b.dataset.pv === 'rechazado' ? 1 : LIC.intentos }); payShow(b.dataset.pv, true); LIC = keep; });
+    $('cfNfc').onclick = async () => { if (!confirm('¿Borrar la llave actual? La próxima vez que entres al modo admin registrarás una llave nueva.')) return; const r = await admCall('nfcBorrar'); if (r.ok){ ADM = ''; LS.set('admTok', ''); toast('Llave borrada. Registra la nueva.', 'ok'); admOpen(); } };
+    $('cfOut').onclick = () => { ADM = ''; LS.set('admTok', ''); toMenu(); };
+  }
+  body.querySelectorAll('[data-op]').forEach(b => b.onclick = async () => {
+    const op = b.dataset.op;
+    if ((op === 'bloquear' || op === 'quitarPago' || op === 'rechazar') && !confirm('¿Seguro?')) return;
+    b.disabled = true;
+    const r = await admCall(op, { clave: b.dataset.k, dias: 7 });
+    if (r.ok){ toast('Hecho ✓', 'ok'); admLoad(admTab === 'res' || admTab === 'pag' ? admTab : 'jug'); } else { toast(r.error, 'err'); b.disabled = false; }
+  });
+  body.querySelectorAll('[data-rk]').forEach(b => b.onclick = async () => { if (!confirm('¿Borrar esta puntuación del ranking?')) return; const r = await admCall('rkBorrar', { fila: b.dataset.rk, puntos: b.dataset.p }); if (r.ok){ toast('Borrada', 'ok'); admLoad('rk'); } else toast(r.error, 'err'); });
+}
+$('admTabs').querySelectorAll('button').forEach(b => b.onclick = () => { SFX.click(); admLoad(b.dataset.t); });
+$('bAdmX').onclick = () => toMenu();
+$('bAdmRef').onclick = () => admLoad();
+setTimeout(licInit, 800);
 </script>
 </body>
 </html>
