@@ -75,6 +75,13 @@ function rutear_(d) {
       case 'duo_revancha': return conLock_(() => duoRevancha_(d));
       case 'duo_score': return conLock_(() => duoScore_(d));
       case 'duo_ev': return conLock_(() => duoEv_(d));
+      case 'tv_crear': return conLock_(() => tvCrear_(d));
+      case 'tv_estado': return tvEstado_(d);
+      case 'tv_unir': return conLock_(() => tvUnir_(d));
+      case 'tv_answer': return conLock_(() => tvSet_(d, 'a'));
+      case 'tv_ui': return conLock_(() => tvSet_(d, 'ui'));
+      case 'tv_reset': return conLock_(() => tvReset_(d));
+      case 'tv_in': return conLock_(() => tvIn_(d));
       default: return { ok: true, juego: 'CORTOCIRCUITO' };
     }
   } catch (err) {
@@ -384,5 +391,62 @@ function duoEv_(d) {
   st.evN = (st.evN || 0) + 1;
   st.ev = (st.ev || []).concat([{ by: yo, n: st.evN, p: d.p }]).slice(-30);
   duoPut_(st);
+  return { ok: true };
+}
+
+/* ---------- MODO TV: la TV muestra el juego y los móviles son mandos ----------
+   Apps Script solo empareja (ofertas/respuestas WebRTC) y hace de puente si no hay conexión directa */
+function tvGet_(code) { const s = CacheService.getScriptCache().get('tv_' + String(code || '').toUpperCase()); return s ? JSON.parse(s) : null; }
+function tvPut_(st) { st.v = (st.v || 0) + 1; CacheService.getScriptCache().put('tv_' + st.code, JSON.stringify(st), 21600); }
+function tvCrear_(d) {
+  const L = 'ABCDEFGHJKMNPQRSTUVWXYZ';
+  let code = '';
+  for (let k = 0; k < 20; k++) { code = ''; for (let i = 0; i < 4; i++) code += L[Math.floor(Math.random() * L.length)]; if (!tvGet_(code)) break; }
+  const offers = Array.isArray(d.offers) ? d.offers.slice(0, 2) : [''];
+  const st = { code, n: offers.length, slots: offers.map(o => ({ o: String(o || '').slice(0, 20000), a: '', n: '', ui: null, inp: [], inN: 0 })) };
+  tvPut_(st);
+  return { ok: true, code, v: st.v };
+}
+function tvEstado_(d) {
+  const st = tvGet_(d.code);
+  if (!st) return { ok: false, error: 'Esa partida de TV no existe o ha caducado' };
+  if (d.v && Number(d.v) >= st.v) return { ok: true, same: true };
+  return { ok: true, st: st };
+}
+function tvUnir_(d) {
+  const st = tvGet_(d.code);
+  if (!st) return { ok: false, error: 'Esa partida de TV no existe o ha caducado' };
+  let k = st.slots.findIndex(x => !x.n);
+  if (k < 0) return { ok: false, error: 'La TV ya tiene todos los mandos conectados' };
+  st.slots[k].n = limpiaNombre_(d.nombre) || ('Jugador ' + (k + 1));
+  tvPut_(st);
+  return { ok: true, slot: k, o: st.slots[k].o, n: st.n };
+}
+function tvSet_(d, campo) {
+  const st = tvGet_(d.code);
+  if (!st) return { ok: false, error: 'La partida de TV ha caducado' };
+  const k = parseInt(d.slot, 10);
+  if (!st.slots[k]) return { ok: false, error: 'Mando no válido' };
+  st.slots[k][campo] = campo === 'a' ? String(d.a || '').slice(0, 20000) : d.ui;
+  tvPut_(st);
+  return { ok: true };
+}
+function tvReset_(d) {
+  const st = tvGet_(d.code);
+  if (!st) return { ok: false, error: 'La partida de TV ha caducado' };
+  const k = parseInt(d.slot, 10);
+  if (!st.slots[k]) return { ok: false };
+  st.slots[k] = { o: String(d.o || '').slice(0, 20000), a: '', n: '', ui: null, inp: [], inN: st.slots[k].inN || 0 };
+  tvPut_(st);
+  return { ok: true };
+}
+function tvIn_(d) {
+  const st = tvGet_(d.code);
+  if (!st) return { ok: false, error: 'La partida de TV ha caducado' };
+  const k = parseInt(d.slot, 10), sl = st.slots[k];
+  if (!sl) return { ok: false };
+  sl.inN = (sl.inN || 0) + 1;
+  sl.inp = (sl.inp || []).concat([{ n: sl.inN, m: d.m }]).slice(-40);
+  tvPut_(st);
   return { ok: true };
 }

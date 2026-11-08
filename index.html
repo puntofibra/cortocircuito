@@ -209,6 +209,85 @@ body.trapon #bTrap{display:block}
 #bTrap:disabled{opacity:.35}
 #rivalCv{display:none;width:30px;height:56px;border-radius:4px;background:#060a17;border:1px solid var(--line)}
 body.sim #rivalCv{display:block}
+/* ---------- contra quién ---------- */
+.vsGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:8px 0}
+@media (max-width:560px){.vsGrid{grid-template-columns:1fr}}
+.vsCard{position:relative;overflow:hidden;text-align:center;padding:22px 14px 18px;border-radius:20px;background:linear-gradient(160deg,#141f48,#080d1f);border:1px solid color-mix(in srgb,var(--vc) 55%,#24346a);
+  box-shadow:0 0 24px color-mix(in srgb,var(--vc) 22%,transparent);font-family:Rajdhani;transition:.2s}
+.vsCard::before{content:"";position:absolute;inset:-40%;background:conic-gradient(from 0deg,transparent,color-mix(in srgb,var(--vc) 35%,transparent),transparent 30%);animation:vspin 5s linear infinite;opacity:.5}
+.vsCard::after{content:"";position:absolute;inset:2px;border-radius:18px;background:linear-gradient(160deg,#141f48,#080d1f)}
+.vsCard > *{position:relative;z-index:1}
+.vsCard .vi{display:block;font-size:52px;line-height:1;margin-bottom:8px;filter:drop-shadow(0 0 16px var(--vc));animation:vbounce 2s ease-in-out infinite}
+.vsCard b{display:block;font-family:Orbitron;font-weight:900;font-size:16px;letter-spacing:1px;color:#fff;text-shadow:0 0 12px var(--vc)}
+.vsCard small{display:block;margin-top:6px;font-size:14px;color:var(--mute);line-height:1.3}
+.vsCard:active{transform:scale(.97)}
+.botLv{display:flex;gap:6px;justify-content:center;margin-top:12px}
+.botLv i{font-style:normal;font-family:Orbitron;font-size:10px;letter-spacing:1px;padding:6px 10px;border-radius:99px;border:1px solid var(--line);background:#0b1124;color:var(--mute)}
+.botLv i.on{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 10px rgba(56,249,255,.4)}
+body.tvsim.botmode #game{grid-template-rows:minmax(0,1fr) auto!important;grid-template-areas:"board" "pad"!important}
+/* ---------- modo TV ---------- */
+.tvlRow{display:flex;gap:18px;align-items:center;justify-content:center;flex-wrap:wrap;margin:6px 0}
+#tvQr{background:#fff;border-radius:16px;padding:12px;width:220px;box-shadow:0 0 30px rgba(56,249,255,.35)}
+#tvQr img,#tvQr canvas{width:100%!important;height:auto!important;display:block}
+.tvlSide{min-width:220px}
+.tslot{display:flex;align-items:center;gap:10px;margin:8px 0;padding:10px 14px;border-radius:14px;background:#0a1124;border:1px solid var(--line);text-align:left;font-size:17px}
+.tslot i{width:14px;height:14px;border-radius:50%;background:var(--sc);box-shadow:0 0 10px var(--sc);opacity:.35}
+.tslot.ok{border-color:var(--sc);box-shadow:0 0 16px color-mix(in srgb,var(--sc) 35%,transparent)}
+.tslot.ok i{opacity:1;animation:pulse .6s infinite alternate}
+.tvwIcons{font-size:30px;letter-spacing:6px;animation:vbounce 2s infinite}
+body.tvsim #left,body.tvsim #right,body.tvsim #lucasMini,body.tvsim #rivalCv{display:none!important}
+body.tvsim #game{grid-template-columns:1fr!important;grid-template-areas:"board"!important}
+body.tvsim #boardWrap{flex-direction:row;flex-wrap:wrap;justify-content:center;align-content:center;gap:24px}
+body.tvsim #duoBar{flex-basis:100%;max-width:900px}
+#board2{display:none;border-radius:14px}
+body.tvsim #board2{display:block}
+/* ---------- mando (móvil) ---------- */
+#pad2{display:none;position:fixed;inset:0;z-index:30;background:radial-gradient(ellipse at 50% 0%,#14204a,#05070f 70%);color:var(--txt);touch-action:none;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+body.padmode #pad2{display:flex;flex-direction:column}
+body.padmode #app,body.padmode .ov,body.padmode #toasts{}
+body.padmode #app{display:none}
+.pTop{display:flex;align-items:center;gap:10px;padding:8px 14px;font-family:Orbitron;font-size:13px;border-bottom:1px solid var(--line);background:rgba(5,8,20,.6)}
+.pDot{width:12px;height:12px;border-radius:50%;background:var(--pc,#38f9ff);box-shadow:0 0 12px var(--pc,#38f9ff)}
+.pTop b{color:var(--pc,#38f9ff);letter-spacing:1px}
+#pStatus{color:var(--mute);font-family:Rajdhani;font-size:15px;flex:1}
+.pScore{font-weight:900;color:#fff;font-size:16px}
+.pScr{display:none;flex:1;min-height:0;padding:12px;align-items:center;justify-content:center;flex-direction:column;text-align:center;overflow:auto}
+.pScr.on{display:flex}
+.pScr .name{max-width:360px}
+.pScr .big{max-width:360px}
+.pBig{font-size:56px;filter:drop-shadow(0 0 18px var(--pc,#38f9ff));animation:vbounce 1.4s infinite}
+.pmg{width:100%;max-width:760px;grid-template-columns:repeat(4,1fr)!important}
+.pmg .mc{padding:8px 4px!important}
+.pmg .mc .mi{font-size:24px!important}
+.pmRow{display:flex;gap:10px;align-items:center;width:100%;max-width:760px}
+.pmRow .tgl{flex:1;margin:0}.pmRow .big{flex:1;margin:0}
+.pOverBtns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;width:100%;max-width:640px}
+.pOverBtns .big{flex:1;min-width:160px;margin:4px 0}
+#pScrPad{flex-direction:row;align-items:stretch;gap:10px;padding:10px}
+.pCol{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:min(30vw,230px);align-content:center}
+.pb{position:relative;overflow:hidden;height:min(22vh,92px);border-radius:20px;font-size:30px;color:var(--pc,#38f9ff);
+  background:linear-gradient(180deg,#18245a,#0a1028);border:1px solid color-mix(in srgb,var(--pc,#38f9ff) 40%,#24346a);
+  box-shadow:0 6px 0 #050816,0 0 18px color-mix(in srgb,var(--pc,#38f9ff) 18%,transparent);text-shadow:0 0 12px var(--pc,#38f9ff);transition:transform .06s,box-shadow .06s}
+.pb small{display:block;font-size:10px;letter-spacing:2px;font-family:Orbitron}
+.pb.big2{grid-column:span 2;height:min(26vh,110px);font-size:34px;color:#fff;background:linear-gradient(180deg,color-mix(in srgb,var(--pc,#38f9ff) 70%,#000),color-mix(in srgb,var(--pc,#38f9ff) 30%,#05070f))}
+.pb.trap{display:none;color:var(--yellow);border-color:var(--yellow)}
+body.padtrap .pb.trap{display:block}
+.pb.down{transform:translateY(5px) scale(.97);box-shadow:0 1px 0 #050816,0 0 34px var(--pc,#38f9ff)}
+.pb .rip{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.7),transparent 70%);transform:translate(-50%,-50%) scale(0);animation:rip .45s ease-out forwards;pointer-events:none}
+@keyframes rip{to{transform:translate(-50%,-50%) scale(1);opacity:0}}
+.pTouch{flex:1;position:relative;border-radius:24px;overflow:hidden;background:radial-gradient(circle at 50% 50%,rgba(56,249,255,.08),rgba(5,8,20,.9) 70%);
+  border:2px solid color-mix(in srgb,var(--pc,#38f9ff) 45%,transparent);box-shadow:inset 0 0 40px rgba(0,0,0,.6),0 0 24px color-mix(in srgb,var(--pc,#38f9ff) 20%,transparent)}
+.pTouch::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(56,249,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(56,249,255,.06) 1px,transparent 1px);background-size:28px 28px}
+.pTouch.myturn{animation:tpulse 1.2s infinite alternate}
+@keyframes tpulse{to{box-shadow:inset 0 0 40px rgba(0,0,0,.6),0 0 42px var(--pc,#38f9ff)}}
+#pTouchCv{position:absolute;inset:0;width:100%;height:100%}
+.pHint{position:absolute;left:0;right:0;bottom:10px;font-size:13px;color:var(--mute);pointer-events:none}
+.pTurn{position:absolute;left:0;right:0;top:12px;font-family:Orbitron;font-weight:900;font-size:16px;letter-spacing:2px;color:var(--pc,#38f9ff);text-shadow:0 0 14px var(--pc,#38f9ff);pointer-events:none}
+.pRot{display:none;position:absolute;inset:0;z-index:5;background:#05070f;align-items:center;justify-content:center;flex-direction:column;gap:8px;text-align:center}
+.pRot div{font-size:60px;animation:vbounce 1.4s infinite}
+.pRot b{font-family:Orbitron;font-size:20px;color:var(--cyan)}
+@media (orientation:portrait){ body.padplay .pRot{display:flex} }
 /* ---------- victoria ---------- */
 #ovDuoOver{overflow:hidden}
 #fxCv{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
@@ -268,7 +347,7 @@ body.sim #rivalCv{display:block}
       <div class="keys"><b>← →</b> mover &nbsp;<b>↑</b> girar &nbsp;<b>Z</b> girar ↺<br><b>↓</b> bajar &nbsp;<b>ESPACIO</b> soltar<br><b>C</b> guardar &nbsp;<b>P</b> pausa</div>
     </aside>
     <canvas id="lucasMini" width="128" height="128"></canvas>
-    <div id="boardWrap"><button id="bTrap">💣 3</button><div id="duoBar"><div class="dp" id="dp0"><b id="dn0">—</b><span id="ds0">0</span><i id="dt0"></i></div><div class="dvs"><small id="duoModeTag" style="font-size:9px;letter-spacing:1px;color:var(--yellow)"></small><canvas id="rivalCv" width="60" height="112"></canvas><b id="duoClock">3:00</b><button id="bDuoExit" title="Salir del duelo">✕ salir</button></div><div class="dp" id="dp1"><b id="dn1">—</b><span id="ds1">0</span><i id="dt1"></i></div></div><canvas id="board"></canvas><button id="bPauseM" title="Pausa">❚❚</button></div>
+    <div id="boardWrap"><button id="bTrap">💣 3</button><div id="duoBar"><div class="dp" id="dp0"><b id="dn0">—</b><span id="ds0">0</span><i id="dt0"></i></div><div class="dvs"><small id="duoModeTag" style="font-size:9px;letter-spacing:1px;color:var(--yellow)"></small><canvas id="rivalCv" width="60" height="112"></canvas><b id="duoClock">3:00</b><button id="bDuoExit" title="Salir del duelo">✕ salir</button></div><div class="dp" id="dp1"><b id="dn1">—</b><span id="ds1">0</span><i id="dt1"></i></div></div><canvas id="board"></canvas><canvas id="board2"></canvas><button id="bPauseM" title="Pausa">❚❚</button></div>
     <aside id="right">
       <div class="box"><div class="lbl" id="nextLbl">Siguiente</div><canvas id="nextCv" class="mini" width="80" height="80"></canvas></div>
       <div class="box"><div class="lbl">Nivel</div><div class="val sm" id="sLevel">1</div><div class="lbl" style="margin-top:6px">Circuitos</div><div class="val sm" id="sCirc">0</div></div>
@@ -291,6 +370,7 @@ body.sim #rivalCv{display:block}
   <div id="streak"></div>
   <button class="big" id="bPlay">⚡ JUGAR</button>
   <button class="big pink" id="bDuo">👥 2 JUGADORES · 8 MODOS</button>
+  <button class="big alt" id="bTV" style="border-color:rgba(56,249,255,.5)">📺 MODO TV <small style="opacity:.7;font-family:Rajdhani;letter-spacing:0">(el móvil es el mando)</small></button>
   <div class="grid2">
     <button class="big alt" id="bRank">🏆 RANKING</button>
     <button class="big alt" id="bHelp">❓ CÓMO SE JUEGA</button>
@@ -350,11 +430,23 @@ body.sim #rivalCv{display:block}
   <div class="modeInfo" id="modeInfo"></div>
   <div class="chips" id="metaRow"><span>META</span><button data-m="500">500</button><button data-m="1000">1000</button><button data-m="2000">2000</button></div>
   <label class="tgl"><input type="checkbox" id="duoSingle"><span class="sw"></span><span class="tx"><b>Una sola ficha por tirada</b><small>Modo más fácil. Si no lo marcas, se juega con 2 fichas como siempre.</small></span></label>
-  <button class="big pink" id="bDuoCrear">⚡ CREAR PARTIDA (QR)</button>
+  <button class="big pink" id="bDuoJugar">⚡ JUGAR</button>
   <div class="lgBox"><h3>¿TE HAN DADO UN CÓDIGO?</h3>
     <input class="name codeIn" id="duoCodeIn" maxlength="4" placeholder="ABCD" autocomplete="off">
     <button class="big alt" id="bDuoUnirCod">UNIRME</button></div>
   <button class="lnk" id="bDuoMenuBack">← Volver</button>
+</div></div>
+
+<!-- DOBLES: contra quién -->
+<div class="ov" id="ovVs"><div class="card wide">
+  <div class="title" style="font-size:28px">¿CONTRA QUIÉN?</div>
+  <div class="sub" id="vsSub"></div>
+  <div class="vsGrid">
+    <button class="vsCard" id="bVsAmigo" style="--vc:#ff2bd6"><span class="vi">⚔️</span><b>RETAR A UN AMIGO</b><small>Duelo online · tu rival escanea el QR con su móvil y a jugar, esté donde esté</small></button>
+    <button class="vsCard" id="bVsBot" style="--vc:#38f9ff"><span class="vi">🤖</span><b>DESAFIAR A LUCAS-BOT</b><small>Entrena contra la máquina, aquí mismo y sin esperar a nadie</small>
+      <span class="botLv" id="botLv"><i data-l="0">FÁCIL</i><i data-l="1">NORMAL</i><i data-l="2">EXPERTO</i></span></button>
+  </div>
+  <button class="lnk" id="bVsBack">← Volver</button>
 </div></div>
 
 <!-- DOBLES: sala de espera -->
@@ -397,6 +489,74 @@ body.sim #rivalCv{display:block}
   <button class="big alt" id="bDuoMenu">✕ SALIR DE LA PARTIDA</button>
 </div></div>
 
+<!-- MODO TV: elegir jugadores -->
+<div class="ov" id="ovTV"><div class="card">
+  <div class="title" style="font-size:32px">📺 MODO TV</div>
+  <div class="sub">Se juega en esta pantalla y el móvil hace de mando</div>
+  <div class="grid2" style="margin-top:6px">
+    <button class="big" id="bTV1" style="padding:22px 8px">🎮<br>1 JUGADOR</button>
+    <button class="big pink" id="bTV2" style="padding:22px 8px">🎮🎮<br>2 JUGADORES</button>
+  </div>
+  <button class="lnk" id="bTVBack">← Volver</button>
+</div></div>
+
+<!-- MODO TV: sala -->
+<div class="ov" id="ovTVL"><div class="card wide tvl">
+  <div class="title" style="font-size:30px">📺 CONECTA TU MANDO</div>
+  <div class="sub" id="tvlSub">Escanea el código con el móvil</div>
+  <div class="tvlRow">
+    <div id="tvQr"></div>
+    <div class="tvlSide">
+      <div class="codeBig" id="tvCode">····</div>
+      <div id="tvSlots"></div>
+    </div>
+  </div>
+  <div class="sub" id="tvlMsg"><span class="dots">Esperando mandos</span></div>
+  <button class="big alt" id="bTVCancel">✕ CANCELAR</button>
+</div></div>
+
+<!-- MODO TV: esperando al móvil -->
+<div class="ov" id="ovTVW"><div class="card">
+  <div class="tvwIcons">⚡🎯💀🎨💣🤝🔥⏱</div>
+  <div class="title" style="font-size:26px" id="tvwTitle">ELIGIENDO MODO</div>
+  <div class="sub" id="tvwSub"></div>
+</div></div>
+
+<!-- MANDO (móvil) -->
+<div id="pad2">
+  <div class="pRot"><div>📱↻</div><b>Gira el móvil</b><span>El mando se usa en horizontal</span></div>
+  <div class="pTop"><span class="pDot" id="pDot"></span><b id="pName">MANDO</b><span id="pStatus">Conectando…</span><span class="pScore" id="pScore"></span></div>
+  <div class="pScr" id="pScrJoin">
+    <div class="title" style="font-size:24px">🎮 MANDO DE CORTOCIRCUITO</div>
+    <div class="sub">Pon tu nombre y conecta con la TV</div>
+    <input class="name" id="pNameIn" maxlength="14" placeholder="Tu nombre">
+    <button class="big" id="pJoinBtn">⚡ CONECTAR</button>
+  </div>
+  <div class="pScr" id="pScrMsg"><div class="pBig" id="pMsgIcon">⏳</div><div class="title" style="font-size:22px" id="pMsgT">CONECTANDO</div><div class="sub" id="pMsgS"></div></div>
+  <div class="pScr" id="pScrModes">
+    <div class="title" style="font-size:20px">ELIGE EL MODO DE JUEGO</div>
+    <div class="modeGrid pmg" id="pModeGrid"></div>
+    <div class="chips" id="pMetaRow"><span>META</span><button data-m="500">500</button><button data-m="1000">1000</button><button data-m="2000">2000</button></div>
+    <div class="pmRow"><label class="tgl"><input type="checkbox" id="pSingle"><span class="sw"></span><span class="tx"><b>1 ficha por tirada</b></span></label><button class="big pink" id="pStart">⚡ ¡A JUGAR!</button></div>
+  </div>
+  <div class="pScr" id="pScrOver">
+    <div class="pBig" id="pOverIcon">🏆</div><div class="title" style="font-size:24px" id="pOverT">FIN</div><div class="sub" id="pOverS"></div>
+    <div class="pOverBtns" id="pOverBtns"></div>
+  </div>
+  <div class="pScr" id="pScrPad">
+    <div class="pCol">
+      <button class="pb" data-k="left">◀</button><button class="pb" data-k="right">▶</button>
+      <button class="pb" data-k="rotL">↺</button><button class="pb" data-k="rot">↻</button>
+    </div>
+    <div class="pTouch" id="pTouch"><canvas id="pTouchCv"></canvas><div class="pHint">Desliza ◀ ▶ para mover · toca para girar · desliza abajo rápido para soltar</div><div class="pTurn" id="pTurn"></div></div>
+    <div class="pCol">
+      <button class="pb big2" data-k="drop">⤓<small>SOLTAR</small></button>
+      <button class="pb" data-k="soft">▼</button><button class="pb" data-k="hold">⇄</button>
+      <button class="pb trap" data-k="trap" id="pTrap">💣</button>
+    </div>
+  </div>
+</div>
+
 <!-- LOGIN -->
 <div class="ov" id="ovLogin"><div class="card" id="lgCard"></div></div>
 
@@ -416,7 +576,7 @@ body.sim #rivalCv{display:block}
 /* =========================================================
    CONFIG
    ========================================================= */
-const VERSION = '2026-11-08.9';
+const VERSION = '2026-11-08.12';
 const API = 'https://script.google.com/macros/s/AKfycbxaKM4kZpLJys6zRmCewH29m6kCD9oci_Lp_EXMtOYMUE3Fi97FAtpLaoUo2rMHEzaJ9g/exec';
 const APP_URL = 'https://puntofibra.github.io/cortocircuito/';
 const SHARE_URL = APP_URL + '?v=2'; // cambiar el número si se cambia la imagen de compartir (WhatsApp guarda la tarjeta antigua)
@@ -530,7 +690,7 @@ let dropAcc, lockAcc, lockMoves, softDrop, bag, uid = 0, gameId = '', best = LS.
 let energized = new Set(), ghostWin = false, dirty = true;
 let zapCells = [], zapT = 0, particles = [], floaters = [], shake = 0, flash = 0, lucasMood = 'idle', moodT = 0, beatT = 0;
 let cell = 32, wall = 16, bw = 0, bh = 0, dpr = 1;
-const cv = $('board'), cx = cv.getContext('2d');
+let cv = $('board'), cx = cv.getContext('2d');
 
 function shuffle(a){ for (let i = a.length - 1; i > 0; i--){ const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; }
 function newBag(){
@@ -772,7 +932,10 @@ let last = performance.now();
 function frame(now){
   const dt = Math.min(.05, (now - last) / 1000); last = now;
   requestAnimationFrame(frame);
-  try{ update(dt); render(); drawLucas(dt); }catch(e){ console.error(e); }
+  try{
+    if (tvSimOn()){ if (TV.cur != null) tvSave(TV.cur); for (const i of [1, 0]){ tvLoad(i); if (!TV.over){ update(dt); if (TV.bot && i === 1) botSimStep(dt); } render(); tvSave(i); } drawLucas(dt); }
+    else { update(dt); render(); drawLucas(dt); }
+  }catch(e){ console.error(e); }
 }
 function speed(){ return softDrop ? .035 : Math.max(.09, .85 * Math.pow(.86, level - 1)); }
 function update(dt){
@@ -866,6 +1029,7 @@ function resize(){
   bw = COLS * cell + wall * 2; bh = ROWS * cell;
   cv.width = bw * dpr; cv.height = bh * dpr; cv.style.width = bw + 'px'; cv.style.height = bh + 'px';
   drawMini();
+  if (tvSimOn()) tvResize();
 }
 function rr(ctx, x, y, w, h, r){ ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
 function drawCable(ctx, x, y, s, t, state, alpha = 1){
@@ -1190,10 +1354,11 @@ function updateHud(){
     const st = DUO.st, me = DUO.me;
     const md = st.modo || 'clasico', live = DUO.myTurn || phase === 'replay' || phase === 'resolve';
     const val = i => { const p = st.players[i] || { s: 0 };
+      if (DUO.sim && DUO.local) return (i === TV.cur ? score : (TV.boards && TV.boards[i] && TV.boards[i].score)) || 0;
       if (DUO.sim) return i === me ? score : Math.max(DUO.rival.s || 0, p.s || 0);
       if (md === 'territorio') return p.s + (live ? DUO.tpts[i] : 0);
       return p.s + (DUO.myTurn && i === me ? score : 0); };
-    [0, 1].forEach(i => { const p = st.players[i] || { n: '—', s: 0 }; $('dn' + i).textContent = (i === me ? 'TÚ · ' : '') + p.n; $('ds' + i).textContent = md === 'muerte' ? '💀' : fmt(val(i)); $('dp' + i).classList.toggle('on', st.status === 'playing' && (DUO.sim || st.turn === i)); });
+    [0, 1].forEach(i => { const p = st.players[i] || { n: '—', s: 0 }; $('dn' + i).textContent = ((DUO.bot ? i === 0 : (i === me && !DUO.local)) && !/^t[uú]$/i.test(p.n) ? 'TÚ · ' : '') + p.n; $('ds' + i).textContent = md === 'muerte' ? '💀' : fmt(val(i)); $('dp' + i).classList.toggle('on', st.status === 'playing' && (DUO.sim || st.turn === i)); });
     $('sScore').textContent = md === 'coop' ? fmt(val(0) + val(1)) : fmt(val(me)); $('sLevel').textContent = level; $('sCirc').textContent = circuits;
     duoTrapBtn();
     return;
@@ -1235,8 +1400,9 @@ function showOver(rec){
   $('oScore').textContent = fmt(score); $('oLevel').textContent = level; $('oCirc').textContent = circuits; $('oChain').textContent = 'x' + maxChain;
   $('newRec').innerHTML = rec && score > 0 ? '<div class="newrec">★ NUEVO RÉCORD ★</div>' : '<div class="sub" style="margin:0">Récord: ' + fmt(best) + '</div>';
   $('oRankMsg').textContent = '';
-  $('guestRow').style.display = (!USER && score > 0) ? 'block' : 'none';
+  $('guestRow').style.display = (!USER && score > 0 && !TV) ? 'block' : 'none';
   show('ovOver');
+  if (TV){ tvSoloOver(); return; }
   if (USER && score > 0) saveScore();
 }
 let savedId = '';
@@ -1523,6 +1689,502 @@ function drawMenu(now){
 }
 
 /* =========================================================
+   MODO TV (la TV muestra el juego, los móviles son mandos)
+   ========================================================= */
+let TV = null, PAD = null;
+const TV_COL = ['#38f9ff', '#ff2bd6'];
+function tvSimOn(){ return !!(TV && TV.boards && mode === 'duo' && DUO && DUO.local && DUO.sim); }
+function tvLoad(i){
+  const B = TV.boards[i]; TV.cur = i;
+  ({ grid, piece, nextP, holdP, canHold, score, level, circuits, chain, maxChain, dropAcc, lockAcc, lockMoves, softDrop, bag, energized, ghostWin, dirty, zapCells, zapT, particles, floaters, shake, flash, phase, cv, cx, cell, wall, bw, bh } = B);
+  DUO.dead = B.dead; DUO.timeUp = B.timeUp; DUO.garbage = B.garbage; DUO.simIdx = B.simIdx;
+}
+function tvSave(i){
+  const B = TV.boards[i];
+  Object.assign(B, { grid, piece, nextP, holdP, canHold, score, level, circuits, chain, maxChain, dropAcc, lockAcc, lockMoves, softDrop, bag, energized, ghostWin, dirty, zapCells, zapT, particles, floaters, shake, flash, phase, cv, cx, cell, wall, bw, bh });
+  B.dead = DUO.dead; B.timeUp = DUO.timeUp; B.garbage = DUO.garbage; B.simIdx = DUO.simIdx;
+}
+function tvResize(){
+  const wrap = $('boardWrap'), db = $('duoBar');
+  const ah = wrap.clientHeight - (db.offsetHeight + 30), aw = (wrap.clientWidth - 40) / 2;
+  const c = Math.max(14, Math.floor(Math.min(aw / (COLS + 1.2), ah / ROWS)));
+  [[$('board'), 0], [$('board2'), 1]].forEach(([el, i]) => {
+    const B = TV.boards[i]; if (!B) return;
+    B.cell = c; B.wall = Math.round(c * .6); B.bw = COLS * c + B.wall * 2; B.bh = ROWS * c;
+    el.width = B.bw * dpr; el.height = B.bh * dpr; el.style.width = B.bw + 'px'; el.style.height = B.bh + 'px';
+    B.cv = el; B.cx = el.getContext('2d');
+  });
+}
+function goFullscreen(){
+  try{ const d = document.documentElement, f = d.requestFullscreen || d.webkitRequestFullscreen || d.mozRequestFullScreen || d.msRequestFullscreen; if (f && !document.fullscreenElement && !document.webkitFullscreenElement) f.call(d); }catch(e){}
+}
+function tvMenu(){ goFullscreen(); initAudio(); SFX.click(); show('ovTV'); }
+async function tvCreate(n){
+  initAudio();
+  const w = toast('Preparando la sala de TV…', 'load', { titulo: 'MODO TV' });
+  TV = { n, slots: [], v: 0, code: '' };
+  const offers = [];
+  for (let i = 0; i < n; i++){ const sl = await tvMakeSlot(i); TV.slots[i] = sl; offers.push(sl.offer); }
+  const r = await api('tv_crear', { offers });
+  w.close();
+  if (!r.ok){ toast(r.error || 'No se pudo crear la sala', 'err'); TV = null; return; }
+  TV.code = r.code;
+  const url = APP_URL + '?tv=' + r.code + '&r=' + VERSION;
+  $('tvCode').textContent = r.code; $('tvQr').innerHTML = '';
+  $('tvlSub').textContent = n === 1 ? 'Escanea el código con tu móvil para usarlo de mando' : 'Los dos jugadores escanean el código con su móvil';
+  tvPaintSlots(); show('ovTVL');
+  loadQR(() => { try{ new QRCode($('tvQr'), { text: url, width: 400, height: 400, colorDark: '#05070f', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M }); }catch(e){} });
+  tvPoll();
+  clearInterval(TV.uiT); TV.uiT = setInterval(tvUiTick, 500);
+}
+async function tvMakeSlot(i){
+  const sl = { i, name: '', ses: '', ok: false, pc: null, dc: null, offer: '', relay: false, lastUi: '', inSeen: 0 };
+  try{
+    const pc = sl.pc = new RTCPeerConnection(ICE);
+    const dc = sl.dc = pc.createDataChannel('mando' + i, { ordered: true });
+    dc.onopen = () => { sl.ok = true; sl.relay = false; tvOnConnect(i); };
+    dc.onclose = () => { if (TV && TV.slots[i] === sl) tvOnLost(i); };
+    dc.onmessage = ev => { let m; try{ m = JSON.parse(ev.data); }catch(e){ return; } tvOnMsg(i, m); };
+    await pc.setLocalDescription(await pc.createOffer()); await p2pWaitIce(pc);
+    sl.offer = pc.localDescription.sdp;
+  }catch(e){ sl.offer = ''; }
+  return sl;
+}
+function tvPaintSlots(){
+  if (!TV) return;
+  $('tvSlots').innerHTML = TV.slots.map((sl, i) => `<div class="tslot ${sl.ok || sl.relay ? 'ok' : ''}" style="--sc:${TV_COL[i]}"><i></i><span>${sl.ok || sl.relay ? '✓ <b>' + esc(sl.name || 'Jugador ' + (i + 1)) + '</b>' : 'Jugador ' + (i + 1) + ' · <span style="color:var(--mute)">' + (sl.name ? 'conectando…' : 'esperando…') + '</span>'}</span></div>`).join('');
+}
+function tvPoll(){
+  clearTimeout(TV && TV.pollT);
+  if (!TV) return;
+  const me = TV;
+  api('tv_estado', { code: TV.code }, 8000).then(r => {
+    if (TV !== me) return;
+    if (r.ok && r.st){
+      r.st.slots.forEach((x, i) => {
+        const sl = TV.slots[i]; if (!sl) return;
+        if (x.n && !sl.name){ sl.name = x.n; tvPaintSlots(); }
+        if (x.a && sl.pc && !sl.pc.remoteDescription){ sl.pc.setRemoteDescription({ type: 'answer', sdp: x.a }).catch(() => {}); sl.ansAt = Date.now(); }
+        // sin conexión directa a los 9 s: modo puente por el servidor
+        if (x.n && !sl.ok && !sl.relay && sl.ansAt && Date.now() - sl.ansAt > 9000){ sl.relay = true; tvOnConnect(i); }
+        if (x.n && !sl.ok && !sl.relay && !x.a && x.relayReq) { sl.relay = true; tvOnConnect(i); }
+        (x.inp || []).forEach(e => { if (e.n > sl.inSeen){ sl.inSeen = e.n; if (sl.relay) tvOnMsg(i, e.m); } });
+      });
+    }
+    const relay = TV.slots.some(sl => sl.relay), waiting = TV.slots.some(sl => !sl.ok && !sl.relay);
+    TV.pollT = setTimeout(tvPoll, relay ? 300 : (waiting ? 1200 : 4000));
+  });
+}
+function tvSend(i, o){
+  const sl = TV && TV.slots[i]; if (!sl) return;
+  if (sl.ok && sl.dc && sl.dc.readyState === 'open'){ try{ sl.dc.send(JSON.stringify(o)); }catch(e){} }
+  else if (sl.relay && o.t === 'ui') api('tv_ui', { code: TV.code, slot: i, ui: o });
+}
+function tvVib(i, p){ tvSend(i, { t: 'vib', p }); }
+function tvOnConnect(i){
+  tvPaintSlots(); SFX.level();
+  toast((TV.slots[i].name || 'Jugador ' + (i + 1)) + ' se ha conectado', 'ok', { titulo: 'MANDO ' + (i + 1) });
+  if (TV.slots.every(sl => sl.ok || sl.relay)) setTimeout(tvAllReady, 700);
+}
+function tvOnLost(i){
+  const sl = TV.slots[i]; sl.ok = false;
+  toast((sl.name || 'Jugador ' + (i + 1)) + ' se ha desconectado. Puede volver a escanear el QR.', 'err', { titulo: 'MANDO ' + (i + 1) });
+  // nueva invitación para ese mando
+  tvMakeSlot(i).then(ns => { if (!TV) return; ns.name = ''; TV.slots[i] = ns; api('tv_reset', { code: TV.code, slot: i, o: ns.offer }); tvPaintSlots(); tvPoll(); });
+}
+function tvAllReady(){
+  if (!TV) return;
+  if (TV.n === 1){ tvStartSolo(); return; }
+  TV.stage = 'modes'; tvShowChoosing();
+}
+function tvShowChoosing(){
+  $('tvwTitle').textContent = 'ELIGIENDO MODO'; $('tvwSub').innerHTML = '<b style="color:var(--cyan)">' + esc(TV.slots[0].name) + '</b> está eligiendo el modo de juego en su móvil…';
+  show('ovTVW');
+}
+function tvOnMsg(i, m){
+  if (!TV || !m) return;
+  const sl = TV.slots[i];
+  if (m.t === 'hello'){ sl.name = String(m.n || sl.name || '').slice(0, 14); sl.ses = m.ses || ''; tvPaintSlots(); return; }
+  if (m.t === 'in'){ tvInput(i, m.k, m.v); return; }
+  if (m.t === 'pick' && i === 0 && TV.stage === 'modes'){ tvStartDuo(m); return; }
+  if (m.t === 'again' && i === 0){ if (TV.n === 1) tvStartSolo(); else tvRevancha(); return; }
+  if (m.t === 'change' && i === 0 && TV.n === 2){ duoLeave(true); TV.over = false; TV.boards = null; TV.stage = 'modes'; tvShowChoosing(); return; }
+  if (m.t === 'exit' && i === 0){ tvExit(); return; }
+}
+function tvInput(i, k, v){
+  initAudio();
+  const apply = () => {
+    if (phase !== 'play') return;
+    if (k === 'left') move(-1); else if (k === 'right') move(1);
+    else if (k === 'rot') rotate(1); else if (k === 'rotL') rotate(-1);
+    else if (k === 'drop') hardDrop(); else if (k === 'hold') holdPiece();
+    else if (k === 'soft') softDrop = !!v; else if (k === 'trap') duoUseTrap();
+  };
+  if (TV.stage !== 'play') return;
+  if (TV.n === 1){ if (mode === 'solo') apply(); return; }
+  if (!DUO || !DUO.local) return;
+  if (DUO.sim){ if (TV.cur != null) tvSave(TV.cur); tvLoad(i); apply(); tvSave(i); return; }
+  if (DUO.st.turn === i) apply();
+}
+function tvStartSolo(){
+  TV.stage = 'play';
+  mode = 'solo'; startGame();
+}
+function tvSoloOver(){
+  TV.stage = 'over';
+  const sl = TV.slots[0];
+  if (sl.ses && score > 0){
+    api('guardar', { ses: sl.ses, puntos: score, nivel: level, circuitos: circuits, combo: maxChain, id: gameId }).then(r => { if (r.ok) $('oRankMsg').textContent = 'Guardado en el ranking ✓'; });
+  }
+  tvSend(0, { t: 'ui', scr: 'over', icon: score > best * .9 ? '🏆' : '⚡', title: fmt(score) + ' PUNTOS', sub: 'Nivel ' + level + ' · ' + circuits + ' circuitos', btns: [['again', '⚡ OTRA PARTIDA'], ['exit', '✕ SALIR']] });
+  sl.lastUi = '';
+}
+function tvStartDuo(cfg){
+  const md = MODOS[cfg.modo] ? cfg.modo : 'clasico';
+  const first = Math.random() < .5 ? 0 : 1;
+  TV.stage = 'play'; TV.over = false; TV.cfg = { modo: md, single: !!cfg.single, meta: [500, 1000, 2000].includes(+cfg.meta) ? +cfg.meta : 1000 };
+  const st = { code: 'TV', seed: Math.floor(Math.random() * 2e9), status: 'playing', players: TV.slots.map(sl => ({ n: sl.name || 'Jugador', s: 0, h: null })),
+    turn: first, turnN: 0, grid: '', move: null, t0: Date.now(), turnAt: Date.now(), rev: 0, first, modo: md, meta: TV.cfg.meta, single: TV.cfg.single, ev: [], v: 1, now: Date.now() };
+  DUO = { local: true, code: 'TV', token: '', me: first, st, v: 1, off: 0, turnN: -1, rev: 0, myTurn: false, path: [], skipAsk: 0 };
+  tvBoardsSetup();
+  duoBegin();
+  tvBoardsStart();
+}
+function tvBoardsSetup(){
+  const sim = (MODOS[DUO.st.modo] || {}).t === 'sim';
+  document.body.classList.toggle('tvsim', sim);
+  TV.boards = sim ? [{}, {}] : null;
+}
+function tvBoardsStart(){
+  if (!TV.boards) return;
+  // dos tableros en la misma pantalla: cada uno con su estado
+  const base = { piece: null, nextP: null, holdP: null, canHold: true, score: 0, level: 1, circuits: 0, chain: 0, maxChain: 0, dropAcc: 0, lockAcc: 0, lockMoves: 0, softDrop: false, bag: [], energized: new Set(), ghostWin: false, dirty: true, zapCells: [], zapT: 0, shake: 0, flash: 0, phase: 'play', dead: false, timeUp: false, garbage: 0, simIdx: 0 };
+  TV.boards = [0, 1].map(() => Object.assign({}, base, { grid: null, particles: [], floaters: [], energized: new Set(), zapCells: [], bag: [] }));
+  resize();
+  for (let i = 0; i < 2; i++){ tvLoad(i); simStart(); tvSave(i); }
+}
+function tvRevancha(){
+  if (!DUO || !DUO.local) return;
+  const st = DUO.st;
+  st.seed = Math.floor(Math.random() * 2e9); st.status = 'playing'; st.grid = ''; st.move = null; st.abandono = null; st.loser = null; st.winner = null;
+  st.players.forEach(p => { p.s = 0; p.h = null; p.done = false; });
+  st.first = 1 - (st.first || 0); st.turn = st.first; st.turnN = 0; st.t0 = Date.now(); st.turnAt = st.t0; st.rev = (st.rev || 0) + 1;
+  DUO.me = st.first; DUO.rev = st.rev; DUO.turnN = -1; DUO.overShown = false; TV.over = false; TV.stage = 'play';
+  tvBoardsSetup(); duoBegin(); tvBoardsStart();
+}
+function tvAfterDuo(win, reason){
+  TV.stage = 'over';
+  const p = DUO.st.players, coop = DUO.st.modo === 'coop';
+  const title = coop ? (win === -2 ? '¡HABÉIS PERDIDO!' : '¡LO HABÉIS LOGRADO!') : win === -1 ? '¡EMPATE!' : '¡GANA ' + String(p[win].n).toUpperCase() + '!';
+  tvSend(0, { t: 'ui', scr: 'over', icon: coop ? (win === -2 ? '💥' : '🤝') : '🏆', title, sub: reason, btns: [['again', '⚡ REVANCHA'], ['change', '🎮 CAMBIAR DE JUEGO'], ['exit', '✕ SALIR']] });
+  tvSend(1, { t: 'ui', scr: 'msg', icon: win === 1 ? '🏆' : (coop ? '🤝' : '⚡'), title, sub: reason + '<br><br>Esperando a que ' + esc(p[0].n) + ' elija revancha o cambie de juego…' });
+  TV.slots.forEach(sl => sl.lastUi = '');
+  [0, 1].forEach(i => tvVib(i, win === i || (coop && win !== -2) ? [80, 60, 80, 60, 200] : [300]));
+}
+function tvExit(){
+  if (!TV) return;
+  TV.slots.forEach((sl, i) => { tvSend(i, { t: 'ui', scr: 'msg', icon: '👋', title: '¡HASTA LUEGO!', sub: 'La TV ha cerrado la partida. Escanea otro QR para volver a jugar.' }); });
+  const T = TV; TV = null;
+  clearTimeout(T.pollT); clearInterval(T.uiT);
+  setTimeout(() => T.slots.forEach(sl => { try{ sl.dc && sl.dc.close(); sl.pc && sl.pc.close(); }catch(e){} }), 500);
+  if (mode === 'duo') duoLeave(true);
+  document.body.classList.remove('tvsim');
+  toMenu();
+}
+// estado que la TV manda a cada mando (cada 0,5 s si cambia)
+function tvUiTick(){
+  if (!TV) return;
+  TV.slots.forEach((sl, i) => {
+    if (!(sl.ok || sl.relay)) return;
+    let ui;
+    if (TV.stage === 'modes') ui = i === 0 ? { t: 'ui', scr: 'modes' } : { t: 'ui', scr: 'msg', icon: '🎮', title: 'PREPARADO', sub: esc(TV.slots[0].name) + ' está eligiendo el modo de juego…' };
+    else if (TV.stage === 'play'){
+      let turn = true, txt = '', sc = 0, bombs = -1;
+      if (TV.n === 1){ sc = score; txt = phase === 'play' ? '¡A JUGAR!' : ''; }
+      else if (DUO && DUO.local){
+        const st = DUO.st;
+        if (DUO.sim){ const B = TV.boards && TV.boards[i]; sc = B ? (i === TV.cur ? score : B.score) : 0; turn = !!B && !B.dead && !B.timeUp; txt = turn ? '¡A JUGAR!' : 'HAS TERMINADO'; }
+        else { turn = st.turn === i; sc = st.players[i].s; txt = st.modo === 'coop' ? (turn ? '¡TU TURNO!' : 'TURNO DE ' + String(st.players[st.turn].n).toUpperCase()) : (turn ? '¡TU TURNO!' : 'TURNO DE ' + String(st.players[st.turn].n).toUpperCase()); if (st.modo === 'bombas') bombs = DUO.bombs[i]; }
+      }
+      ui = { t: 'ui', scr: 'pad', turn, txt, sc: DUO && DUO.st.modo === 'muerte' ? '💀' : fmt(sc), bombs };
+    } else return;
+    ui.col = TV_COL[i]; ui.name = sl.name;
+    const k = JSON.stringify(ui);
+    if (k !== sl.lastUi){
+      if (sl.lastUi && TV.stage === 'play' && ui.turn && JSON.parse(sl.lastUi).turn === false) tvVib(i, [70]);
+      sl.lastUi = k; tvSend(i, ui);
+    }
+  });
+}
+
+/* =========================================================
+   LUCAS-BOT (rival máquina)
+   ========================================================= */
+let botLevel = LS.get('botLv', 1), botT = null;
+function humanBlocked(){ return !!(mode === 'duo' && DUO && DUO.bot && !DUO.sim && DUO.st.turn === 1); }
+function startBot(){
+  const md = duoModoSel, M = MODOS[md];
+  TV = { bot: true, n: 2, slots: [], stage: 'play', over: false };
+  const first = M.t === 'sim' ? 0 : (Math.random() < .5 ? 0 : 1);
+  const st = { code: 'BOT', seed: Math.floor(Math.random() * 2e9), status: 'playing', players: [{ n: USER ? USER.user.nombre : (LS.get('name', '') || 'Tú'), s: 0, h: null }, { n: 'LUCAS-BOT', s: 0, h: null }],
+    turn: first, turnN: 0, grid: '', move: null, t0: Date.now(), turnAt: Date.now(), rev: 0, first, modo: md, meta: duoMetaSel, single: $('duoSingle').checked, ev: [], v: 1, now: Date.now() };
+  DUO = { local: true, bot: true, code: 'BOT', token: '', me: first, st, v: 1, off: 0, turnN: -1, rev: 0, myTurn: false, path: [], skipAsk: 0 };
+  LS.set('duoSingle', st.single);
+  document.body.classList.add('botmode');
+  tvBoardsSetup(); duoBegin(); tvBoardsStart();
+}
+// simula soltar la pieza p (con orientación o) en la columna c sobre una copia del tablero
+function botSim(g0, p, o, c, who){
+  const g = g0.map(row => row.map(t => t ? { m: t.m, bomb: t.bomb, w: t.w, trap: t.trap } : null));
+  const a = p.a.m0 != null ? p.a.m0 : p.a.m, b = p.b ? (p.b.m0 != null ? p.b.m0 : p.b.m) : 0;
+  let ma = a, mb = b; for (let i = 0; i < o; i++){ ma = rotR(ma); mb = rotR(mb); }
+  const cells = p.single ? [[0, 0, ma]] : [[0, 0, ma], [OFF[o][0], OFF[o][1], mb]];
+  const fitsAt = r => cells.every(([dr, dc]) => { const rr2 = r + dr, cc = c + dc; return cc >= 0 && cc < COLS && rr2 < ROWS && (rr2 < 0 || !g[rr2][cc]); });
+  if (!fitsAt(1)) return null;
+  let r = 1; while (fitsAt(r + 1)) r++;
+  let over = false;
+  cells.forEach(([dr, dc, m]) => { const rr2 = r + dr, cc = c + dc; if (rr2 < 0) over = true; else g[rr2][cc] = { m, bomb: false, w: who }; });
+  const settleG = () => { for (let x = 0; x < COLS; x++){ let w = ROWS - 1; for (let y = ROWS - 1; y >= 0; y--) if (g[y][x]){ if (w !== y){ g[w][x] = g[y][x]; g[y][x] = null; } w--; } } };
+  settleG();
+  let removed = 0, mine = 0, theirs = 0, chains = 0, pts = 0;
+  for (let k = 0; k < 8; k++){
+    const comps = analyze(g).filter(q => q.right);
+    if (!comps.length) break;
+    chains++;
+    const set = new Map(); comps.forEach(q => q.comp.forEach(([y, x]) => set.set(y * COLS + x, [y, x])));
+    [...set.values()].forEach(([y, x]) => { if (g[y][x].bomb) for (let yy = y - 1; yy <= y + 1; yy++) for (let xx = x - 1; xx <= x + 1; xx++) if (yy >= 0 && yy < ROWS && xx >= 0 && xx < COLS && g[yy][xx]) set.set(yy * COLS + xx, [yy, xx]); });
+    set.forEach(([y, x]) => { removed++; if (g[y][x].w === who) mine++; else if (g[y][x].w === 1 - who) theirs++; g[y][x] = null; });
+    pts += set.size * 10 * chains + (chains > 1 ? chains * chains * 50 : 0);
+    settleG();
+  }
+  // características del tablero resultante
+  let maxH = 0, holes = 0, bump = 0, prevH = -1, red = false;
+  for (let x = 0; x < COLS; x++){
+    let h = 0, seen = false;
+    for (let y = 0; y < ROWS; y++){ if (g[y][x]){ if (!seen){ h = ROWS - y; seen = true; } if (y < 2) red = true; } else if (seen) holes++; }
+    maxH = Math.max(maxH, h); if (prevH >= 0) bump += Math.abs(h - prevH); prevH = h;
+  }
+  let reach = 0; analyze(g).forEach(q => q.comp.forEach(([y, x]) => reach = Math.max(reach, x + 1)));
+  return { g, pts, removed, mine, theirs, chains, maxH, holes, bump, red: red || over, reach };
+}
+function botEval(R, md, who){
+  if (!R) return -1e9;
+  let v = 0;
+  if (md === 'muerte') v += R.chains ? 1e6 : 0;
+  else if (md === 'territorio') v += R.mine * 30 - R.theirs * 12;
+  else v += R.pts * (md === 'carrera' ? 1.5 : 1);
+  if (R.red) v -= (md === 'muerte' && R.chains) ? 0 : 5e5;
+  v += R.reach * 9 - R.maxH * 5 - R.holes * 14 - R.bump * 2;
+  return v;
+}
+function botBest(p, md, who, deep){
+  const opts = [];
+  for (let o = 0; o < 4; o++) for (let c = -1; c <= COLS; c++){
+    const R = botSim(grid, p, o, c, who); if (!R) continue;
+    let v = botEval(R, md, who);
+    // nivel experto: mira si le deja al rival un circuito fácil con su siguiente pieza
+    if (deep && !DUO.sim && !R.red && (md === 'muerte' || md === 'clasico' || md === 'carrera' || md === 'bombas')){
+      const nxt = duoPiece(DUO.turnN + 1), keep = grid; grid = R.g; let worst = 0;
+      for (let o2 = 0; o2 < 4; o2++) for (let c2 = -1; c2 <= COLS; c2++){ const R2 = botSim(grid, nxt, o2, c2, 1 - who); if (R2 && R2.chains) worst = Math.max(worst, md === 'muerte' ? 8e5 : R2.pts * .8); }
+      grid = keep; v -= worst;
+    }
+    opts.push({ o, c, v });
+  }
+  if (!opts.length) return null;
+  const noise = [90, 25, 0][botLevel] || 0;
+  opts.forEach(x => x.v += (Math.random() - .5) * noise * 2);
+  opts.sort((a, b) => b.v - a.v);
+  if (botLevel === 0 && Math.random() < .25) return opts[Math.min(opts.length - 1, 1 + (Math.random() * 3 | 0))];
+  return opts[0];
+}
+function botTurnStart(){
+  clearTimeout(botT);
+  const md = DUO.st.modo;
+  // bombas: si el tablero está alto, a veces tira una bomba
+  if (md === 'bombas' && DUO.bombs[1] > 0){
+    let maxH = 0; for (let x = 0; x < COLS; x++) for (let y = 0; y < ROWS; y++) if (grid[y][x]){ maxH = Math.max(maxH, ROWS - y); break; }
+    if (maxH >= 8 && Math.random() < .6) duoUseTrap();
+  }
+  let plan;
+  if (piece && piece.trap){
+    let bc = 3, bh = -1; for (let x = 0; x < COLS; x++){ let h = 0; for (let y = 0; y < ROWS; y++) if (grid[y][x]){ h = ROWS - y; break; } if (h > bh){ bh = h; bc = x; } }
+    plan = { o: 0, c: bc };
+  } else plan = botBest(piece, md, 1, botLevel === 2) || { o: 0, c: 3 };
+  const wait = [520, 330, 190][botLevel];
+  const step = () => {
+    if (!DUO || !DUO.bot || phase !== 'play' || DUO.me !== 1) return;
+    if (piece.o !== plan.o && !piece.trap && !piece.single || (piece.single && piece.o !== plan.o)) rotate(1);
+    else if (piece.c < plan.c && fits(piece, piece.r, piece.c + 1, piece.o)) move(1);
+    else if (piece.c > plan.c && fits(piece, piece.r, piece.c - 1, piece.o)) move(-1);
+    else { hardDrop(); return; }
+    botT = setTimeout(step, wait * .55);
+  };
+  botT = setTimeout(step, wait + Math.random() * 300);
+}
+// cara a cara / espejo: el bot juega su tablero en tiempo real
+function botSimStep(dt){
+  const B = TV.boards[1];
+  if (phase !== 'play' || !piece || DUO.dead || DUO.timeUp) return;
+  if (!B.bot || B.bot.id !== piece.a.id){ B.bot = { id: piece.a.id, plan: botBest(piece, DUO.st.modo, 1, false) || { o: 0, c: 3 }, t: [0.6, 0.35, 0.18][botLevel] + Math.random() * .3 }; }
+  B.bot.t -= dt; if (B.bot.t > 0) return;
+  B.bot.t = [0.26, 0.15, 0.08][botLevel];
+  const plan = B.bot.plan;
+  if (piece.o !== plan.o) rotate(1);
+  else if (piece.c < plan.c && fits(piece, piece.r, piece.c + 1, piece.o)) move(1);
+  else if (piece.c > plan.c && fits(piece, piece.r, piece.c - 1, piece.o)) move(-1);
+  else hardDrop();
+}
+
+/* ---------- el móvil como mando ---------- */
+function padShow(id){ document.querySelectorAll('#pad2 .pScr').forEach(e => e.classList.toggle('on', e.id === id)); document.body.classList.toggle('padplay', id === 'pScrPad'); }
+function padOpen(code){
+  PAD = { code: String(code || '').toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4), slot: -1, pc: null, dc: null, relay: false, ui: null, modo: LS.get('duoModo', 'clasico'), meta: LS.get('duoMeta', 1000) };
+  document.body.classList.add('padmode'); hideAll();
+  try{ history.replaceState(null, '', location.pathname); }catch(e){}
+  $('pNameIn').value = USER ? USER.user.nombre : LS.get('name', '');
+  $('pName').textContent = 'MANDO'; $('pStatus').textContent = 'Código ' + PAD.code;
+  padShow('pScrJoin');
+}
+function padMsg(icon, t, sub){ $('pMsgIcon').textContent = icon; $('pMsgT').textContent = t; $('pMsgS').innerHTML = sub || ''; padShow('pScrMsg'); }
+async function padJoin(){
+  const nombre = $('pNameIn').value.trim();
+  if (nombre.length < 2){ toast('Escribe tu nombre', 'err'); return; }
+  LS.set('name', nombre); initAudio();
+  padMsg('📡', 'CONECTANDO', 'Conectando con la TV…');
+  const r = await api('tv_unir', { code: PAD.code, nombre });
+  if (!r.ok){ padMsg('⚠️', 'NO SE PUDO CONECTAR', esc(r.error || 'Inténtalo otra vez')); return; }
+  PAD.slot = r.slot; PAD.name = nombre;
+  const col = TV_COL[r.slot] || '#38f9ff';
+  document.documentElement.style.setProperty('--pc', col);
+  $('pName').textContent = nombre.toUpperCase(); $('pStatus').textContent = 'Mando ' + (r.slot + 1);
+  let answer = '';
+  try{
+    const pc = PAD.pc = new RTCPeerConnection(ICE);
+    pc.ondatachannel = ev => {
+      const dc = PAD.dc = ev.channel;
+      dc.onopen = () => { PAD.relay = false; padSendRaw({ t: 'hello', n: nombre, ses: USER ? USER.ses : '' }); padMsg('✅', '¡CONECTADO!', 'Mira la TV'); try{ navigator.vibrate && navigator.vibrate([40, 40, 40]); }catch(e){} };
+      dc.onmessage = ev2 => { let m; try{ m = JSON.parse(ev2.data); }catch(e){ return; } padOnMsg(m); };
+      dc.onclose = () => { if (PAD) padMsg('🔌', 'DESCONECTADO', 'Se ha perdido la conexión con la TV. Vuelve a escanear el QR de la TV.'); };
+    };
+    if (r.o){ await pc.setRemoteDescription({ type: 'offer', sdp: r.o }); await pc.setLocalDescription(await pc.createAnswer()); await p2pWaitIce(pc); answer = pc.localDescription.sdp; }
+  }catch(e){ answer = ''; }
+  await api('tv_answer', { code: PAD.code, slot: PAD.slot, a: answer || 'relay' });
+  // si en 10 s no hay conexión directa, usamos el servidor como puente
+  setTimeout(() => { if (PAD && !(PAD.dc && PAD.dc.readyState === 'open')){ PAD.relay = true; padSendRaw({ t: 'hello', n: nombre, ses: USER ? USER.ses : '' }); padPoll(); } }, 10000);
+}
+function padSendRaw(o){
+  if (!PAD) return;
+  if (PAD.dc && PAD.dc.readyState === 'open'){ try{ PAD.dc.send(JSON.stringify(o)); }catch(e){} }
+  else if (PAD.relay) api('tv_in', { code: PAD.code, slot: PAD.slot, m: o });
+}
+function padPoll(){
+  if (!PAD || !PAD.relay) return;
+  api('tv_estado', { code: PAD.code }, 8000).then(r => {
+    if (!PAD) return;
+    if (r.ok && r.st && r.st.slots[PAD.slot] && r.st.slots[PAD.slot].ui){ const u = r.st.slots[PAD.slot].ui; if (JSON.stringify(u) !== JSON.stringify(PAD.ui)) padOnMsg(u); }
+    setTimeout(padPoll, 700);
+  });
+}
+function padIn(k, v){ padSendRaw({ t: 'in', k, v }); }
+function padOnMsg(m){
+  if (m.t === 'vib'){ try{ navigator.vibrate && navigator.vibrate(m.p); }catch(e){} return; }
+  if (m.t !== 'ui') return;
+  PAD.ui = m;
+  if (m.col) document.documentElement.style.setProperty('--pc', m.col);
+  if (m.name) $('pName').textContent = String(m.name).toUpperCase();
+  if (m.scr === 'pad'){
+    padShow('pScrPad');
+    $('pTurn').textContent = m.txt || ''; $('pTouch').classList.toggle('myturn', !!m.turn);
+    $('pScore').textContent = m.sc != null ? m.sc : '';
+    $('pStatus').textContent = m.turn ? '¡Te toca!' : (m.txt || '');
+    document.body.classList.toggle('padtrap', m.bombs >= 0);
+    if (m.bombs >= 0){ $('pTrap').textContent = '💣' + m.bombs; $('pTrap').disabled = !m.bombs || !m.turn; }
+    document.querySelectorAll('#pScrPad .pb').forEach(b => b.style.opacity = m.turn ? 1 : .45);
+  } else if (m.scr === 'modes'){ padModes(); }
+  else if (m.scr === 'over'){
+    $('pOverIcon').textContent = m.icon || '🏆'; $('pOverT').textContent = m.title || 'FIN'; $('pOverS').innerHTML = m.sub || '';
+    $('pOverBtns').innerHTML = (m.btns || []).map(([k, t], i) => `<button class="big ${i === 0 ? 'pink' : 'alt'}" data-k="${k}">${t}</button>`).join('');
+    $('pOverBtns').querySelectorAll('button').forEach(b => b.onclick = () => { SFX.click(); padSendRaw({ t: b.dataset.k }); padMsg('⏳', 'UN MOMENTO', ''); });
+    padShow('pScrOver');
+  } else if (m.scr === 'msg'){ padMsg(m.icon || '⏳', m.title || '', m.sub || ''); }
+}
+function padModes(){
+  const g = $('pModeGrid');
+  const paint = () => {
+    g.innerHTML = Object.keys(MODOS).map(k => { const m = MODOS[k]; return `<button class="mc ${m.t === 'sim' ? 'sim' : ''} ${k === PAD.modo ? 'on' : ''}" data-k="${k}" style="--mc:${m.c}"><span class="mi">${m.i}</span><span class="mn">${m.n}</span><span class="mt">${m.t === 'sim' ? 'A LA VEZ' : 'POR TURNOS'}</span></button>`; }).join('');
+    g.querySelectorAll('.mc').forEach(b => b.onclick = () => { PAD.modo = b.dataset.k; LS.set('duoModo', PAD.modo); tone(600, .06, 'triangle', .06); try{ navigator.vibrate(15); }catch(e){} paint(); });
+    $('pMetaRow').style.display = PAD.modo === 'carrera' ? 'flex' : 'none';
+    $('pMetaRow').querySelectorAll('button').forEach(b => { b.classList.toggle('on', +b.dataset.m === PAD.meta); b.onclick = () => { PAD.meta = +b.dataset.m; LS.set('duoMeta', PAD.meta); paint(); }; });
+  };
+  $('pSingle').checked = !!LS.get('duoSingle', false);
+  paint(); padShow('pScrModes');
+}
+// botones del mando con repetición, efecto "onda" y vibración
+function padButtons(){
+  document.querySelectorAll('#pScrPad .pb').forEach(b => {
+    let rep = null;
+    const k = b.dataset.k;
+    b.addEventListener('pointerdown', e => {
+      e.preventDefault(); b.classList.add('down');
+      const r = b.getBoundingClientRect(), rp = document.createElement('span'); rp.className = 'rip';
+      const sz = Math.max(r.width, r.height) * 2.2; rp.style.width = rp.style.height = sz + 'px'; rp.style.left = (e.clientX - r.left) + 'px'; rp.style.top = (e.clientY - r.top) + 'px';
+      b.appendChild(rp); setTimeout(() => rp.remove(), 500);
+      try{ navigator.vibrate && navigator.vibrate(k === 'drop' ? 25 : 10); }catch(err){}
+      if (k === 'soft'){ padIn('soft', 1); return; }
+      padIn(k);
+      if (k === 'left' || k === 'right'){ rep = setTimeout(function r2(){ padIn(k); rep = setTimeout(r2, 70); }, 230); }
+    });
+    const up = () => { b.classList.remove('down'); clearTimeout(rep); rep = null; if (k === 'soft') padIn('soft', 0); };
+    b.addEventListener('pointerup', up); b.addEventListener('pointerleave', up); b.addEventListener('pointercancel', up);
+  });
+  // pantalla táctil central: arrastrar mueve, tocar gira, deslizar abajo rápido suelta
+  const tp = $('pTouch'), tcv = $('pTouchCv'), tctx = tcv.getContext('2d');
+  let st = null, trail = [];
+  const fit = () => { const r = tp.getBoundingClientRect(), d = Math.min(devicePixelRatio || 1, 2); tcv.width = r.width * d; tcv.height = r.height * d; tctx.setTransform(d, 0, 0, d, 0, 0); };
+  window.addEventListener('resize', fit); setTimeout(fit, 100);
+  const pt = e => { const r = tp.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  tp.addEventListener('pointerdown', e => {
+    e.preventDefault(); tp.setPointerCapture(e.pointerId);
+    const [x, y] = pt(e); st = { x, y, t: performance.now(), mx: 0, moved: false, soft: false };
+    trail.push({ x, y, life: 1, ring: true });
+  });
+  tp.addEventListener('pointermove', e => {
+    if (!st) return;
+    const [x, y] = pt(e), w = tp.clientWidth, step = Math.max(26, w / 11);
+    trail.push({ x, y, life: 1 });
+    const want = Math.trunc((x - st.x) / step);
+    while (st.mx < want){ padIn('right'); st.mx++; st.moved = true; try{ navigator.vibrate(6); }catch(err){} }
+    while (st.mx > want){ padIn('left'); st.mx--; st.moved = true; try{ navigator.vibrate(6); }catch(err){} }
+    const dy = y - st.y;
+    if (dy > 60 && Math.abs(x - st.x) < step && !st.soft){ st.soft = true; st.moved = true; padIn('soft', 1); }
+    else if (st.soft && dy < 30){ st.soft = false; padIn('soft', 0); }
+  });
+  const end = e => {
+    if (!st) return;
+    const [x, y] = pt(e), dt = performance.now() - st.t, dy = y - st.y, dx = x - st.x;
+    if (st.soft) padIn('soft', 0);
+    if (dy > 70 && dt < 280 && Math.abs(dx) < 80){ padIn('drop'); try{ navigator.vibrate(30); }catch(err){} for (let i = 0; i < 14; i++) trail.push({ x: x + (Math.random() - .5) * 60, y: y + Math.random() * 30, life: 1, spark: true }); }
+    else if (!st.moved && Math.abs(dx) < 12 && Math.abs(dy) < 12 && dt < 350){ padIn(x < tp.clientWidth * .33 ? 'rotL' : 'rot'); trail.push({ x, y, life: 1, ring: true, big: true }); try{ navigator.vibrate(12); }catch(err){} }
+    st = null;
+  };
+  tp.addEventListener('pointerup', end); tp.addEventListener('pointercancel', () => { if (st && st.soft) padIn('soft', 0); st = null; });
+  (function loop(){
+    requestAnimationFrame(loop);
+    if (!PAD || !$('pScrPad').classList.contains('on')) return;
+    const w = tp.clientWidth, h = tp.clientHeight, col = getComputedStyle(document.documentElement).getPropertyValue('--pc').trim() || '#38f9ff';
+    tctx.clearRect(0, 0, w, h);
+    trail = trail.filter(p => (p.life -= p.ring ? .04 : .06) > 0);
+    trail.forEach((p, i) => {
+      tctx.save(); tctx.globalAlpha = p.life; tctx.shadowColor = col; tctx.shadowBlur = 16;
+      if (p.ring){ tctx.strokeStyle = col; tctx.lineWidth = 3; tctx.beginPath(); tctx.arc(p.x, p.y, (1 - p.life) * (p.big ? 90 : 50) + 8, 0, 7); tctx.stroke(); }
+      else if (p.spark){ tctx.fillStyle = '#fff'; tctx.fillRect(p.x, p.y + (1 - p.life) * 60, 3, 3); }
+      else { tctx.fillStyle = col; tctx.beginPath(); tctx.arc(p.x, p.y, 10 * p.life + 2, 0, 7); tctx.fill(); }
+      tctx.restore();
+    });
+  })();
+}
+
+/* =========================================================
    CONTROLES
    ========================================================= */
 document.addEventListener('keydown', e => {
@@ -1533,7 +2195,7 @@ document.addEventListener('keydown', e => {
   if (phase === 'menu' && (k === 'Enter' || k === ' ') && $('ovMenu').classList.contains('on')){ onPlay(); e.preventDefault(); return; }
   if (phase === 'over' && k === 'Enter'){ startGame(); return; }
   if (k === 'p' || k === 'P' || k === 'Escape'){ phase === 'pause' ? resume() : pause(); return; }
-  if (phase !== 'play') return;
+  if (phase !== 'play' || humanBlocked()) return;
   if (k === 'ArrowLeft') move(-1);
   else if (k === 'ArrowRight') move(1);
   else if (k === 'ArrowUp' || k === 'x' || k === 'X') rotate(1);
@@ -1550,7 +2212,7 @@ document.addEventListener('keyup', e => { if (e.key === 'ArrowDown') softDrop = 
 // gestos sobre el tablero
 let tp = null;
 cv.addEventListener('pointerdown', e => {
-  initAudio(); if (phase !== 'play') return;
+  initAudio(); if (phase !== 'play' || humanBlocked()) return;
   tp = { x: e.clientX, y: e.clientY, t: performance.now(), mx: 0, my: 0, moved: false, soft: false };
   cv.setPointerCapture(e.pointerId);
 });
@@ -1580,7 +2242,7 @@ document.querySelectorAll('#pad button').forEach(b => {
   let rep = null;
   const act = () => ({ left: () => move(-1), right: () => move(1), rot: () => rotate(1), rotL: () => rotate(-1), drop: hardDrop, hold: holdPiece }[b.dataset.a])();
   b.addEventListener('pointerdown', e => {
-    e.preventDefault(); initAudio(); act();
+    e.preventDefault(); initAudio(); if (humanBlocked()) return; act();
     if (b.dataset.a === 'left' || b.dataset.a === 'right'){ rep = setTimeout(function r(){ act(); rep = setTimeout(r, 60); }, 220); }
   });
   const stop = () => { clearTimeout(rep); rep = null; };
@@ -1837,7 +2499,7 @@ function duoBegin(){
   phase = 'wait';
   SFX.level();
   floaters.push({ x: wall + COLS * cell / 2, y: ROWS * cell * .4, txt: M.i + ' ' + (st.modo === 'coop' ? '¡EN EQUIPO!' : '¡DUELO!'), col: M.c, life: 1.8, size: 1.4 });
-  if (DUO.sim){ simStart(); return; }
+  if (DUO.sim){ if (!DUO.local) simStart(); return; }
   duoSync();
 }
 function duoSync(){
@@ -1868,8 +2530,9 @@ function duoMyTurn(){
   if (!fits(piece, piece.r, piece.c, piece.o)){ duoSend(true); return; }
   DUO.deadline = performance.now() + DUO_TURN_MS;
   phase = 'play'; dirty = true; drawMini(); updateHud(); duoTrapBtn();
+  if (DUO.bot && DUO.me === 1) botTurnStart();
   tone(660, .08, 'square', .07); tone(990, .12, 'square', .07, 0, .08);
-  floaters.push({ x: wall + COLS * cell / 2, y: ROWS * cell * .45, txt: '¡TU TURNO!', col: DUO.me === 0 ? '#38f9ff' : '#ff2bd6', life: 1.1, size: 1.2 });
+  floaters.push({ x: wall + COLS * cell / 2, y: ROWS * cell * .45, txt: DUO.local && !(DUO.bot && DUO.me === 0) ? 'TURNO DE ' + String(st.players[DUO.me].n).toUpperCase() : '¡TU TURNO!', col: DUO.me === 0 ? '#38f9ff' : '#ff2bd6', life: 1.1, size: DUO.local ? 1 : 1.2 });
   try{ navigator.vibrate && navigator.vibrate(60); }catch(e){}
 }
 function duoHold(){
@@ -1883,7 +2546,7 @@ function duoHold(){
   dirty = true; drawMini();
 }
 function duoTrapBtn(){
-  const on = mode === 'duo' && DUO && DUO.st.modo === 'bombas' && !DUO.sim;
+  const on = mode === 'duo' && DUO && DUO.st.modo === 'bombas' && !DUO.sim && !(DUO.bot && DUO.me === 1);
   document.body.classList.toggle('trapon', !!on);
   if (!on) return;
   $('bTrap').textContent = '💣 ' + DUO.bombs[DUO.me];
@@ -1896,7 +2559,7 @@ function duoUseTrap(){
   tone(300, .2, 'sawtooth', .08, 600); dirty = true; duoTrapBtn(); drawMini();
 }
 function duoRecord(final){
-  if (!piece || !DUO) return;
+  if (!piece || !DUO || DUO.local) return;
   const p = DUO.path, l = p[p.length - 1], t = Math.round(performance.now() - DUO.tp);
   if (!l || l[0] !== piece.r || l[1] !== piece.c || l[2] !== piece.o){
     if (p.length < 140 || final) p.push([piece.r, piece.c, piece.o, t]);
@@ -1929,6 +2592,12 @@ function duoSend(over){
   DUO.turnN++; DUO.st.turnN = DUO.turnN; if (payload.over){ DUO.st.status = 'over'; DUO.st.loser = DUO.me; }
   if (win){ DUO.st.status = 'over'; DUO.st.winner = DUO.me; }
   score = 0; updateHud(); drawMini();
+  if (DUO.local){   // modo TV: los dos juegan en la misma pantalla
+    if (DUO.st.status === 'playing' && Date.now() - DUO.st.t0 > duoM().max) DUO.st.status = 'over';
+    DUO.st.move = null;
+    if (DUO.st.status === 'playing'){ DUO.me = DUO.st.turn; setTimeout(duoSync, 380); } else setTimeout(duoSync, 50);
+    return;
+  }
   const send = (n) => api('duo_jugada', payload).then(r => {
     if (r.ok && r.ignorada && r.st && r.st.turnN < payload.turnN && n < 15) setTimeout(() => send(n + 1), 600);  // el servidor aún no tiene la jugada anterior
     else if (r.ok && r.st) duoOnState(r.st);
@@ -2004,12 +2673,21 @@ function simLose(){
 }
 function duoScoreSend(done, lose){
   DUO.lastScoreSend = Date.now();
+  if (DUO.local){
+    const st = DUO.st, i = TV.cur; TV.boards[i].score = score; st.players[i].s = score;
+    if (done) st.players[i].done = true;
+    if (lose){ st.loser = i; st.status = 'over'; }
+    if (st.players.every(p => p.done)) st.status = 'over';
+    if (st.status === 'over') duoShowOver();
+    return;
+  }
   DUO.st.players[DUO.me].s = score;
   const me = DUO;
   api('duo_score', { code: DUO.code, token: DUO.token, s: score, done: !!done, lose: !!lose }).then(r => { if (DUO === me && r.ok && r.st) duoOnState(r.st); });
 }
 // manda un evento al rival: directo si hay conexión, si no, a través del servidor
 function duoEmit(o){
+  if (DUO.local){ const B = TV.boards[1 - TV.cur]; if (o.t === 'atk' && B && !B.dead && !B.timeUp){ B.garbage += Math.min(6, o.n | 0); tone(110, .3, 'sawtooth', .12, 60); tvVib(1 - TV.cur, [60, 40, 60]); } return; }
   o.id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
   if (p2pOn()) p2pSend(o); else api('duo_ev', { code: DUO.code, token: DUO.token, p: o });
 }
@@ -2026,20 +2704,22 @@ function drawRival(){
   ctx.globalAlpha = 1; ctx.strokeStyle = 'rgba(255,43,109,.6)'; ctx.beginPath(); ctx.moveTo(0, ch * 2); ctx.lineTo(cv.width, ch * 2); ctx.stroke();
 }
 function duoShowOver(){
-  if (phase === 'duoOver') return;
+  if (phase === 'duoOver' || DUO.overShown) return;
+  DUO.overShown = true; if (DUO.local) TV.over = true;
   phase = 'duoOver'; piece = null; musicStop();
-  const st = DUO.st, me = DUO.me, p = st.players;
+  const st = DUO.st, me = DUO.local ? (DUO.bot ? 0 : -1) : DUO.me, p = st.players;
   // reglas: quien toca la línea roja pierde; si se acaba el tiempo, gana quien tenga más puntos
   let win, reason;
   const md = st.modo || 'clasico', coop = md === 'coop';
-  if (DUO.sim){ p[me].s = Math.max(p[me].s || 0, score); p[1 - me].s = Math.max(p[1 - me].s || 0, DUO.rival.s || 0); }
+  if (DUO.sim && DUO.local){ TV.boards.forEach((B, i) => { if (i === TV.cur) B.score = score; p[i].s = B.score; }); }
+  else if (DUO.sim){ p[me].s = Math.max(p[me].s || 0, score); p[1 - me].s = Math.max(p[1 - me].s || 0, DUO.rival.s || 0); }
   if (st.abandono != null){ win = 1 - st.abandono; reason = (st.abandono === me ? 'Has abandonado' : p[st.abandono].n + ' ha abandonado') + ' el duelo'; }
-  else if (coop){ win = st.loser != null ? -2 : me; reason = st.loser != null ? (st.loser === me ? 'Has tocado' : p[st.loser].n + ' ha tocado') + ' la línea roja · ' + fmt(p[0].s + p[1].s) + ' puntos' : 'Habéis aguantado 3 minutos · ' + fmt(p[0].s + p[1].s) + ' puntos'; }
+  else if (coop){ win = st.loser != null ? -2 : Math.max(0, me); reason = st.loser != null ? (st.loser === me ? 'Has tocado' : p[st.loser].n + ' ha tocado') + ' la línea roja · ' + fmt(p[0].s + p[1].s) + ' puntos' : 'Habéis aguantado 3 minutos · ' + fmt(p[0].s + p[1].s) + ' puntos'; }
   else if (st.winner != null){ win = st.winner; reason = md === 'carrera' ? p[win].n + ' ha llegado a ' + st.meta + ' puntos 🎯' : p[win].n + ' ha cerrado el circuito 💀'; }
   else if (st.loser != null){ win = 1 - st.loser; reason = DUO.sim ? (st.loser === me ? 'Te has quedado' : p[st.loser].n + ' se ha quedado') + ' sin espacio 🔥' : (st.loser === me ? 'Has tocado' : p[st.loser].n + ' ha tocado') + ' la línea roja ⚡'; }
   else if (md === 'muerte'){ win = -1; reason = '⏱ Nadie cerró un circuito a tiempo'; }
-  else { win = p[0].s === p[1].s ? -1 : (p[0].s > p[1].s ? 0 : 1); reason = '⏱ Se acabó el tiempo · ' + (win === -1 ? 'empate a puntos' : 'gana por puntos'); }
-  const iWin = win === me;
+  else { win = p[0].s === p[1].s ? -1 : (p[0].s > p[1].s ? 0 : 1); reason = md === 'espejo' && st.players.every(x => x.done) && !DUO.timeUp ? 'Mismas fichas para los dos · ' + (win === -1 ? 'empate a puntos' : 'gana por puntos') : '⏱ Se acabó el tiempo · ' + (win === -1 ? 'empate a puntos' : 'gana por puntos'); }
+  const iWin = (!DUO.local || DUO.bot) && win === me;
   // aviso en el tablero antes de la celebración
   if (st.loser != null && !DUO.sim){ shake = 18; flash = .8; SFX.bomb(); floaters.push({ x: wall + COLS * cell / 2, y: cell * 3, txt: '¡LÍNEA ROJA!', col: '#ff2b6d', life: 1.4, size: 1.4 }); }
   else if (st.winner != null){ flash = .6; SFX.zap(4); }
@@ -2051,16 +2731,17 @@ function duoShowOver(){
   $('doLabel').textContent = coop ? (win === -2 ? 'APAGÓN' : '¡VICTORIA EN EQUIPO!') : win === -1 ? 'EMPATE' : iWin ? '¡VICTORIA!' : 'GANADOR';
   $('doTitle').textContent = coop ? (win === -2 ? '¡HABÉIS PERDIDO!' : '¡LO HABÉIS LOGRADO!') : win === -1 ? '¡IGUALADOS!' : (iWin ? '¡HAS GANADO!' : String(p[win].n).toUpperCase());
   $('doSub').textContent = reason;
-  [0, 1].forEach(i => { $('doN' + i).textContent = (i === me ? 'TÚ · ' : '') + p[i].n; $('doS' + i).textContent = '0'; $('doP' + i).classList.toggle('win', win === i); });
+  [0, 1].forEach(i => { $('doN' + i).textContent = (i === me && !/^t[uú]$/i.test(p[i].n) ? 'TÚ · ' : '') + p[i].n; $('doS' + i).textContent = '0'; $('doP' + i).classList.toggle('win', win === i); });
   $('bRevancha').style.display = st.abandono != null ? 'none' : '';
   lucasMood = iWin ? 'happy' : (win === -1 ? 'idle' : 'dead'); moodT = 99; document.body.classList.remove('trapon');
   setTimeout(() => {
-    if (phase !== 'duoOver') return;
+    if (!DUO || (!DUO.local && phase !== 'duoOver')) return;
     show('ovDuoOver');
     // los marcadores suben contando
-    [0, 1].forEach(i => { const to = p[i].s, t0 = performance.now(); (function step(n){ const k = Math.min(1, (n - t0) / 1400); $('doS' + i).textContent = fmt(Math.round(to * (1 - Math.pow(1 - k, 3)))); if (k < 1 && phase === 'duoOver') requestAnimationFrame(step); })(t0); });
+    [0, 1].forEach(i => { const to = p[i].s, t0 = performance.now(); (function step(n){ const k = Math.min(1, (n - t0) / 1400); $('doS' + i).textContent = fmt(Math.round(to * (1 - Math.pow(1 - k, 3)))); if (k < 1) requestAnimationFrame(step); })(t0); });
     victoryFx(wc, win !== -2);
-    fanfare(iWin || win === -1);
+    fanfare(DUO.local && !DUO.bot ? win !== -2 : (iWin || win === -1));
+    if (DUO.local && TV && !TV.bot) tvAfterDuo(win, reason);
   }, st.loser != null || st.abandono == null ? 1300 : 500);
 }
 // fanfarria de victoria (sintetizada)
@@ -2112,20 +2793,36 @@ function victoryFx(color, party){
 }
 async function duoRevancha(){
   if (!DUO) return;
+  if (DUO.local){ tvRevancha(); return; }
   const r = await api('duo_revancha', { code: DUO.code, token: DUO.token });
   if (r.ok && r.st) duoOnState(r.st); else toast(r.error || 'No se pudo pedir la revancha', 'err');
 }
 function duoLeave(silent){
   if (!DUO) return;
+  if (DUO.local){ clearTimeout(botT); DUO = null; mode = 'solo'; if (TV && TV.bot) TV = null; document.body.classList.remove('duo', 'sim', 'tvsim', 'trapon', 'botmode'); piece = null; resize(); return; }
   if (DUO.st.status !== 'over') api('duo_salir', { code: DUO.code, token: DUO.token });
   clearTimeout(duoPollT); p2pClose(); DUO = null; mode = 'solo'; LS.set('duo', null);
   document.body.classList.remove('duo'); piece = null;
   resize();
 }
 $('bDuo').onclick = duoMenu;
+$('bTV').onclick = tvMenu;
+$('bTV1').onclick = () => tvCreate(1);
+$('bTV2').onclick = () => tvCreate(2);
+$('bTVBack').onclick = () => show('ovMenu');
+$('bTVCancel').onclick = () => tvExit();
+$('pJoinBtn').onclick = padJoin;
+$('pNameIn').onkeydown = e => { if (e.key === 'Enter') padJoin(); };
+$('pStart').onclick = () => { SFX.click(); LS.set('duoSingle', $('pSingle').checked); padSendRaw({ t: 'pick', modo: PAD.modo, single: $('pSingle').checked, meta: PAD.meta }); padMsg('🚀', '¡EMPEZAMOS!', 'Mira la TV'); };
+padButtons();
+(function(){ const q = new URLSearchParams(location.search).get('tv'); if (q) setTimeout(() => padOpen(q), 300); })();
 $('metaRow').querySelectorAll('button').forEach(b => b.onclick = () => { duoMetaSel = +b.dataset.m; LS.set('duoMeta', duoMetaSel); SFX.click(); duoMenuPaint(); });
 $('bTrap').onclick = () => duoUseTrap();
-$('bDuoCrear').onclick = duoCrear;
+$('bDuoJugar').onclick = () => { SFX.click(); const m = MODOS[duoModoSel]; $('vsSub').innerHTML = m.i + ' ' + m.n + ' · ' + ($('duoSingle').checked ? '1 ficha' : '2 fichas'); $('botLv').querySelectorAll('i').forEach(x => x.classList.toggle('on', +x.dataset.l === botLevel)); show('ovVs'); };
+$('bVsAmigo').onclick = () => duoCrear();
+$('bVsBot').onclick = e => { if (e.target.dataset && e.target.dataset.l != null) return; SFX.level(); startBot(); };
+$('botLv').querySelectorAll('i').forEach(x => x.onclick = e => { e.stopPropagation(); botLevel = +x.dataset.l; LS.set('botLv', botLevel); SFX.click(); $('botLv').querySelectorAll('i').forEach(y => y.classList.toggle('on', y === x)); });
+$('bVsBack').onclick = () => show('ovDuoMenu');
 $('bDuoUnirCod').onclick = () => duoOpenJoin($('duoCodeIn').value);
 $('duoCodeIn').onkeydown = e => { if (e.key === 'Enter') duoOpenJoin($('duoCodeIn').value); };
 $('bDuoMenuBack').onclick = () => show('ovMenu');
@@ -2146,7 +2843,7 @@ if (USER) api('yo', { ses: USER.ses }, 15000).then(r => { if (r.ok){ USER.user =
 requestAnimationFrame(frame); requestAnimationFrame(drawMenu);
 /* ---------- actualización automática ---------- */
 let updPending = false, swReg = null;
-function safeToReload(){ return mode !== 'duo' && !$('ovDuo').classList.contains('on') && !$('ovJoin').classList.contains('on') && (phase === 'menu' || phase === 'over' || !grid); }
+function safeToReload(){ return !TV && !PAD && mode !== 'duo' && !$('ovDuo').classList.contains('on') && !$('ovJoin').classList.contains('on') && (phase === 'menu' || phase === 'over' || !grid); }
 function doReload(){ if (doReload.done || new URLSearchParams(location.search).get('r') === String(updPending)) return; doReload.done = true; toast('Hay una versión nueva. Actualizando…', 'load', { titulo: 'ACTUALIZACIÓN' }); setTimeout(() => { const u = new URL(location.href); u.searchParams.set('r', updPending || Date.now()); location.replace(u.toString()); }, 700); }
 function maybeReload(){ if (updPending && safeToReload() && !$('ovLogin').classList.contains('on')) doReload(); }
 async function checkUpdate(){
