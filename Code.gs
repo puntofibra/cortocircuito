@@ -73,6 +73,8 @@ function rutear_(d) {
       case 'duo_saltar': return conLock_(() => duoSaltar_(d));
       case 'duo_salir': return conLock_(() => duoSalir_(d));
       case 'duo_revancha': return conLock_(() => duoRevancha_(d));
+      case 'duo_score': return conLock_(() => duoScore_(d));
+      case 'duo_ev': return conLock_(() => duoEv_(d));
       default: return { ok: true, juego: 'CORTOCIRCUITO' };
     }
   } catch (err) {
@@ -251,14 +253,16 @@ function top_() {
 
 
 /* ---------- modo DOBLES (por turnos, estado en CacheService) ---------- */
-const DUO_MAX_MS = 180000;     // 3 minutos de partida
+const DUO_MAX_MS = 180000;     // 3 minutos de partida (por defecto)
+const DUO_MODOS = { clasico: 180000, carrera: 600000, muerte: 180000, territorio: 180000, bombas: 180000, coop: 180000, cara: 300000, espejo: 120000 };
+function duoMax_(st) { return DUO_MODOS[st.modo] || DUO_MAX_MS; }
 const DUO_SKIP_MS = 25000;     // si el rival no juega en 25 s se le salta el turno
 function duoGet_(code) { const s = CacheService.getScriptCache().get('duo_' + String(code || '').toUpperCase()); return s ? JSON.parse(s) : null; }
 function duoPut_(st) { st.v = (st.v || 0) + 1; CacheService.getScriptCache().put('duo_' + st.code, JSON.stringify(st), 21600); }
 function duoPub_(st) {
   return { code: st.code, v: st.v, seed: st.seed, status: st.status, turn: st.turn, turnN: st.turnN, grid: st.grid,
-    move: st.move, t0: st.t0, turnAt: st.turnAt, rev: st.rev, first: st.first, abandono: st.abandono, loser: st.loser, single: !!st.single, o: st.o || '', a: st.a || '',
-    players: st.players.map(p => ({ n: p.n, s: p.s, h: p.h })), now: Date.now() };
+    move: st.move, t0: st.t0, turnAt: st.turnAt, rev: st.rev, first: st.first, abandono: st.abandono, loser: st.loser, winner: st.winner, single: !!st.single, modo: st.modo || 'clasico', meta: st.meta || 0, ev: st.ev || [], o: st.o || '', a: st.a || '',
+    players: st.players.map(p => ({ n: p.n, s: p.s, h: p.h, done: !!p.done })), now: Date.now() };
 }
 function duoYo_(st, token) { return st.players.findIndex(p => p.t && p.t === String(token || '')); }
 function duoCrear_(d) {
@@ -272,7 +276,8 @@ function duoCrear_(d) {
   }
   const token = Utilities.getUuid();
   const st = { code, seed: Math.floor(Math.random() * 2e9), status: 'waiting', players: [{ n: u.nombre, t: token, s: 0, h: null }],
-    turn: 0, turnN: 0, grid: '', move: null, t0: 0, turnAt: 0, rev: 0, first: 0, created: Date.now(), o: String(d.o || '').slice(0, 20000), a: '', single: !!d.single };
+    turn: 0, turnN: 0, grid: '', move: null, t0: 0, turnAt: 0, rev: 0, first: 0, created: Date.now(), o: String(d.o || '').slice(0, 20000), a: '', single: !!d.single,
+    modo: DUO_MODOS[d.modo] ? d.modo : 'clasico', meta: [500, 1000, 2000].indexOf(parseInt(d.meta, 10)) >= 0 ? parseInt(d.meta, 10) : 1000, ev: [], evN: 0 };
   duoPut_(st);
   return { ok: true, token, me: 0, st: duoPub_(st) };
 }
@@ -295,7 +300,7 @@ function duoEstado_(d) {
   const st = duoGet_(d.code);
   if (!st) return { ok: false, error: 'La partida ha caducado' };
   // fin por tiempo aunque nadie tire (con margen para el último turno)
-  if (st.status === 'playing' && st.t0 && Date.now() - st.t0 > DUO_MAX_MS + 15000) {
+  if (st.status === 'playing' && st.t0 && Date.now() - st.t0 > duoMax_(st) + 15000) {
     conLock_(() => { const s2 = duoGet_(d.code); if (s2 && s2.status === 'playing') { s2.status = 'over'; duoPut_(s2); } });
     return { ok: true, st: duoPub_(duoGet_(d.code)) };
   }
@@ -312,12 +317,14 @@ function duoJugada_(d) {
   const pts = Math.max(0, Math.min(1e6, parseInt(d.pts, 10) || 0));
   const path = Array.isArray(d.path) ? d.path.slice(0, 150) : [];
   st.grid = grid;
-  st.players[yo].s += pts;
+  if (Array.isArray(d.pts2)) st.players.forEach((p, i) => { p.s += Math.max(0, Math.min(1e6, parseInt(d.pts2[i], 10) || 0)); });
+  else st.players[yo].s += pts;
   st.players[yo].h = (d.hold === null || d.hold === undefined) ? null : parseInt(d.hold, 10);
-  st.move = { turnN: st.turnN, by: yo, pi: parseInt(d.pi, 10), path: path, grid: grid, pts: pts, over: !!d.over, lose: !!d.lose };
+  st.move = { turnN: st.turnN, by: yo, pi: parseInt(d.pi, 10), path: path, grid: grid, pts: pts, pts2: Array.isArray(d.pts2) ? d.pts2 : null, over: !!d.over, lose: !!d.lose, win: !!d.win };
   if (d.lose) st.loser = yo;
+  if (d.win) st.winner = yo;
   st.turnN++; st.turn = 1 - yo; st.turnAt = Date.now();
-  if (d.over || d.lose || Date.now() - st.t0 > DUO_MAX_MS) st.status = 'over';
+  if (d.over || d.lose || d.win || Date.now() - st.t0 > duoMax_(st)) st.status = 'over';
   duoPut_(st);
   return { ok: true, st: duoPub_(st) };
 }
@@ -329,7 +336,7 @@ function duoSaltar_(d) {
   if (Date.now() - st.turnAt < DUO_SKIP_MS) return { ok: true, st: duoPub_(st) };
   st.move = { turnN: st.turnN, by: st.turn, skip: true, grid: st.grid, pts: 0 };
   st.turnN++; st.turn = yo; st.turnAt = Date.now();
-  if (Date.now() - st.t0 > DUO_MAX_MS) st.status = 'over';
+  if (Date.now() - st.t0 > duoMax_(st)) st.status = 'over';
   duoPut_(st);
   return { ok: true, st: duoPub_(st) };
 }
@@ -347,9 +354,35 @@ function duoRevancha_(d) {
   const yo = duoYo_(st, d.token);
   if (yo < 0) return { ok: false, error: 'No estás en esta partida' };
   if (st.status !== 'over' || st.players.length < 2) return { ok: true, st: duoPub_(st) };
-  st.seed = Math.floor(Math.random() * 2e9); st.status = 'playing'; st.grid = ''; st.move = null; st.abandono = null; st.loser = null;
-  st.players.forEach(p => { p.s = 0; p.h = null; });
+  st.seed = Math.floor(Math.random() * 2e9); st.status = 'playing'; st.grid = ''; st.move = null; st.abandono = null; st.loser = null; st.winner = null; st.ev = [];
+  st.players.forEach(p => { p.s = 0; p.h = null; p.done = false; });
   st.first = 1 - (st.first || 0); st.turn = st.first; st.turnN = 0; st.t0 = Date.now(); st.turnAt = st.t0; st.rev = (st.rev || 0) + 1;
   duoPut_(st);
   return { ok: true, st: duoPub_(st) };
+}
+
+/* modos a la vez (cara a cara, espejo): cada uno manda su puntuación y si ha terminado */
+function duoScore_(d) {
+  const st = duoGet_(d.code);
+  if (!st) return { ok: false, error: 'La partida ha caducado' };
+  const yo = duoYo_(st, d.token);
+  if (yo < 0 || st.status !== 'playing') return { ok: true, st: duoPub_(st) };
+  st.players[yo].s = Math.max(0, Math.min(99999999, parseInt(d.s, 10) || 0));
+  if (d.done) st.players[yo].done = true;
+  if (d.lose) { st.loser = yo; st.status = 'over'; }
+  if (st.players.every(p => p.done)) st.status = 'over';
+  if (Date.now() - st.t0 > duoMax_(st) + 15000) st.status = 'over';
+  duoPut_(st);
+  return { ok: true, st: duoPub_(st) };
+}
+/* eventos (ataques) cuando no hay conexión directa entre los móviles */
+function duoEv_(d) {
+  const st = duoGet_(d.code);
+  if (!st) return { ok: false, error: 'La partida ha caducado' };
+  const yo = duoYo_(st, d.token);
+  if (yo < 0 || st.status !== 'playing') return { ok: true };
+  st.evN = (st.evN || 0) + 1;
+  st.ev = (st.ev || []).concat([{ by: yo, n: st.evN, p: d.p }]).slice(-30);
+  duoPut_(st);
+  return { ok: true };
 }
